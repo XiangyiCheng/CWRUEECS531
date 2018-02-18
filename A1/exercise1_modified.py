@@ -3,16 +3,21 @@ import numpy as np
 
 img=cv2.imread('sydney.jpg',cv2.IMREAD_GRAYSCALE)
 img_blurred=img.copy()
-#img_color=cv2.imread('sydney.jpg',cv2.IMREAD_COLOR)
 h,w=img.shape[:2]
 
 Gaussian=1/256.*np.matrix('1;4;6;4;1')*np.matrix('1 4 6 4 1')
 center_poc=(len(Gaussian)-1)/2
+
+# add two rows above and below the image respectively. add two colums on left and right sides of the image.
+# reshape a zero matrix in (h+2,w+2) dimension.
 img_reshape=np.zeros((h+2*center_poc,w+2*center_poc))
+
+# give the original pixel values from the original image to the corresponding position of the new matrix.
 for k in range(0,h):
 	for l in range(0,w):
 		img_reshape[k+center_poc,l+center_poc]=img_blurred.item(k,l)
 
+# do the blurring process
 for i in range(0,h):
 	for j in range(0,w):
 		sum=0
