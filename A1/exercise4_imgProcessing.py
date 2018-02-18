@@ -9,7 +9,6 @@ img=misc.imread('shapes.jpg',mode='L')
 # np.random.random((m,n)) returns m*n dimensional random floats in the interval [0.0,1.0).
 noisy1=img+4*img.std()*np.random.random(img.shape)
 noisy2=img+6*img.max()*np.random.random(img.shape)
-print img.shape
 
 # save the images with noises.
 img1=cv2.imwrite('shape_noise1.jpg',noisy1)

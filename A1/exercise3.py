@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 
+# total target: 8
 img_shapes=cv2.imread('shapes.jpg')
 # convert the image into black and white.
 img_shapes_gray=cv2.cvtColor(img_shapes,cv2.COLOR_BGR2GRAY)
@@ -10,7 +11,7 @@ w,h=template.shape[::-1]
 # detect the object from the template. 
 result=cv2.matchTemplate(img_shapes_gray,template,cv2.TM_CCOEFF_NORMED)
 # set the threshold.
-threshold=0.2
+threshold=0.8
 # set the detection numbers
 count=0
 
@@ -24,5 +25,5 @@ for pt in zip(*location[::-1]):
 
 print 'detection numbers=',count
 
-cv2.imshow('shapes',img_shapes)
+cv2.imshow('shapes',img_shapes) 
 cv2.waitKey()
