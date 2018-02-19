@@ -3,12 +3,12 @@ import numpy as np
 
 img=cv2.imread('sydney.jpg',cv2.IMREAD_GRAYSCALE)
 img_blurred=img.copy()
-# get the height and weight of the image.
+# get the height and width of the image.
 h,w=img.shape[:2]
 
 # create a Gaussian matrix.
 Gaussian=1/256.*np.matrix('1;4;6;4;1')*np.matrix('1 4 6 4 1')
-# calculate the iteration numbers for height and weight respectively.
+# calculate the iteration numbers for height and width respectively.
 h_iteration=h-len(Gaussian)+1
 w_iteration=w-len(Gaussian)+1
 
