@@ -15,6 +15,7 @@ def idct2(dctmatrix):
 
 # read in the image and show it
 img=cv2.imread('sydney.jpg',cv2.IMREAD_GRAYSCALE)
+gray_img=cv2.imwrite('gray_sydney.jpg',img)
 
 
 # do the dct to transfer the image from spatial space into frequency space
@@ -47,7 +48,7 @@ cv2.imwrite('diff_high.jpg',diff_high)
 
 
 # show the original image
-original_img=cv2.imread('sydney.jpg')
+original_img=cv2.imread('gray_sydney.jpg')
 original_img=cv2.cvtColor(original_img,cv2.COLOR_BGR2RGB)
 plt.imshow(original_img)
 plt.show()
