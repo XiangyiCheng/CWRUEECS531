@@ -1,6 +1,5 @@
 import numpy as np
 import matplotlib.pyplot as plt
-#import matplotlib.image as mping
 from scipy.fftpack import dct,idct
 import cv2
 import math
@@ -22,11 +21,11 @@ gray_img=cv2.imwrite('gray_sydney.jpg',img)
 dct_img=dct2(img)
 m,n=dct_img.shape
 
-t_dct_img=np.zeros(shape=(m,n))
+#t_dct_img=np.zeros(shape=(m,n))
 
-for i in range(0,m):
-	for j in range(0,n):
-		t_dct_img[i,j]=math.log(abs(dct_img[i,j]))
+#for i in range(0,m):
+#	for j in range(0,n):
+#		t_dct_img[i,j]=math.log(abs(dct_img[i,j]))
 
 
 # apply the low pass filter
@@ -48,31 +47,40 @@ cv2.imwrite('diff_high.jpg',diff_high)
 
 
 # show the original image
+plt.figure(figsize=(10,10))
 original_img=cv2.imread('gray_sydney.jpg')
 original_img=cv2.cvtColor(original_img,cv2.COLOR_BGR2RGB)
+plt.subplot(2,3,1)
 plt.imshow(original_img)
-plt.show()
+plt.title('original image')
 
 
 # show the processed image by the low pass filter
 low_filtered_sydney=cv2.imread('low_filtered_sydney.jpg')
 low_filtered_sydney=cv2.cvtColor(low_filtered_sydney,cv2.COLOR_BGR2RGB)
+plt.subplot(2,3,2)
 plt.imshow(low_filtered_sydney)
-plt.show()
+plt.title('with low fillter')
+
 # show the difference between the orignal image and processed image applied low pass filter
 diff_low=cv2.imread('diff_low.jpg')
 diff_low=cv2.cvtColor(diff_low,cv2.COLOR_BGR2RGB)
+plt.subplot(2,3,5)
 plt.imshow(diff_low)
-plt.show()
+plt.title('difference')
 
 
 # show the processed image by the high pass filter
 high_filtered_sydney=cv2.imread('high_filtered_sydney.jpg')
 high_filtered_sydney=cv2.cvtColor(high_filtered_sydney,cv2.COLOR_BGR2RGB)
+plt.subplot(2,3,3)
 plt.imshow(high_filtered_sydney)
-plt.show()
+plt.title('with high fillter')
+
 # show the difference between the orignal image and processed image applied high pass filter
 diff_high=cv2.imread('diff_high.jpg')
 diff_high=cv2.cvtColor(diff_high,cv2.COLOR_BGR2RGB)
+plt.subplot(2,3,6)
 plt.imshow(diff_high)
+plt.title('difference')
 plt.show()

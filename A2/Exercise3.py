@@ -34,8 +34,8 @@ img_processed=abs(fftpack.ifft2(pro_frq))
 #show processed image
 cv2.imwrite('sydney_fft.jpg',img_processed)
 img_fft=cv2.imread('sydney_fft.jpg')
-img_fft=cv2.cvtColor(img_fft,cv2.COLOR_BGR2RGB)
-plt.imshow(img_fft)
+img_fft1=cv2.cvtColor(img_fft,cv2.COLOR_BGR2RGB)
+plt.imshow(img_fft1)
 plt.show()
 
 ###################################################################################################
@@ -68,8 +68,8 @@ for i in range(0,h):
 
 cv2.imwrite('sydney_blurred.jpg',img_blurred)
 img_trad=cv2.imread('sydney_blurred.jpg')
-img_trad=cv2.cvtColor(img_trad,cv2.COLOR_BGR2RGB)
-plt.imshow(img_trad)
+img_trad1=cv2.cvtColor(img_trad,cv2.COLOR_BGR2RGB)
+plt.imshow(img_trad1)
 plt.show()
 
 #####################################################################################################
@@ -84,4 +84,18 @@ cv2.imwrite('diff_fft_trad.jpg',fft_trad_diff)
 fft_trad_diff=cv2.imread('diff_fft_trad.jpg')
 fft_trad_diff=cv2.cvtColor(fft_trad_diff,cv2.COLOR_BGR2RGB)
 plt.imshow(fft_trad_diff)
+plt.show()
+
+#####################################################################################################
+#####################################################################################################
+plt.figure(figsize=(10,4))
+plt.subplot(1,3,1)
+plt.imshow(img_fft1)
+plt.title('FFT')
+plt.subplot(1,3,2)
+plt.imshow(img_trad1)
+plt.title('Summation')
+plt.subplot(1,3,3)
+plt.imshow(fft_trad_diff)
+plt.title('Difference')
 plt.show()

@@ -1,6 +1,5 @@
 import numpy as np
 import matplotlib.pyplot as plt
-#from scipy import fftpack
 import math
 
 def dctbasis(u,v,m,n):
@@ -41,7 +40,6 @@ for u in range(0,m):
 		onebasis=dctbasis(u,v,m,n)
 		basis[u*m:(u+1)*m,v*n:(v+1)*n]=onebasis[:,:]
 
-print basis
 
 #basis=ListedColormap(colormap.colors[::-1])
 plt.imshow(basis,cmap='gist_gray')
