@@ -141,7 +141,7 @@
     \def\gt{>}
     \def\lt{<}
     % Document parameters
-    \title{Exercise 1  Basis Function }
+    \title{Exercise 4  Principal Component Analysis}
     
     
     
@@ -280,195 +280,205 @@
     
 
     
-    \textbf{Xiangyi Cheng (xxc283)}
+    ** Xiangyi Cheng (xxc283) **
 
     \hypertarget{concept-and-background}{%
 \section{Concept and Background}\label{concept-and-background}}
 
-    A discrete consine transform (DCT) shows a finite sequence of data
-points in terms of a sum of cosine functions osillating at different
-frequency. Specifically, DCT transform the information of images in
-spatial space to frequency space in computer vision which is quite
-similar to Fourier transform, while DCT is only using for real numbers.
+    Principal component analysis (PCA) is a statistical procedure that uses
+an orthogonal transformation to convert a set of observations, in our
+case, image data, of possibly correlated variables into a set of values
+of linearly uncorrelated variables called principle components. One
+image can be described in these principal components. One important
+application is to reduce the dimension of the image by reconstructing
+the image using first several components.
 
-For the basis functions of a MxM dimension DCT, MxM functions should be
-involved. Each of them is one basis function whose dimensions are still
-MxM. If we are explaning the values of each unit with u,v,i,j where u
-and v are the location of the basis function while i and j are the
-position of the unit in the basis function, the mathematical expression
-should be
-\[ B_{u,v}(i,j)=C(u)C(v)cos\frac{\Pi(2i+1)u}{2M}cos\frac{\Pi(2j+1)v}{2N}\]
+To prove the concept that reconstrction is achievable, MNIST database is
+used to apply PCA. The MNIST database is a large database of handwritten
+digits that is commonly used for training various image processing
+systems. The MNIST database contains 60000 training images and 10000
+testing images. Training images are used for this exercise to get a
+higher accuracy.
 
     \hypertarget{implement}{%
 \section{Implement}\label{implement}}
 
-    Of course, necessary libraries and packages should be added to start
-coding.
+    Import the MNIST database and other useful libraries.
 
     \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}1}]:} \PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k+kn}{as} \PY{n+nn}{np}
+{\color{incolor}In [{\color{incolor}1}]:} \PY{k+kn}{from} \PY{n+nn}{mnist} \PY{k+kn}{import} \PY{n}{MNIST}
         \PY{k+kn}{import} \PY{n+nn}{matplotlib.pyplot} \PY{k+kn}{as} \PY{n+nn}{plt}
-        \PY{k+kn}{import} \PY{n+nn}{math}
+        \PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k+kn}{as} \PY{n+nn}{np}
+        \PY{k+kn}{import} \PY{n+nn}{numpy.matlib}
 \end{Verbatim}
 
 
-    To avoid multiple loops in the main function, a function for plotting
-each basis function is defined in advanced. Each value should follow the
-formula showed above.
+    Load the MNIST database inside and extract the training images. All
+images are labeled in a matrix called images.
 
     \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}2}]:} \PY{k}{def} \PY{n+nf}{dctbasis}\PY{p}{(}\PY{n}{u}\PY{p}{,}\PY{n}{v}\PY{p}{,}\PY{n}{m}\PY{p}{,}\PY{n}{n}\PY{p}{)}\PY{p}{:}
-        	\PY{c+c1}{\PYZsh{} set the constant value of cu and cv}
-        	\PY{k}{if} \PY{n}{u}\PY{o}{==}\PY{l+m+mi}{0}\PY{p}{:}
-        		\PY{n}{cu}\PY{o}{=}\PY{l+m+mf}{1.0}\PY{o}{/}\PY{n}{math}\PY{o}{.}\PY{n}{sqrt}\PY{p}{(}\PY{n}{m}\PY{p}{)}
-        	\PY{k}{else}\PY{p}{:}
-        		\PY{n}{cu}\PY{o}{=}\PY{n}{math}\PY{o}{.}\PY{n}{sqrt}\PY{p}{(}\PY{l+m+mf}{2.0}\PY{o}{/}\PY{n}{m}\PY{p}{)}
-        
-        	\PY{k}{if} \PY{n}{v}\PY{o}{==}\PY{l+m+mi}{0}\PY{p}{:}
-        		\PY{n}{cv}\PY{o}{=}\PY{l+m+mf}{1.0}\PY{o}{/}\PY{n}{math}\PY{o}{.}\PY{n}{sqrt}\PY{p}{(}\PY{n}{n}\PY{p}{)}
-        	\PY{k}{else}\PY{p}{:}
-        		\PY{n}{cv}\PY{o}{=}\PY{n}{math}\PY{o}{.}\PY{n}{sqrt}\PY{p}{(}\PY{l+m+mf}{2.0}\PY{o}{/}\PY{n}{n}\PY{p}{)}
-        	
-        
-        	\PY{c+c1}{\PYZsh{} initialize the matrix of each basis}
-        	\PY{n}{dctb}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{n}{shape}\PY{o}{=}\PY{p}{(}\PY{n}{m}\PY{p}{,}\PY{n}{n}\PY{p}{)}\PY{p}{)}
-        
-        	\PY{c+c1}{\PYZsh{} fill values in each basis }
-        	\PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,}\PY{n}{m}\PY{p}{)}\PY{p}{:} \PY{c+c1}{\PYZsh{} m times iteration}
-        		\PY{k}{for} \PY{n}{j} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,}\PY{n}{n}\PY{p}{)}\PY{p}{:} \PY{c+c1}{\PYZsh{} n times iteration}
-        			\PY{n}{dctb}\PY{p}{[}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{p}{]}\PY{o}{=}\PY{n}{cu}\PY{o}{*}\PY{n}{cv}\PY{o}{*}\PY{n}{math}\PY{o}{.}\PY{n}{cos}\PY{p}{(}\PY{n}{math}\PY{o}{.}\PY{n}{pi}\PY{o}{*}\PY{p}{(}\PY{l+m+mi}{2}\PY{o}{*}\PY{n}{i}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{)}\PY{o}{*}\PY{n}{u}\PY{o}{/}\PY{p}{(}\PY{l+m+mi}{2}\PY{o}{*}\PY{n}{m}\PY{p}{)}\PY{p}{)}\PY{o}{*}\PY{n}{math}\PY{o}{.}\PY{n}{cos}\PY{p}{(}\PY{n}{math}\PY{o}{.}\PY{n}{pi}\PY{o}{*}\PY{p}{(}\PY{l+m+mi}{2}\PY{o}{*}\PY{n}{j}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{)}\PY{o}{*}\PY{n}{v}\PY{o}{/}\PY{p}{(}\PY{l+m+mi}{2}\PY{o}{*}\PY{n}{n}\PY{p}{)}\PY{p}{)}
-        
-        	\PY{k}{return} \PY{n}{dctb}
+{\color{incolor}In [{\color{incolor}2}]:} \PY{c+c1}{\PYZsh{} load MNIST data}
+        \PY{n}{mndata} \PY{o}{=} \PY{n}{MNIST}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{/home/liutao/python\PYZhy{}mnist/data}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+        \PY{n}{images}\PY{p}{,} \PY{n}{labels} \PY{o}{=} \PY{n}{mndata}\PY{o}{.}\PY{n}{load\PYZus{}training}\PY{p}{(}\PY{p}{)}
 \end{Verbatim}
 
 
-    After having the defined function for plotting each basis function, our
-main function is ready to be come up with. Although the exercise pointed
-out that the dimension is 16x16, I made a generally used function for
-all dimenisons. Therefore, it requires the users to input the dimensions
-first. We can plot the 8x8 basis functions for testing.
+    To apply PCA in all 60000 images, it is required to reshape all the
+image values into one matrix. In this matrix, each row includes all the
+data for one image. Since the dimensions of each image are 28x28, the
+matrix dimensions are 60000x784.
 
     \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}18}]:} \PY{n}{m}\PY{o}{=}\PY{n+nb}{input}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{what is the value of dimension m?}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
-         \PY{n}{n}\PY{o}{=}\PY{n+nb}{input}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{what is the value of dimension n?}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+{\color{incolor}In [{\color{incolor}3}]:} \PY{c+c1}{\PYZsh{} generate a matrix and put each image information in each row}
+        \PY{c+c1}{\PYZsh{} image size is 28*28}
+        \PY{n}{datam}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{images}\PY{p}{)}\PY{p}{,}\PY{l+m+mi}{28}\PY{o}{*}\PY{l+m+mi}{28}\PY{p}{)}\PY{p}{)}
+        \PY{k}{for} \PY{n}{index} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,}\PY{n+nb}{len}\PY{p}{(}\PY{n}{images}\PY{p}{)}\PY{p}{)}\PY{p}{:}
+        	\PY{n}{img}\PY{o}{=}\PY{n}{images}\PY{p}{[}\PY{n}{index}\PY{p}{]}
+        	\PY{n}{img}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{n}{img}\PY{p}{,}\PY{n}{dtype}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{float}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+        	\PY{n}{datam}\PY{p}{[}\PY{n}{index}\PY{p}{,}\PY{p}{]}\PY{o}{=}\PY{n}{img}
 \end{Verbatim}
 
 
-    \begin{Verbatim}[commandchars=\\\{\}]
-what is the value of dimension m?8
-what is the value of dimension n?8
-
-    \end{Verbatim}
-
-    Then the aim is to have a loop to calculate the values for each basis
-and fill all the values into one matrix. The dimension of this matrix
-should be the square value of the dimensions for each basis. To
-achievement the goal, I generated a zero matrix first and then fill each
-basis into the big matrix by running the defined functions in each
-position for 16x16 times.
+    The mean matrix should be computed by calculating each column mean value
+because it is meaningful to obtain the mean value of the same position
+in images.
 
     \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}19}]:} \PY{n}{u}\PY{o}{=}\PY{n}{m}
-         \PY{n}{v}\PY{o}{=}\PY{n}{n}
-         
-         \PY{n}{basis}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{n}{shape}\PY{o}{=}\PY{p}{(}\PY{n}{m}\PY{o}{*}\PY{n}{n}\PY{p}{,}\PY{n}{m}\PY{o}{*}\PY{n}{n}\PY{p}{)}\PY{p}{)}
-         
-         \PY{k}{for} \PY{n}{u} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,}\PY{n}{m}\PY{p}{)}\PY{p}{:}
-         	\PY{k}{for} \PY{n}{v} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,}\PY{n}{n}\PY{p}{)}\PY{p}{:}
-         		\PY{n}{onebasis}\PY{o}{=}\PY{n}{dctbasis}\PY{p}{(}\PY{n}{u}\PY{p}{,}\PY{n}{v}\PY{p}{,}\PY{n}{m}\PY{p}{,}\PY{n}{n}\PY{p}{)}
-         		\PY{n}{basis}\PY{p}{[}\PY{n}{u}\PY{o}{*}\PY{n}{m}\PY{p}{:}\PY{p}{(}\PY{n}{u}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{)}\PY{o}{*}\PY{n}{m}\PY{p}{,}\PY{n}{v}\PY{o}{*}\PY{n}{n}\PY{p}{:}\PY{p}{(}\PY{n}{v}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{)}\PY{o}{*}\PY{n}{n}\PY{p}{]}\PY{o}{=}\PY{n}{onebasis}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{p}{:}\PY{p}{]}
+{\color{incolor}In [{\color{incolor}4}]:} \PY{c+c1}{\PYZsh{} get the mean value of each column (compare images)}
+        \PY{n}{mean}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{mean}\PY{p}{(}\PY{n}{datam}\PY{p}{,}\PY{n}{axis}\PY{o}{=}\PY{l+m+mi}{0}\PY{p}{)}
 \end{Verbatim}
 
 
-    At this point, the matrix called basis in the coding is the basis
-functions concluded all the basis. So it is time to plot it out with
-black and white, full color, respectively.
+    Mean matrix should be subtracted from the image data matrix and
+transpose it to let covariance of the transposed matrix fit in
+linalg.eig() to get the eigenvecotors and eigenvalues.
 
     \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}20}]:} \PY{n}{plt}\PY{o}{.}\PY{n}{imshow}\PY{p}{(}\PY{n}{basis}\PY{p}{,}\PY{n}{cmap}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{gist\PYZus{}gray}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
-         \PY{n}{plt}\PY{o}{.}\PY{n}{title} \PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{8x8 DCT Basis Functions}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
-         \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
-         \PY{n}{plt}\PY{o}{.}\PY{n}{imshow}\PY{p}{(}\PY{n}{basis}\PY{p}{)}
-         \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+{\color{incolor}In [{\color{incolor}5}]:} \PY{c+c1}{\PYZsh{} subtract mean value from the matrix and transpose it to fit in linalg.eig()}
+        \PY{c+c1}{\PYZsh{} M is based on processed image information in each column}
+        \PY{n}{M}\PY{o}{=}\PY{p}{(}\PY{n}{datam}\PY{o}{\PYZhy{}}\PY{n}{mean}\PY{p}{)}\PY{o}{.}\PY{n}{T}
+        
+        \PY{c+c1}{\PYZsh{} obtain the covariance matrix of M}
+        \PY{c+c1}{\PYZsh{} latent is the eigenvalues. coeff is the normalized eigenvectors.}
+        \PY{c+c1}{\PYZsh{} do PCA in each column}
+        \PY{p}{[}\PY{n}{latent}\PY{p}{,}\PY{n}{coeff}\PY{p}{]}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{linalg}\PY{o}{.}\PY{n}{eig}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{cov}\PY{p}{(}\PY{n}{M}\PY{p}{)}\PY{p}{)}
+        \PY{n}{score}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{dot}\PY{p}{(}\PY{n}{coeff}\PY{o}{.}\PY{n}{T}\PY{p}{,}\PY{n}{M}\PY{p}{)}
+\end{Verbatim}
+
+
+    The principle components are in the coeff matrix. To plot first 7
+components, reshape is needed to construct them into seven 28x28
+matrices, otherwise there is no meaning within the data.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}9}]:} \PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{15}\PY{p}{,}\PY{l+m+mi}{8}\PY{p}{)}\PY{p}{)}
+        \PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{4}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{)}
+        \PY{n}{plt}\PY{o}{.}\PY{n}{imshow}\PY{p}{(}\PY{n}{mean}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{p}{(}\PY{l+m+mi}{28}\PY{p}{,}\PY{l+m+mi}{28}\PY{p}{)}\PY{p}{)}\PY{p}{,}\PY{n}{cmap}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{gray}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+        \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{mean digit}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+        
+        \PY{n}{components}\PY{o}{=}\PY{n}{coeff}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{l+m+mi}{0}\PY{p}{:}\PY{l+m+mi}{7}\PY{p}{]}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{l+m+mi}{28}\PY{p}{,}\PY{l+m+mi}{28}\PY{p}{,}\PY{l+m+mi}{7}\PY{p}{)}
+        \PY{k}{for} \PY{n}{k} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{7}\PY{p}{)}\PY{p}{:}
+        	\PY{n}{eigenface}\PY{o}{=}\PY{n+nb}{abs}\PY{p}{(}\PY{n}{components}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{p}{:}\PY{p}{,}\PY{n}{k}\PY{p}{]}\PY{p}{)}
+        	\PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{4}\PY{p}{,}\PY{n}{k}\PY{o}{+}\PY{l+m+mi}{2}\PY{p}{)}
+        	\PY{n}{plt}\PY{o}{.}\PY{n}{imshow}\PY{p}{(}\PY{n}{eigenface}\PY{p}{,}\PY{n}{cmap}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{gray}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+        	\PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+si}{\PYZpc{}i}\PY{l+s+s1}{th eigenvector}\PY{l+s+s1}{\PYZsq{}}\PY{o}{\PYZpc{}}\PY{p}{(}\PY{n}{k}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{)}
+        \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
 \end{Verbatim}
 
 
     \begin{center}
-    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_13_0.png}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_15_0.png}
     \end{center}
     { \hspace*{\fill} \\}
     
-    \begin{center}
-    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_13_1.png}
-    \end{center}
-    { \hspace*{\fill} \\}
-    
-    Once passing the test, the function is ready to plot 16x16 DCT basis
-functions. The only modification is changing the inputted dimension
-values.
+    To reconstruct the digits using the sum of the first k principle
+components, score matrix multiply the coefficient of the components are
+needed. Then add the mean up to get the aproximated digit.
 
     \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}21}]:} \PY{n}{m}\PY{o}{=}\PY{n+nb}{input}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{what is the value of dimension m?}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
-         \PY{n}{n}\PY{o}{=}\PY{n+nb}{input}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{what is the value of dimension n?}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
-\end{Verbatim}
-
-
-    \begin{Verbatim}[commandchars=\\\{\}]
-what is the value of dimension m?16
-what is the value of dimension n?16
-
-    \end{Verbatim}
-
-    \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}22}]:} \PY{n}{u}\PY{o}{=}\PY{n}{m}
-         \PY{n}{v}\PY{o}{=}\PY{n}{n}
-         
-         \PY{n}{basis}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{n}{shape}\PY{o}{=}\PY{p}{(}\PY{n}{m}\PY{o}{*}\PY{n}{n}\PY{p}{,}\PY{n}{m}\PY{o}{*}\PY{n}{n}\PY{p}{)}\PY{p}{)}
-         
-         \PY{k}{for} \PY{n}{u} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,}\PY{n}{m}\PY{p}{)}\PY{p}{:}
-         	\PY{k}{for} \PY{n}{v} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,}\PY{n}{n}\PY{p}{)}\PY{p}{:}
-         		\PY{n}{onebasis}\PY{o}{=}\PY{n}{dctbasis}\PY{p}{(}\PY{n}{u}\PY{p}{,}\PY{n}{v}\PY{p}{,}\PY{n}{m}\PY{p}{,}\PY{n}{n}\PY{p}{)}
-         		\PY{n}{basis}\PY{p}{[}\PY{n}{u}\PY{o}{*}\PY{n}{m}\PY{p}{:}\PY{p}{(}\PY{n}{u}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{)}\PY{o}{*}\PY{n}{m}\PY{p}{,}\PY{n}{v}\PY{o}{*}\PY{n}{n}\PY{p}{:}\PY{p}{(}\PY{n}{v}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{)}\PY{o}{*}\PY{n}{n}\PY{p}{]}\PY{o}{=}\PY{n}{onebasis}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{p}{:}\PY{p}{]}
+{\color{incolor}In [{\color{incolor}11}]:} \PY{n}{img\PYZus{}id}\PY{o}{=}\PY{l+m+mi}{0}
+         \PY{n}{img}\PY{o}{=}\PY{n}{images}\PY{p}{[}\PY{n}{img\PYZus{}id}\PY{p}{]}
+         \PY{n}{img}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{n}{img}\PY{p}{,}\PY{n}{dtype}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{float}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+         \PY{n}{pixels}\PY{o}{=}\PY{n}{img}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{p}{(}\PY{l+m+mi}{28}\PY{p}{,}\PY{l+m+mi}{28}\PY{p}{)}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{15}\PY{p}{,}\PY{l+m+mi}{8}\PY{p}{)}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{5}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{imshow}\PY{p}{(}\PY{n}{pixels}\PY{p}{,}\PY{n}{cmap}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{gray}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{original}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
          
          
-         \PY{c+c1}{\PYZsh{}basis=ListedColormap(colormap.colors[::\PYZhy{}1])}
-         \PY{n}{plt}\PY{o}{.}\PY{n}{imshow}\PY{p}{(}\PY{n}{basis}\PY{p}{,}\PY{n}{cmap}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{gist\PYZus{}gray}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
-         \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{16x16 DCT Basis Functions}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
-         \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
-         \PY{n}{plt}\PY{o}{.}\PY{n}{imshow}\PY{p}{(}\PY{n}{basis}\PY{p}{)}
+         \PY{k}{for} \PY{n}{k} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{5}\PY{p}{)}\PY{p}{:}
+         	\PY{c+c1}{\PYZsh{} score[0:k*30,img\PYZus{}id] is a row vector}
+         	\PY{c+c1}{\PYZsh{} score.shape=(28*28,60000)}
+         	\PY{n}{reconstruction}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{dot}\PY{p}{(}\PY{n}{score}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{:}\PY{n}{k}\PY{o}{*}\PY{l+m+mi}{30}\PY{p}{,}\PY{n}{img\PYZus{}id}\PY{p}{]}\PY{p}{,}\PY{n}{coeff}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{l+m+mi}{0}\PY{p}{:}\PY{n}{k}\PY{o}{*}\PY{l+m+mi}{30}\PY{p}{]}\PY{o}{.}\PY{n}{T}\PY{p}{)}
+         	\PY{n}{reconstruction\PYZus{}tsf}\PY{o}{=}\PY{n+nb}{abs}\PY{p}{(}\PY{p}{(}\PY{n}{reconstruction}\PY{o}{+}\PY{n}{mean}\PY{p}{)}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{p}{(}\PY{l+m+mi}{28}\PY{p}{,}\PY{l+m+mi}{28}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+         	\PY{n}{diff}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{square}\PY{p}{(}\PY{n}{reconstruction\PYZus{}tsf}\PY{o}{\PYZhy{}}\PY{n}{pixels}\PY{p}{)}
+         	\PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{5}\PY{p}{,}\PY{n}{k}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{)}
+         	\PY{n}{plt}\PY{o}{.}\PY{n}{imshow}\PY{p}{(}\PY{n}{reconstruction\PYZus{}tsf}\PY{p}{,}\PY{n}{cmap}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{gray}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+         	\PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{k=}\PY{l+s+si}{\PYZpc{}i}\PY{l+s+s1}{\PYZsq{}}\PY{o}{\PYZpc{}}\PY{p}{(}\PY{n}{k}\PY{o}{*}\PY{l+m+mi}{30}\PY{p}{)}\PY{p}{)}
+         	\PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{5}\PY{p}{,}\PY{n}{k}\PY{o}{+}\PY{l+m+mi}{6}\PY{p}{)}
+         	\PY{n}{plt}\PY{o}{.}\PY{n}{imshow}\PY{p}{(}\PY{n}{diff}\PY{p}{,}\PY{n}{cmap}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{gray}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+         	\PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{errors}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
          \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
 \end{Verbatim}
 
 
     \begin{center}
-    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_16_0.png}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_17_0.png}
     \end{center}
     { \hspace*{\fill} \\}
     
+    Another digit is extracted to repeat the procedure.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}14}]:} \PY{n}{img\PYZus{}id}\PY{o}{=}\PY{l+m+mi}{7888}
+         \PY{n}{img}\PY{o}{=}\PY{n}{images}\PY{p}{[}\PY{n}{img\PYZus{}id}\PY{p}{]}
+         \PY{n}{img}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{n}{img}\PY{p}{,}\PY{n}{dtype}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{float}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+         \PY{n}{pixels}\PY{o}{=}\PY{n}{img}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{p}{(}\PY{l+m+mi}{28}\PY{p}{,}\PY{l+m+mi}{28}\PY{p}{)}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{15}\PY{p}{,}\PY{l+m+mi}{8}\PY{p}{)}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{5}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{imshow}\PY{p}{(}\PY{n}{pixels}\PY{p}{,}\PY{n}{cmap}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{gray}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{original}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+         
+         
+         \PY{k}{for} \PY{n}{k} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{5}\PY{p}{)}\PY{p}{:}
+         	\PY{c+c1}{\PYZsh{} score[0:k*30,img\PYZus{}id] is a row vector}
+         	\PY{c+c1}{\PYZsh{} score.shape=(28*28,60000)}
+         	\PY{n}{reconstruction}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{dot}\PY{p}{(}\PY{n}{score}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{:}\PY{n}{k}\PY{o}{*}\PY{l+m+mi}{30}\PY{p}{,}\PY{n}{img\PYZus{}id}\PY{p}{]}\PY{p}{,}\PY{n}{coeff}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{l+m+mi}{0}\PY{p}{:}\PY{n}{k}\PY{o}{*}\PY{l+m+mi}{30}\PY{p}{]}\PY{o}{.}\PY{n}{T}\PY{p}{)}
+         	\PY{n}{reconstruction\PYZus{}tsf}\PY{o}{=}\PY{n+nb}{abs}\PY{p}{(}\PY{p}{(}\PY{n}{reconstruction}\PY{o}{+}\PY{n}{mean}\PY{p}{)}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{p}{(}\PY{l+m+mi}{28}\PY{p}{,}\PY{l+m+mi}{28}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+         	\PY{n}{diff}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{square}\PY{p}{(}\PY{n}{reconstruction\PYZus{}tsf}\PY{o}{\PYZhy{}}\PY{n}{pixels}\PY{p}{)}
+         	\PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{5}\PY{p}{,}\PY{n}{k}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{)}
+         	\PY{n}{plt}\PY{o}{.}\PY{n}{imshow}\PY{p}{(}\PY{n}{reconstruction\PYZus{}tsf}\PY{p}{,}\PY{n}{cmap}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{gray}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+         	\PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{k=}\PY{l+s+si}{\PYZpc{}i}\PY{l+s+s1}{\PYZsq{}}\PY{o}{\PYZpc{}}\PY{p}{(}\PY{n}{k}\PY{o}{*}\PY{l+m+mi}{30}\PY{p}{)}\PY{p}{)}
+         	\PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{5}\PY{p}{,}\PY{n}{k}\PY{o}{+}\PY{l+m+mi}{6}\PY{p}{)}
+         	\PY{n}{plt}\PY{o}{.}\PY{n}{imshow}\PY{p}{(}\PY{n}{diff}\PY{p}{,}\PY{n}{cmap}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{gray}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+         	\PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{errors}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+
+
     \begin{center}
-    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_16_1.png}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_19_0.png}
     \end{center}
     { \hspace*{\fill} \\}
     
-    \hypertarget{conclusion-and-discussion}{%
-\section{Conclusion and Discussion}\label{conclusion-and-discussion}}
+    \hypertarget{conclusion-and-analysis}{%
+\section{Conclusion and Analysis}\label{conclusion-and-analysis}}
 
-    This exercise aims to plot the basis functions of a 16x16 discrete
-cosine transform (DCT). To have a better understanding of the concept
-and the knowledge behind DCT, a generally used function was developed.
-The function consists of a self-defined function for calculating every
-unit inside each basis and a main function to fill very basis in and
-plot it. Then input 8x8 as the dimensions to plot the basis functions
-for testing. In the end, required 16x16 was applied to show the final
-results.
+    PCA is applied to get principle components of the MNIST dataset. The
+eigenvalues and eigenvectors are extracted to reconstruct the images by
+components.
 
-From the results, we can tell that the frequency is changing with the
-basis. The frequency is increasing by comparing each row and each column
-seperately. One of the most obvious differences of frequency is obtained
-by comparing the first basis with the last one. Low frequency is shown
-in the first basis while high frequency in both horizontal and vertical
-directions is clear. Once getting the basis functions, we are easy to
-apply low pass and high pass filter to the images.
+The results are obvious that one image can be approximated by first
+several principle components. Although some information were lost during
+the reconstruction, we are still able to identify each processed digit
+even only with 30 components. Of course, the image is more clear with
+the components increasing due to more information. In the first example,
+the difference between the original image and the processed image with
+120 components is tiny. So dimension reduction is totally practical to
+reduce the storage and computitional costing. The last but not the
+least, more errors showed in the second example although both are about
+digit 5. Therefore, PCA is a understanding approach to do image
+impression but how nice it is depends on the image itself.
 
 
     % Add a bibliography block to the postdoc

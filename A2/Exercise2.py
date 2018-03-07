@@ -21,12 +21,6 @@ gray_img=cv2.imwrite('gray_sydney.jpg',img)
 dct_img=dct2(img)
 m,n=dct_img.shape
 
-#t_dct_img=np.zeros(shape=(m,n))
-
-#for i in range(0,m):
-#	for j in range(0,n):
-#		t_dct_img[i,j]=math.log(abs(dct_img[i,j]))
-
 
 # apply the low pass filter
 low_filter=dct_img
