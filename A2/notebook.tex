@@ -141,7 +141,7 @@
     \def\gt{>}
     \def\lt{<}
     % Document parameters
-    \title{Exercise 4  Principal Component Analysis}
+    \title{Exercise 2  Image Filters}
     
     
     
@@ -280,144 +280,155 @@
     
 
     
-    ** Xiangyi Cheng (xxc283) **
+    ** Xiangyi Cheng (xxc283)**
 
-    \hypertarget{concept-and-background}{%
-\section{Concept and Background}\label{concept-and-background}}
+    \hypertarget{concept-and-backgroud}{%
+\section{Concept and Backgroud}\label{concept-and-backgroud}}
 
-    Principal component analysis (PCA) is a statistical procedure that uses
-an orthogonal transformation to convert a set of observations, in our
-case, image data, of possibly correlated variables into a set of values
-of linearly uncorrelated variables called principle components. One
-image can be described in these principal components. One important
-application is to reduce the dimension of the image by reconstructing
-the image using first several components.
-
-To prove the concept that reconstrction is achievable, MNIST database is
-used to apply PCA. The MNIST database is a large database of handwritten
-digits that is commonly used for training various image processing
-systems. The MNIST database contains 60000 training images and 10000
-testing images. Training images are used for this exercise to get a
-higher accuracy.
+    Discrete cosine transform (DCT), as discussed in Exericse 1, transfers
+image data from spatial space to frequential space. Different views of
+image information are given by implementing the transform. Once having
+the frequency basis functions, filtering is applied to the image by
+modifying the coeffiency of each basis to achieve the processing goal,
+such as image compression.
 
     \hypertarget{implement}{%
 \section{Implement}\label{implement}}
 
-    Import the MNIST database and other useful libraries.
+    To develop the low-pass and high-pass filter, what we need to do is
+simply zeroing different zones of the DCT coefficients.
+
+First step is to add libraies which will be used inside the code.
 
     \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}1}]:} \PY{k+kn}{from} \PY{n+nn}{mnist} \PY{k+kn}{import} \PY{n}{MNIST}
+{\color{incolor}In [{\color{incolor}2}]:} \PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k+kn}{as} \PY{n+nn}{np}
         \PY{k+kn}{import} \PY{n+nn}{matplotlib.pyplot} \PY{k+kn}{as} \PY{n+nn}{plt}
-        \PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k+kn}{as} \PY{n+nn}{np}
-        \PY{k+kn}{import} \PY{n+nn}{numpy.matlib}
+        \PY{k+kn}{from} \PY{n+nn}{scipy.fftpack} \PY{k+kn}{import} \PY{n}{dct}\PY{p}{,}\PY{n}{idct}
+        \PY{k+kn}{import} \PY{n+nn}{cv2}
+        \PY{k+kn}{import} \PY{n+nn}{math}
 \end{Verbatim}
 
 
-    Load the MNIST database inside and extract the training images. All
-images are labeled in a matrix called images.
+    Since only 1-D DCT and inverse cosine transform (iDCT) is provided by
+Python, it would be better to come up with our own 2-D DCT and iDCT by
+self-defined functions.
 
     \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}2}]:} \PY{c+c1}{\PYZsh{} load MNIST data}
-        \PY{n}{mndata} \PY{o}{=} \PY{n}{MNIST}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{/home/liutao/python\PYZhy{}mnist/data}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
-        \PY{n}{images}\PY{p}{,} \PY{n}{labels} \PY{o}{=} \PY{n}{mndata}\PY{o}{.}\PY{n}{load\PYZus{}training}\PY{p}{(}\PY{p}{)}
-\end{Verbatim}
-
-
-    To apply PCA in all 60000 images, it is required to reshape all the
-image values into one matrix. In this matrix, each row includes all the
-data for one image. Since the dimensions of each image are 28x28, the
-matrix dimensions are 60000x784.
-
-    \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}3}]:} \PY{c+c1}{\PYZsh{} generate a matrix and put each image information in each row}
-        \PY{c+c1}{\PYZsh{} image size is 28*28}
-        \PY{n}{datam}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{images}\PY{p}{)}\PY{p}{,}\PY{l+m+mi}{28}\PY{o}{*}\PY{l+m+mi}{28}\PY{p}{)}\PY{p}{)}
-        \PY{k}{for} \PY{n}{index} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,}\PY{n+nb}{len}\PY{p}{(}\PY{n}{images}\PY{p}{)}\PY{p}{)}\PY{p}{:}
-        	\PY{n}{img}\PY{o}{=}\PY{n}{images}\PY{p}{[}\PY{n}{index}\PY{p}{]}
-        	\PY{n}{img}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{n}{img}\PY{p}{,}\PY{n}{dtype}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{float}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
-        	\PY{n}{datam}\PY{p}{[}\PY{n}{index}\PY{p}{,}\PY{p}{]}\PY{o}{=}\PY{n}{img}
-\end{Verbatim}
-
-
-    The mean matrix should be computed by calculating each column mean value
-because it is meaningful to obtain the mean value of the same position
-in images.
-
-    \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}4}]:} \PY{c+c1}{\PYZsh{} get the mean value of each column (compare images)}
-        \PY{n}{mean}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{mean}\PY{p}{(}\PY{n}{datam}\PY{p}{,}\PY{n}{axis}\PY{o}{=}\PY{l+m+mi}{0}\PY{p}{)}
-\end{Verbatim}
-
-
-    Mean matrix should be subtracted from the image data matrix and
-transpose it to let covariance of the transposed matrix fit in
-linalg.eig() to get the eigenvecotors and eigenvalues.
-
-    \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}5}]:} \PY{c+c1}{\PYZsh{} subtract mean value from the matrix and transpose it to fit in linalg.eig()}
-        \PY{c+c1}{\PYZsh{} M is based on processed image information in each column}
-        \PY{n}{M}\PY{o}{=}\PY{p}{(}\PY{n}{datam}\PY{o}{\PYZhy{}}\PY{n}{mean}\PY{p}{)}\PY{o}{.}\PY{n}{T}
+{\color{incolor}In [{\color{incolor}3}]:} \PY{c+c1}{\PYZsh{} define the function to do dct and idct in 2D space}
+        \PY{k}{def} \PY{n+nf}{dct2}\PY{p}{(}\PY{n}{image}\PY{p}{)}\PY{p}{:}
+        	\PY{k}{return} \PY{n}{dct}\PY{p}{(}\PY{n}{dct}\PY{p}{(}\PY{n}{image}\PY{o}{.}\PY{n}{T}\PY{p}{,}\PY{n}{norm}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ortho}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{o}{.}\PY{n}{T}\PY{p}{,}\PY{n}{norm}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ortho}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
         
-        \PY{c+c1}{\PYZsh{} obtain the covariance matrix of M}
-        \PY{c+c1}{\PYZsh{} latent is the eigenvalues. coeff is the normalized eigenvectors.}
-        \PY{c+c1}{\PYZsh{} do PCA in each column}
-        \PY{p}{[}\PY{n}{latent}\PY{p}{,}\PY{n}{coeff}\PY{p}{]}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{linalg}\PY{o}{.}\PY{n}{eig}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{cov}\PY{p}{(}\PY{n}{M}\PY{p}{)}\PY{p}{)}
-        \PY{n}{score}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{dot}\PY{p}{(}\PY{n}{coeff}\PY{o}{.}\PY{n}{T}\PY{p}{,}\PY{n}{M}\PY{p}{)}
+        \PY{k}{def} \PY{n+nf}{idct2}\PY{p}{(}\PY{n}{dctmatrix}\PY{p}{)}\PY{p}{:}
+        	\PY{k}{return} \PY{n}{idct}\PY{p}{(}\PY{n}{idct}\PY{p}{(}\PY{n}{dctmatrix}\PY{o}{.}\PY{n}{T}\PY{p}{,}\PY{n}{norm}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ortho}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{o}{.}\PY{n}{T}\PY{p}{,}\PY{n}{norm}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ortho}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
 \end{Verbatim}
 
 
-    The principle components are in the coeff matrix. To plot first 7
-components, reshape is needed to construct them into seven 28x28
-matrices, otherwise there is no meaning within the data.
+    OpenCV is used to load and write the image. Then the defined function is
+called to get the 2-D DCT of the image so that the image data in
+frequential space is obtained.
 
     \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}9}]:} \PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{15}\PY{p}{,}\PY{l+m+mi}{8}\PY{p}{)}\PY{p}{)}
-        \PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{4}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{)}
-        \PY{n}{plt}\PY{o}{.}\PY{n}{imshow}\PY{p}{(}\PY{n}{mean}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{p}{(}\PY{l+m+mi}{28}\PY{p}{,}\PY{l+m+mi}{28}\PY{p}{)}\PY{p}{)}\PY{p}{,}\PY{n}{cmap}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{gray}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
-        \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{mean digit}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
-        
-        \PY{n}{components}\PY{o}{=}\PY{n}{coeff}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{l+m+mi}{0}\PY{p}{:}\PY{l+m+mi}{7}\PY{p}{]}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{l+m+mi}{28}\PY{p}{,}\PY{l+m+mi}{28}\PY{p}{,}\PY{l+m+mi}{7}\PY{p}{)}
-        \PY{k}{for} \PY{n}{k} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{7}\PY{p}{)}\PY{p}{:}
-        	\PY{n}{eigenface}\PY{o}{=}\PY{n+nb}{abs}\PY{p}{(}\PY{n}{components}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{p}{:}\PY{p}{,}\PY{n}{k}\PY{p}{]}\PY{p}{)}
-        	\PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{4}\PY{p}{,}\PY{n}{k}\PY{o}{+}\PY{l+m+mi}{2}\PY{p}{)}
-        	\PY{n}{plt}\PY{o}{.}\PY{n}{imshow}\PY{p}{(}\PY{n}{eigenface}\PY{p}{,}\PY{n}{cmap}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{gray}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
-        	\PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+si}{\PYZpc{}i}\PY{l+s+s1}{th eigenvector}\PY{l+s+s1}{\PYZsq{}}\PY{o}{\PYZpc{}}\PY{p}{(}\PY{n}{k}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{)}
-        \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+{\color{incolor}In [{\color{incolor}28}]:} \PY{c+c1}{\PYZsh{}img=cv2.imread(\PYZsq{}sydney.jpg\PYZsq{},cv2.IMREAD\PYZus{}GRAYSCALE)}
+         \PY{n}{img}\PY{o}{=}\PY{n}{cv2}\PY{o}{.}\PY{n}{imread}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{sydney.jpg}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+m+mi}{0}\PY{p}{)}
+         \PY{n}{gray\PYZus{}img}\PY{o}{=}\PY{n}{cv2}\PY{o}{.}\PY{n}{imwrite}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{gray\PYZus{}sydney.jpg}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{img}\PY{p}{)}
+         
+         \PY{c+c1}{\PYZsh{} do the dct to transfer the image from spatial space into frequency space}
+         \PY{n}{dct\PYZus{}img}\PY{o}{=}\PY{n}{dct2}\PY{p}{(}\PY{n}{img}\PY{p}{)}
+         \PY{n}{m}\PY{p}{,}\PY{n}{n}\PY{o}{=}\PY{n}{dct\PYZus{}img}\PY{o}{.}\PY{n}{shape}
 \end{Verbatim}
 
 
-    \begin{center}
-    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_15_0.png}
-    \end{center}
-    { \hspace*{\fill} \\}
-    
-    To reconstruct the digits using the sum of the first k principle
-components, score matrix multiply the coefficient of the components are
-needed. Then add the mean up to get the aproximated digit.
+    Generating the low-pass filter is achieved by removing the high
+frequency zone. In this track, simply zeroing the coeffient in the high
+frequency is totally enough. As talked in exercise 1, the frequency is
+increasing by comparing each row and each column. Low frequency
+relatively exists in the top left corner of the matrix while high
+frequency appears in the bottom right corner.
+
+Therefore, zeroing the row 10 to the end and column 10 to end of the
+coefficent matrix is to apply the low pass filter.
 
     \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}11}]:} \PY{n}{img\PYZus{}id}\PY{o}{=}\PY{l+m+mi}{0}
-         \PY{n}{img}\PY{o}{=}\PY{n}{images}\PY{p}{[}\PY{n}{img\PYZus{}id}\PY{p}{]}
-         \PY{n}{img}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{n}{img}\PY{p}{,}\PY{n}{dtype}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{float}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
-         \PY{n}{pixels}\PY{o}{=}\PY{n}{img}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{p}{(}\PY{l+m+mi}{28}\PY{p}{,}\PY{l+m+mi}{28}\PY{p}{)}\PY{p}{)}
-         \PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{15}\PY{p}{,}\PY{l+m+mi}{8}\PY{p}{)}\PY{p}{)}
-         \PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{5}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{)}
-         \PY{n}{plt}\PY{o}{.}\PY{n}{imshow}\PY{p}{(}\PY{n}{pixels}\PY{p}{,}\PY{n}{cmap}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{gray}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
-         \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{original}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+{\color{incolor}In [{\color{incolor}29}]:} \PY{n}{low\PYZus{}filter}\PY{o}{=}\PY{n}{dct\PYZus{}img}
+         \PY{n}{low\PYZus{}filter}\PY{p}{[}\PY{l+m+mi}{10}\PY{p}{:}\PY{p}{,}\PY{l+m+mi}{10}\PY{p}{:}\PY{p}{]}\PY{o}{=}\PY{l+m+mi}{0}
+\end{Verbatim}
+
+
+    Inversing the processed matrix back to x,y space is the next step. Then
+we can compare the image with low-pass filter with the original image to
+see the differences between them.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}30}]:} \PY{n}{low\PYZus{}idct}\PY{o}{=}\PY{n}{idct2}\PY{p}{(}\PY{n}{low\PYZus{}filter}\PY{p}{)}
+         \PY{n}{diff\PYZus{}low}\PY{o}{=}\PY{n+nb}{abs}\PY{p}{(}\PY{n}{low\PYZus{}idct}\PY{o}{\PYZhy{}}\PY{n}{img}\PY{p}{)}
+         \PY{n}{cv2}\PY{o}{.}\PY{n}{imwrite}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{low\PYZus{}filtered\PYZus{}sydney.jpg}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{low\PYZus{}idct}\PY{p}{)}
+         \PY{n}{cv2}\PY{o}{.}\PY{n}{imwrite}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{diff\PYZus{}low.jpg}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{diff\PYZus{}low}\PY{p}{)}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}30}]:} True
+\end{Verbatim}
+            
+    Follow the basis idea of applying low-pass filter to obtain the
+high-pass filter. This time the coeffient of the lower frequency zone
+should be zero. Therefore, zero the row 0 to 100 and column 0 to 100.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}31}]:} \PY{n}{high\PYZus{}filter}\PY{o}{=}\PY{n}{dct\PYZus{}img}
+         \PY{n}{high\PYZus{}filter}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{:}\PY{l+m+mi}{100}\PY{p}{,}\PY{l+m+mi}{0}\PY{p}{:}\PY{l+m+mi}{100}\PY{p}{]}\PY{o}{=}\PY{l+m+mi}{0}
+         \PY{n}{high\PYZus{}idct}\PY{o}{=}\PY{n}{idct2}\PY{p}{(}\PY{n}{high\PYZus{}filter}\PY{p}{)}
+         \PY{n}{diff\PYZus{}high}\PY{o}{=}\PY{n+nb}{abs}\PY{p}{(}\PY{n}{high\PYZus{}idct}\PY{o}{\PYZhy{}}\PY{n}{img}\PY{p}{)}
+         \PY{n}{cv2}\PY{o}{.}\PY{n}{imwrite}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{high\PYZus{}filtered\PYZus{}sydney.jpg}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{high\PYZus{}idct}\PY{p}{)}
+         \PY{n}{cv2}\PY{o}{.}\PY{n}{imwrite}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{diff\PYZus{}high.jpg}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{diff\PYZus{}high}\PY{p}{)}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}31}]:} True
+\end{Verbatim}
+            
+    To illustrate the results and differences between images, the processed
+images and differences are plotted out.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}32}]:} \PY{c+c1}{\PYZsh{} show the original image}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{20}\PY{p}{,}\PY{l+m+mi}{20}\PY{p}{)}\PY{p}{)}
+         \PY{n}{original\PYZus{}img}\PY{o}{=}\PY{n}{cv2}\PY{o}{.}\PY{n}{imread}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{gray\PYZus{}sydney.jpg}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+         \PY{n}{original\PYZus{}img}\PY{o}{=}\PY{n}{cv2}\PY{o}{.}\PY{n}{cvtColor}\PY{p}{(}\PY{n}{original\PYZus{}img}\PY{p}{,}\PY{n}{cv2}\PY{o}{.}\PY{n}{COLOR\PYZus{}BGR2RGB}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{imshow}\PY{p}{(}\PY{n}{original\PYZus{}img}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{original image}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
          
          
-         \PY{k}{for} \PY{n}{k} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{5}\PY{p}{)}\PY{p}{:}
-         	\PY{c+c1}{\PYZsh{} score[0:k*30,img\PYZus{}id] is a row vector}
-         	\PY{c+c1}{\PYZsh{} score.shape=(28*28,60000)}
-         	\PY{n}{reconstruction}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{dot}\PY{p}{(}\PY{n}{score}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{:}\PY{n}{k}\PY{o}{*}\PY{l+m+mi}{30}\PY{p}{,}\PY{n}{img\PYZus{}id}\PY{p}{]}\PY{p}{,}\PY{n}{coeff}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{l+m+mi}{0}\PY{p}{:}\PY{n}{k}\PY{o}{*}\PY{l+m+mi}{30}\PY{p}{]}\PY{o}{.}\PY{n}{T}\PY{p}{)}
-         	\PY{n}{reconstruction\PYZus{}tsf}\PY{o}{=}\PY{n+nb}{abs}\PY{p}{(}\PY{p}{(}\PY{n}{reconstruction}\PY{o}{+}\PY{n}{mean}\PY{p}{)}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{p}{(}\PY{l+m+mi}{28}\PY{p}{,}\PY{l+m+mi}{28}\PY{p}{)}\PY{p}{)}\PY{p}{)}
-         	\PY{n}{diff}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{square}\PY{p}{(}\PY{n}{reconstruction\PYZus{}tsf}\PY{o}{\PYZhy{}}\PY{n}{pixels}\PY{p}{)}
-         	\PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{5}\PY{p}{,}\PY{n}{k}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{)}
-         	\PY{n}{plt}\PY{o}{.}\PY{n}{imshow}\PY{p}{(}\PY{n}{reconstruction\PYZus{}tsf}\PY{p}{,}\PY{n}{cmap}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{gray}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
-         	\PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{k=}\PY{l+s+si}{\PYZpc{}i}\PY{l+s+s1}{\PYZsq{}}\PY{o}{\PYZpc{}}\PY{p}{(}\PY{n}{k}\PY{o}{*}\PY{l+m+mi}{30}\PY{p}{)}\PY{p}{)}
-         	\PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{5}\PY{p}{,}\PY{n}{k}\PY{o}{+}\PY{l+m+mi}{6}\PY{p}{)}
-         	\PY{n}{plt}\PY{o}{.}\PY{n}{imshow}\PY{p}{(}\PY{n}{diff}\PY{p}{,}\PY{n}{cmap}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{gray}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
-         	\PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{errors}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+         \PY{c+c1}{\PYZsh{} show the processed image by the low pass filter}
+         \PY{n}{low\PYZus{}filtered\PYZus{}sydney}\PY{o}{=}\PY{n}{cv2}\PY{o}{.}\PY{n}{imread}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{low\PYZus{}filtered\PYZus{}sydney.jpg}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+         \PY{n}{low\PYZus{}filtered\PYZus{}sydney}\PY{o}{=}\PY{n}{cv2}\PY{o}{.}\PY{n}{cvtColor}\PY{p}{(}\PY{n}{low\PYZus{}filtered\PYZus{}sydney}\PY{p}{,}\PY{n}{cv2}\PY{o}{.}\PY{n}{COLOR\PYZus{}BGR2RGB}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{imshow}\PY{p}{(}\PY{n}{low\PYZus{}filtered\PYZus{}sydney}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{with low fillter}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+         
+         \PY{c+c1}{\PYZsh{} show the difference between the orignal image and processed image applied low pass filter}
+         \PY{n}{diff\PYZus{}low}\PY{o}{=}\PY{n}{cv2}\PY{o}{.}\PY{n}{imread}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{diff\PYZus{}low.jpg}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+         \PY{n}{diff\PYZus{}low}\PY{o}{=}\PY{n}{cv2}\PY{o}{.}\PY{n}{cvtColor}\PY{p}{(}\PY{n}{diff\PYZus{}low}\PY{p}{,}\PY{n}{cv2}\PY{o}{.}\PY{n}{COLOR\PYZus{}BGR2RGB}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{,}\PY{l+m+mi}{5}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{imshow}\PY{p}{(}\PY{n}{diff\PYZus{}low}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{difference}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+         
+         
+         \PY{c+c1}{\PYZsh{} show the processed image by the high pass filter}
+         \PY{n}{high\PYZus{}filtered\PYZus{}sydney}\PY{o}{=}\PY{n}{cv2}\PY{o}{.}\PY{n}{imread}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{high\PYZus{}filtered\PYZus{}sydney.jpg}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+         \PY{n}{high\PYZus{}filtered\PYZus{}sydney}\PY{o}{=}\PY{n}{cv2}\PY{o}{.}\PY{n}{cvtColor}\PY{p}{(}\PY{n}{high\PYZus{}filtered\PYZus{}sydney}\PY{p}{,}\PY{n}{cv2}\PY{o}{.}\PY{n}{COLOR\PYZus{}BGR2RGB}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{imshow}\PY{p}{(}\PY{n}{high\PYZus{}filtered\PYZus{}sydney}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{with high fillter}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+         
+         \PY{c+c1}{\PYZsh{} show the difference between the orignal image and processed image applied high pass filter}
+         \PY{n}{diff\PYZus{}high}\PY{o}{=}\PY{n}{cv2}\PY{o}{.}\PY{n}{imread}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{diff\PYZus{}high.jpg}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+         \PY{n}{diff\PYZus{}high}\PY{o}{=}\PY{n}{cv2}\PY{o}{.}\PY{n}{cvtColor}\PY{p}{(}\PY{n}{diff\PYZus{}high}\PY{p}{,}\PY{n}{cv2}\PY{o}{.}\PY{n}{COLOR\PYZus{}BGR2RGB}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{,}\PY{l+m+mi}{6}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{imshow}\PY{p}{(}\PY{n}{diff\PYZus{}high}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{difference}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
          \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
 \end{Verbatim}
 
@@ -427,58 +438,162 @@ needed. Then add the mean up to get the aproximated digit.
     \end{center}
     { \hspace*{\fill} \\}
     
-    Another digit is extracted to repeat the procedure.
+    To have a clear sense that how the filters work, the size of zero zones
+are modified to 40 for the low-pass filter and 40 for the high-pass
+filter.
 
     \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}14}]:} \PY{n}{img\PYZus{}id}\PY{o}{=}\PY{l+m+mi}{7888}
-         \PY{n}{img}\PY{o}{=}\PY{n}{images}\PY{p}{[}\PY{n}{img\PYZus{}id}\PY{p}{]}
-         \PY{n}{img}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{n}{img}\PY{p}{,}\PY{n}{dtype}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{float}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
-         \PY{n}{pixels}\PY{o}{=}\PY{n}{img}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{p}{(}\PY{l+m+mi}{28}\PY{p}{,}\PY{l+m+mi}{28}\PY{p}{)}\PY{p}{)}
-         \PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{15}\PY{p}{,}\PY{l+m+mi}{8}\PY{p}{)}\PY{p}{)}
-         \PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{5}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{)}
-         \PY{n}{plt}\PY{o}{.}\PY{n}{imshow}\PY{p}{(}\PY{n}{pixels}\PY{p}{,}\PY{n}{cmap}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{gray}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
-         \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{original}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+{\color{incolor}In [{\color{incolor}25}]:} \PY{c+c1}{\PYZsh{} apply the low pass filter}
+         \PY{n}{low\PYZus{}filter}\PY{o}{=}\PY{n}{dct\PYZus{}img}
+         \PY{n}{low\PYZus{}filter}\PY{p}{[}\PY{l+m+mi}{40}\PY{p}{:}\PY{p}{,}\PY{l+m+mi}{40}\PY{p}{:}\PY{p}{]}\PY{o}{=}\PY{l+m+mi}{0}
+         \PY{n}{low\PYZus{}idct}\PY{o}{=}\PY{n}{idct2}\PY{p}{(}\PY{n}{low\PYZus{}filter}\PY{p}{)}
+         \PY{n}{diff\PYZus{}low}\PY{o}{=}\PY{n+nb}{abs}\PY{p}{(}\PY{n}{low\PYZus{}idct}\PY{o}{\PYZhy{}}\PY{n}{img}\PY{p}{)}
+         \PY{n}{cv2}\PY{o}{.}\PY{n}{imwrite}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{low\PYZus{}filtered\PYZus{}sydney.jpg}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{low\PYZus{}idct}\PY{p}{)}
+         \PY{n}{cv2}\PY{o}{.}\PY{n}{imwrite}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{diff\PYZus{}low.jpg}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{diff\PYZus{}low}\PY{p}{)}
+         
+         \PY{n}{dct\PYZus{}img}\PY{o}{=}\PY{n}{dct2}\PY{p}{(}\PY{n}{img}\PY{p}{)}
+         \PY{n}{m}\PY{p}{,}\PY{n}{n}\PY{o}{=}\PY{n}{dct\PYZus{}img}\PY{o}{.}\PY{n}{shape}
+         \PY{c+c1}{\PYZsh{} apply the high pass filter}
+         \PY{n}{high\PYZus{}filter}\PY{o}{=}\PY{n}{dct\PYZus{}img}
+         \PY{n}{high\PYZus{}filter}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{:}\PY{l+m+mi}{40}\PY{p}{,}\PY{l+m+mi}{0}\PY{p}{:}\PY{l+m+mi}{40}\PY{p}{]}\PY{o}{=}\PY{l+m+mi}{0}
+         \PY{n}{high\PYZus{}idct}\PY{o}{=}\PY{n}{idct2}\PY{p}{(}\PY{n}{high\PYZus{}filter}\PY{p}{)}
+         \PY{n}{diff\PYZus{}high}\PY{o}{=}\PY{n+nb}{abs}\PY{p}{(}\PY{n}{high\PYZus{}idct}\PY{o}{\PYZhy{}}\PY{n}{img}\PY{p}{)}
+         \PY{n}{cv2}\PY{o}{.}\PY{n}{imwrite}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{high\PYZus{}filtered\PYZus{}sydney.jpg}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{high\PYZus{}idct}\PY{p}{)}
+         \PY{n}{cv2}\PY{o}{.}\PY{n}{imwrite}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{diff\PYZus{}high.jpg}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{diff\PYZus{}high}\PY{p}{)}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}25}]:} True
+\end{Verbatim}
+            
+    Plot the results and show the results.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}30}]:} \PY{c+c1}{\PYZsh{} show the original image}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{20}\PY{p}{,}\PY{l+m+mi}{20}\PY{p}{)}\PY{p}{)}
+         \PY{n}{original\PYZus{}img}\PY{o}{=}\PY{n}{cv2}\PY{o}{.}\PY{n}{imread}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{gray\PYZus{}sydney.jpg}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+         \PY{n}{original\PYZus{}img}\PY{o}{=}\PY{n}{cv2}\PY{o}{.}\PY{n}{cvtColor}\PY{p}{(}\PY{n}{original\PYZus{}img}\PY{p}{,}\PY{n}{cv2}\PY{o}{.}\PY{n}{COLOR\PYZus{}BGR2RGB}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{imshow}\PY{p}{(}\PY{n}{original\PYZus{}img}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{original image}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
          
          
-         \PY{k}{for} \PY{n}{k} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{5}\PY{p}{)}\PY{p}{:}
-         	\PY{c+c1}{\PYZsh{} score[0:k*30,img\PYZus{}id] is a row vector}
-         	\PY{c+c1}{\PYZsh{} score.shape=(28*28,60000)}
-         	\PY{n}{reconstruction}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{dot}\PY{p}{(}\PY{n}{score}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{:}\PY{n}{k}\PY{o}{*}\PY{l+m+mi}{30}\PY{p}{,}\PY{n}{img\PYZus{}id}\PY{p}{]}\PY{p}{,}\PY{n}{coeff}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{l+m+mi}{0}\PY{p}{:}\PY{n}{k}\PY{o}{*}\PY{l+m+mi}{30}\PY{p}{]}\PY{o}{.}\PY{n}{T}\PY{p}{)}
-         	\PY{n}{reconstruction\PYZus{}tsf}\PY{o}{=}\PY{n+nb}{abs}\PY{p}{(}\PY{p}{(}\PY{n}{reconstruction}\PY{o}{+}\PY{n}{mean}\PY{p}{)}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{p}{(}\PY{l+m+mi}{28}\PY{p}{,}\PY{l+m+mi}{28}\PY{p}{)}\PY{p}{)}\PY{p}{)}
-         	\PY{n}{diff}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{square}\PY{p}{(}\PY{n}{reconstruction\PYZus{}tsf}\PY{o}{\PYZhy{}}\PY{n}{pixels}\PY{p}{)}
-         	\PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{5}\PY{p}{,}\PY{n}{k}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{)}
-         	\PY{n}{plt}\PY{o}{.}\PY{n}{imshow}\PY{p}{(}\PY{n}{reconstruction\PYZus{}tsf}\PY{p}{,}\PY{n}{cmap}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{gray}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
-         	\PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{k=}\PY{l+s+si}{\PYZpc{}i}\PY{l+s+s1}{\PYZsq{}}\PY{o}{\PYZpc{}}\PY{p}{(}\PY{n}{k}\PY{o}{*}\PY{l+m+mi}{30}\PY{p}{)}\PY{p}{)}
-         	\PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{5}\PY{p}{,}\PY{n}{k}\PY{o}{+}\PY{l+m+mi}{6}\PY{p}{)}
-         	\PY{n}{plt}\PY{o}{.}\PY{n}{imshow}\PY{p}{(}\PY{n}{diff}\PY{p}{,}\PY{n}{cmap}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{gray}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
-         	\PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{errors}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+         \PY{c+c1}{\PYZsh{} show the processed image by the low pass filter}
+         \PY{n}{low\PYZus{}filtered\PYZus{}sydney}\PY{o}{=}\PY{n}{cv2}\PY{o}{.}\PY{n}{imread}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{low\PYZus{}filtered\PYZus{}sydney.jpg}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+         \PY{n}{low\PYZus{}filtered\PYZus{}sydney}\PY{o}{=}\PY{n}{cv2}\PY{o}{.}\PY{n}{cvtColor}\PY{p}{(}\PY{n}{low\PYZus{}filtered\PYZus{}sydney}\PY{p}{,}\PY{n}{cv2}\PY{o}{.}\PY{n}{COLOR\PYZus{}BGR2RGB}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{imshow}\PY{p}{(}\PY{n}{low\PYZus{}filtered\PYZus{}sydney}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{with low fillter}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+         
+         \PY{c+c1}{\PYZsh{} show the difference between the orignal image and processed image applied low pass filter}
+         \PY{n}{diff\PYZus{}low}\PY{o}{=}\PY{n}{cv2}\PY{o}{.}\PY{n}{imread}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{diff\PYZus{}low.jpg}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+         \PY{n}{dct\PYZus{}img}\PY{o}{=}\PY{n}{dct2}\PY{p}{(}\PY{n}{img}\PY{p}{)}
+         \PY{n}{m}\PY{p}{,}\PY{n}{n}\PY{o}{=}\PY{n}{dct\PYZus{}img}\PY{o}{.}\PY{n}{shape}
+         \PY{n}{diff\PYZus{}low}\PY{o}{=}\PY{n}{cv2}\PY{o}{.}\PY{n}{cvtColor}\PY{p}{(}\PY{n}{diff\PYZus{}low}\PY{p}{,}\PY{n}{cv2}\PY{o}{.}\PY{n}{COLOR\PYZus{}BGR2RGB}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{,}\PY{l+m+mi}{5}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{imshow}\PY{p}{(}\PY{n}{diff\PYZus{}low}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{difference}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+         
+         
+         \PY{c+c1}{\PYZsh{} show the processed image by the high pass filter}
+         \PY{n}{high\PYZus{}filtered\PYZus{}sydney}\PY{o}{=}\PY{n}{cv2}\PY{o}{.}\PY{n}{imread}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{high\PYZus{}filtered\PYZus{}sydney.jpg}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+         \PY{n}{high\PYZus{}filtered\PYZus{}sydney}\PY{o}{=}\PY{n}{cv2}\PY{o}{.}\PY{n}{cvtColor}\PY{p}{(}\PY{n}{high\PYZus{}filtered\PYZus{}sydney}\PY{p}{,}\PY{n}{cv2}\PY{o}{.}\PY{n}{COLOR\PYZus{}BGR2RGB}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{imshow}\PY{p}{(}\PY{n}{high\PYZus{}filtered\PYZus{}sydney}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{with high fillter}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+         
+         \PY{c+c1}{\PYZsh{} show the difference between the orignal image and processed image applied high pass filter}
+         \PY{n}{diff\PYZus{}high}\PY{o}{=}\PY{n}{cv2}\PY{o}{.}\PY{n}{imread}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{diff\PYZus{}high.jpg}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+         \PY{n}{diff\PYZus{}high}\PY{o}{=}\PY{n}{cv2}\PY{o}{.}\PY{n}{cvtColor}\PY{p}{(}\PY{n}{diff\PYZus{}high}\PY{p}{,}\PY{n}{cv2}\PY{o}{.}\PY{n}{COLOR\PYZus{}BGR2RGB}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{,}\PY{l+m+mi}{6}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{imshow}\PY{p}{(}\PY{n}{diff\PYZus{}high}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{difference}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{l+m+mi}{10}
          \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
 \end{Verbatim}
 
 
     \begin{center}
-    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_19_0.png}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_21_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \hypertarget{extension}{%
+\section{Extension}\label{extension}}
+
+    To get a band filter, only the information in the middle zone is kept.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}39}]:} \PY{c+c1}{\PYZsh{} apply the band pass filter}
+         \PY{n}{band\PYZus{}filter}\PY{o}{=}\PY{n}{dct\PYZus{}img}
+         \PY{n}{band\PYZus{}filter}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{:}\PY{l+m+mi}{20}\PY{p}{,}\PY{l+m+mi}{0}\PY{p}{:}\PY{l+m+mi}{20}\PY{p}{]}\PY{o}{=}\PY{l+m+mi}{0}
+         \PY{n}{band\PYZus{}filter}\PY{p}{[}\PY{l+m+mi}{80}\PY{p}{:}\PY{p}{,}\PY{l+m+mi}{80}\PY{p}{:}\PY{p}{]}\PY{o}{=}\PY{l+m+mi}{0}
+         \PY{n}{band\PYZus{}idct}\PY{o}{=}\PY{n}{idct2}\PY{p}{(}\PY{n}{band\PYZus{}filter}\PY{p}{)}
+         \PY{n}{diff\PYZus{}band}\PY{o}{=}\PY{n+nb}{abs}\PY{p}{(}\PY{n}{band\PYZus{}idct}\PY{o}{\PYZhy{}}\PY{n}{img}\PY{p}{)}
+         \PY{n}{cv2}\PY{o}{.}\PY{n}{imwrite}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{band\PYZus{}filtered\PYZus{}sydney.jpg}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{band\PYZus{}idct}\PY{p}{)}
+         \PY{n}{cv2}\PY{o}{.}\PY{n}{imwrite}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{diff\PYZus{}band.jpg}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{diff\PYZus{}band}\PY{p}{)}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}39}]:} True
+\end{Verbatim}
+            
+    Show the result.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}40}]:} \PY{c+c1}{\PYZsh{} show the original image}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{20}\PY{p}{,}\PY{l+m+mi}{20}\PY{p}{)}\PY{p}{)}
+         \PY{n}{original\PYZus{}img}\PY{o}{=}\PY{n}{cv2}\PY{o}{.}\PY{n}{imread}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{gray\PYZus{}sydney.jpg}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+         \PY{n}{original\PYZus{}img}\PY{o}{=}\PY{n}{cv2}\PY{o}{.}\PY{n}{cvtColor}\PY{p}{(}\PY{n}{original\PYZus{}img}\PY{p}{,}\PY{n}{cv2}\PY{o}{.}\PY{n}{COLOR\PYZus{}BGR2RGB}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{imshow}\PY{p}{(}\PY{n}{original\PYZus{}img}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{original image}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+         
+         
+         \PY{c+c1}{\PYZsh{} show the processed image by the band pass filter}
+         \PY{n}{band\PYZus{}filtered\PYZus{}sydney}\PY{o}{=}\PY{n}{cv2}\PY{o}{.}\PY{n}{imread}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{band\PYZus{}filtered\PYZus{}sydney.jpg}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+         \PY{n}{band\PYZus{}filtered\PYZus{}sydney}\PY{o}{=}\PY{n}{cv2}\PY{o}{.}\PY{n}{cvtColor}\PY{p}{(}\PY{n}{band\PYZus{}filtered\PYZus{}sydney}\PY{p}{,}\PY{n}{cv2}\PY{o}{.}\PY{n}{COLOR\PYZus{}BGR2RGB}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{imshow}\PY{p}{(}\PY{n}{band\PYZus{}filtered\PYZus{}sydney}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{with band fillter}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+         
+         \PY{c+c1}{\PYZsh{} show the difference between the orignal image and processed image applied band pass filter}
+         \PY{n}{diff\PYZus{}band}\PY{o}{=}\PY{n}{cv2}\PY{o}{.}\PY{n}{imread}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{diff\PYZus{}band.jpg}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+         \PY{n}{dct\PYZus{}img}\PY{o}{=}\PY{n}{dct2}\PY{p}{(}\PY{n}{img}\PY{p}{)}
+         \PY{n}{diff\PYZus{}band}\PY{o}{=}\PY{n}{cv2}\PY{o}{.}\PY{n}{cvtColor}\PY{p}{(}\PY{n}{diff\PYZus{}band}\PY{p}{,}\PY{n}{cv2}\PY{o}{.}\PY{n}{COLOR\PYZus{}BGR2RGB}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{imshow}\PY{p}{(}\PY{n}{diff\PYZus{}band}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{difference}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_26_0.png}
     \end{center}
     { \hspace*{\fill} \\}
     
     \hypertarget{conclusion-and-analysis}{%
 \section{Conclusion and Analysis}\label{conclusion-and-analysis}}
 
-    PCA is applied to get principle components of the MNIST dataset. The
-eigenvalues and eigenvectors are extracted to reconstruct the images by
-components.
+    The goal applying low-pass and high-pass filter to the images is
+achieved by doing 2-D DCT, zeroing certain zones of the matrix and then
+applying iDCT to the image data.
 
-The results are obvious that one image can be approximated by first
-several principle components. Although some information were lost during
-the reconstruction, we are still able to identify each processed digit
-even only with 30 components. Of course, the image is more clear with
-the components increasing due to more information. In the first example,
-the difference between the original image and the processed image with
-120 components is tiny. So dimension reduction is totally practical to
-reduce the storage and computitional costing. The last but not the
-least, more errors showed in the second example although both are about
-digit 5. Therefore, PCA is a understanding approach to do image
-impression but how nice it is depends on the image itself.
+The results obviously express that the most of the information
+describing the images exist in low frequency. As shown in these two
+examples, the image processed by the low-pass filter whose dimensions
+are only 10x10 shows more blur than that applied the low-pass filter
+with 40x40 dimensions. Supprisingly, even only 10x10 dimensions are
+applied, the processed image still look not bad and can be identified
+easily compared to the one applied by the high-pass filter. And the
+high-pass filter can be used for edge detection since it keeps more
+information on the edges. Moreover, since human eyes have limitations on
+high frequency, some modifications such as removing the data from high
+frequency are not recognized by people. Therefore, image compression to
+reduce dimensions or decrease the storage space is practical and
+meaningful.
 
 
     % Add a bibliography block to the postdoc
