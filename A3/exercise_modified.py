@@ -54,6 +54,8 @@ def deep_neural_network(data):
 
 	output_layer1={'weights':tf.Variable(tf.random_normal([n_hidden1,n_classes])),'biases':tf.Variable(tf.random_normal([n_classes]))}
 
+	output_layer2={'weights':tf.Variable(tf.random_normal([n_hidden2,n_classes])),'biases':tf.Variable(tf.random_normal([n_classes]))}
+
 	output_layer8={'weights':tf.Variable(tf.random_normal([n_hidden8,n_classes])),'biases':tf.Variable(tf.random_normal([n_classes]))}
 
 
@@ -84,10 +86,12 @@ def deep_neural_network(data):
 
 	model_1 = tf.matmul(act_layer1,output_layer1['weights'])+output_layer1['biases']
 
+	model_2 = tf.matmul(act_layer2,output_layer2['weights'])+output_layer2['biases']
+
 	model_8 = tf.matmul(act_layer8,output_layer8['weights'])+output_layer8['biases']
 
 
-	return model_1,model_8
+	return model_1,model_2,model_8
 
 
 
@@ -137,7 +141,7 @@ def train_CNN(models):
 
 		correct=tf.equal(tf.argmax(prep_model,1),tf.argmax(label,1))
 		accuracy=tf.reduce_mean(tf.cast(correct,'float'))
-		print 'baseline accuracy:',accuracy.eval({models:mnist.test.images,label:mnist.test.labels})
+		print 'CNN accuracy:',accuracy.eval({models:mnist.test.images,label:mnist.test.labels})
 
 
 
@@ -146,10 +150,13 @@ def train_CNN(models):
 
 def train_neural_network(models):
 
-	prep_model1, prep_model8=deep_neural_network(models)
+	prep_model1,prep_model2,prep_model8=deep_neural_network(models)
 
 	cost1=tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=prep_model1, labels=label))
 	opitimizer1=tf.train.AdamOptimizer().minimize(cost1)
+
+	cost2=tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=prep_model2, labels=label))
+	opitimizer2=tf.train.AdamOptimizer().minimize(cost2)
 
 	cost8=tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=prep_model8, labels=label))
 	opitimizer8=tf.train.AdamOptimizer().minimize(cost8)
@@ -159,6 +166,7 @@ def train_neural_network(models):
 	with tf.Session() as sess:
 		sess.run(tf.global_variables_initializer())
 
+		# baseline
 		for epoch in range(step_epochs):
 			Loss=0
 			for _ in range(int(mnist.train.num_examples/n_each_group)):
@@ -166,11 +174,25 @@ def train_neural_network(models):
 				_,loss = sess.run([opitimizer1,cost1],feed_dict={models:epoch_x,label:epoch_y})
 				Loss+=loss
 
-
 		correct1=tf.equal(tf.argmax(prep_model1,1),tf.argmax(label,1))
 		accuracy1=tf.reduce_mean(tf.cast(correct1,'float'))
 		print 'baseline accuracy:',accuracy1.eval({models:mnist.test.images,label:mnist.test.labels})
 
+
+		# 2 layes
+		for epoch in range(step_epochs):
+			Loss=0
+			for _ in range(int(mnist.train.num_examples/n_each_group)):
+				epoch_x,epoch_y = mnist.train.next_batch(n_each_group)
+				_,loss = sess.run([opitimizer2,cost2],feed_dict={models:epoch_x,label:epoch_y})
+				Loss+=loss
+
+		correct2=tf.equal(tf.argmax(prep_model2,1),tf.argmax(label,1))
+		accuracy2=tf.reduce_mean(tf.cast(correct2,'float'))
+		print '2 layers accuracy:',accuracy2.eval({models:mnist.test.images,label:mnist.test.labels})
+
+
+		# 8 layers
 		for epoch in range(step_epochs):
 			Loss=0
 			for _ in range(int(mnist.train.num_examples/n_each_group)):
@@ -208,6 +230,6 @@ def train_baseline(models):
 		accuracy=tf.reduce_mean(tf.cast(correct,'float'))
 		print 'baseline accuracy:',accuracy.eval({models:mnist.test.images,label:mnist.test.labels})
 
-#train_neural_network(mnist_data)
+train_neural_network(mnist_data)
 #train_baseline(mnist_data)
-train_CNN(mnist_data)
+#train_CNN(mnist_data)
