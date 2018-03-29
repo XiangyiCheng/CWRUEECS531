@@ -384,14 +384,18 @@ is called after obtaining the hidden layer.
         	\PY{n}{n\PYZus{}hidden1}\PY{o}{=}\PY{l+m+mi}{500}
         
         	\PY{c+c1}{\PYZsh{} each image has 784 pixels which is calculated by 28*28.}
-        	\PY{n}{hidden\PYZus{}layer1}\PY{o}{=}\PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{weights}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{tf}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{random\PYZus{}normal}\PY{p}{(}\PY{p}{[}\PY{l+m+mi}{784}\PY{p}{,}\PY{n}{n\PYZus{}hidden1}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{biases}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{tf}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{random\PYZus{}normal}\PY{p}{(}\PY{p}{[}\PY{n}{n\PYZus{}hidden1}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{\PYZcb{}}
+        	\PY{n}{hidden\PYZus{}layer1}\PY{o}{=}\PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{weights}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{tf}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{random\PYZus{}normal}\PY{p}{(}\PY{p}{[}\PY{l+m+mi}{784}\PY{p}{,}\PY{n}{n\PYZus{}hidden1}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{,}
+                           \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{biases}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{tf}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{random\PYZus{}normal}\PY{p}{(}\PY{p}{[}\PY{n}{n\PYZus{}hidden1}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{\PYZcb{}}
         
-        	\PY{n}{output\PYZus{}layer}\PY{o}{=}\PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{weights}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{tf}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{random\PYZus{}normal}\PY{p}{(}\PY{p}{[}\PY{n}{n\PYZus{}hidden1}\PY{p}{,}\PY{n}{n\PYZus{}classes}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{biases}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{tf}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{random\PYZus{}normal}\PY{p}{(}\PY{p}{[}\PY{n}{n\PYZus{}classes}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{\PYZcb{}}
+        	\PY{n}{output\PYZus{}layer}\PY{o}{=}\PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{weights}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{tf}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{random\PYZus{}normal}\PY{p}{(}\PY{p}{[}\PY{n}{n\PYZus{}hidden1}\PY{p}{,}\PY{n}{n\PYZus{}classes}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{,}
+                          \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{biases}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{tf}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{random\PYZus{}normal}\PY{p}{(}\PY{p}{[}\PY{n}{n\PYZus{}classes}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{\PYZcb{}}
         
-        	\PY{n}{layer1} \PY{o}{=} \PY{n}{tf}\PY{o}{.}\PY{n}{add}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{matmul}\PY{p}{(}\PY{n}{data}\PY{p}{,}\PY{n}{hidden\PYZus{}layer1}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{weights}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}\PY{p}{,}\PY{n}{hidden\PYZus{}layer1}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{biases}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
+        	\PY{n}{layer1} \PY{o}{=} \PY{n}{tf}\PY{o}{.}\PY{n}{add}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{matmul}\PY{p}{(}\PY{n}{data}\PY{p}{,}\PY{n}{hidden\PYZus{}layer1}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{weights}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}\PY{p}{,}
+                            \PY{n}{hidden\PYZus{}layer1}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{biases}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
         	\PY{n}{act\PYZus{}layer1} \PY{o}{=} \PY{n}{tf}\PY{o}{.}\PY{n}{nn}\PY{o}{.}\PY{n}{relu}\PY{p}{(}\PY{n}{layer1}\PY{p}{)}
         
-        	\PY{n}{model} \PY{o}{=} \PY{n}{tf}\PY{o}{.}\PY{n}{matmul}\PY{p}{(}\PY{n}{act\PYZus{}layer1}\PY{p}{,}\PY{n}{output\PYZus{}layer}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{weights}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}\PY{o}{+}\PY{n}{output\PYZus{}layer}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{biases}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+        	\PY{n}{model} \PY{o}{=} \PY{n}{tf}\PY{o}{.}\PY{n}{matmul}\PY{p}{(}\PY{n}{act\PYZus{}layer1}\PY{p}{,}\PY{n}{output\PYZus{}layer}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{weights}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}\PY{o}{+}
+            \PY{n}{output\PYZus{}layer}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{biases}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
         
         	\PY{k}{return} \PY{n}{model} 
 \end{Verbatim}
@@ -407,7 +411,8 @@ be printed out to show the loss.
 {\color{incolor}In [{\color{incolor}5}]:} \PY{k}{def} \PY{n+nf}{train\PYZus{}baseline}\PY{p}{(}\PY{n}{models}\PY{p}{)}\PY{p}{:}
         
         	\PY{n}{prep\PYZus{}model}\PY{o}{=}\PY{n}{baseline\PYZus{}neural\PYZus{}network}\PY{p}{(}\PY{n}{models}\PY{p}{)}
-        	\PY{n}{cost}\PY{o}{=}\PY{n}{tf}\PY{o}{.}\PY{n}{reduce\PYZus{}mean}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{nn}\PY{o}{.}\PY{n}{softmax\PYZus{}cross\PYZus{}entropy\PYZus{}with\PYZus{}logits}\PY{p}{(}\PY{n}{logits}\PY{o}{=}\PY{n}{prep\PYZus{}model}\PY{p}{,} \PY{n}{labels}\PY{o}{=}\PY{n}{label}\PY{p}{)}\PY{p}{)}
+        	\PY{n}{cost}\PY{o}{=}\PY{n}{tf}\PY{o}{.}\PY{n}{reduce\PYZus{}mean}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{nn}\PY{o}{.}\PY{n}{softmax\PYZus{}cross\PYZus{}entropy\PYZus{}with\PYZus{}logits}
+                                \PY{p}{(}\PY{n}{logits}\PY{o}{=}\PY{n}{prep\PYZus{}model}\PY{p}{,}\PY{n}{labels}\PY{o}{=}\PY{n}{label}\PY{p}{)}\PY{p}{)}
         	\PY{n}{opitimizer}\PY{o}{=}\PY{n}{tf}\PY{o}{.}\PY{n}{train}\PY{o}{.}\PY{n}{AdamOptimizer}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{minimize}\PY{p}{(}\PY{n}{cost}\PY{p}{)}
         
         	\PY{n}{step\PYZus{}epochs}\PY{o}{=}\PY{l+m+mi}{10}
@@ -419,13 +424,16 @@ be printed out to show the loss.
         			\PY{n}{Loss}\PY{o}{=}\PY{l+m+mi}{0}
         			\PY{k}{for} \PY{n}{\PYZus{}} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n+nb}{int}\PY{p}{(}\PY{n}{mnist}\PY{o}{.}\PY{n}{train}\PY{o}{.}\PY{n}{num\PYZus{}examples}\PY{o}{/}\PY{n}{n\PYZus{}each\PYZus{}group}\PY{p}{)}\PY{p}{)}\PY{p}{:}
         				\PY{n}{epoch\PYZus{}x}\PY{p}{,}\PY{n}{epoch\PYZus{}y} \PY{o}{=} \PY{n}{mnist}\PY{o}{.}\PY{n}{train}\PY{o}{.}\PY{n}{next\PYZus{}batch}\PY{p}{(}\PY{n}{n\PYZus{}each\PYZus{}group}\PY{p}{)}
-        				\PY{n}{\PYZus{}}\PY{p}{,}\PY{n}{loss} \PY{o}{=} \PY{n}{sess}\PY{o}{.}\PY{n}{run}\PY{p}{(}\PY{p}{[}\PY{n}{opitimizer}\PY{p}{,}\PY{n}{cost}\PY{p}{]}\PY{p}{,}\PY{n}{feed\PYZus{}dict}\PY{o}{=}\PY{p}{\PYZob{}}\PY{n}{models}\PY{p}{:}\PY{n}{epoch\PYZus{}x}\PY{p}{,}\PY{n}{label}\PY{p}{:}\PY{n}{epoch\PYZus{}y}\PY{p}{\PYZcb{}}\PY{p}{)}
+        				\PY{n}{\PYZus{}}\PY{p}{,}\PY{n}{loss} \PY{o}{=} \PY{n}{sess}\PY{o}{.}\PY{n}{run}\PY{p}{(}\PY{p}{[}\PY{n}{opitimizer}\PY{p}{,}\PY{n}{cost}\PY{p}{]}\PY{p}{,}\PY{n}{feed\PYZus{}dict}\PY{o}{=}
+                                          \PY{p}{\PYZob{}}\PY{n}{models}\PY{p}{:}\PY{n}{epoch\PYZus{}x}\PY{p}{,}\PY{n}{label}\PY{p}{:}\PY{n}{epoch\PYZus{}y}\PY{p}{\PYZcb{}}\PY{p}{)}
         				\PY{n}{Loss}\PY{o}{+}\PY{o}{=}\PY{n}{loss}
-        			\PY{k}{print} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Step}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{epoch}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{is completed out of}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{step\PYZus{}epochs}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{. Loss is }\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{Loss}
+        			\PY{k}{print} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Step}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{epoch}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{is completed out of}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{step\PYZus{}epochs}\PY{p}{,}
+                    \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{. Loss is }\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{Loss}
         
         		\PY{n}{correct}\PY{o}{=}\PY{n}{tf}\PY{o}{.}\PY{n}{equal}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{argmax}\PY{p}{(}\PY{n}{prep\PYZus{}model}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{,}\PY{n}{tf}\PY{o}{.}\PY{n}{argmax}\PY{p}{(}\PY{n}{label}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{)}
         		\PY{n}{accuracy}\PY{o}{=}\PY{n}{tf}\PY{o}{.}\PY{n}{reduce\PYZus{}mean}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{cast}\PY{p}{(}\PY{n}{correct}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{float}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{)}
-        		\PY{k}{print} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{baseline accuracy:}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{accuracy}\PY{o}{.}\PY{n}{eval}\PY{p}{(}\PY{p}{\PYZob{}}\PY{n}{models}\PY{p}{:}\PY{n}{mnist}\PY{o}{.}\PY{n}{test}\PY{o}{.}\PY{n}{images}\PY{p}{,}\PY{n}{label}\PY{p}{:}\PY{n}{mnist}\PY{o}{.}\PY{n}{test}\PY{o}{.}\PY{n}{labels}\PY{p}{\PYZcb{}}\PY{p}{)}
+        		\PY{k}{print} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{baseline accuracy:}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}
+                \PY{n}{accuracy}\PY{o}{.}\PY{n}{eval}\PY{p}{(}\PY{p}{\PYZob{}}\PY{n}{models}\PY{p}{:}\PY{n}{mnist}\PY{o}{.}\PY{n}{test}\PY{o}{.}\PY{n}{images}\PY{p}{,}\PY{n}{label}\PY{p}{:}\PY{n}{mnist}\PY{o}{.}\PY{n}{test}\PY{o}{.}\PY{n}{labels}\PY{p}{\PYZcb{}}\PY{p}{)}
 \end{Verbatim}
 
 
@@ -480,53 +488,75 @@ baseline construction but adding more hidden layers.
         	\PY{n}{n\PYZus{}hidden7}\PY{o}{=}\PY{l+m+mi}{2500}
         	\PY{n}{n\PYZus{}hidden8}\PY{o}{=}\PY{l+m+mi}{2500}
         
-        	\PY{n}{hidden\PYZus{}layer1}\PY{o}{=}\PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{weights}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{tf}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{random\PYZus{}normal}\PY{p}{(}\PY{p}{[}\PY{l+m+mi}{784}\PY{p}{,}\PY{n}{n\PYZus{}hidden1}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{biases}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{tf}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{random\PYZus{}normal}\PY{p}{(}\PY{p}{[}\PY{n}{n\PYZus{}hidden1}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{\PYZcb{}}
-        	\PY{n}{hidden\PYZus{}layer2}\PY{o}{=}\PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{weights}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{tf}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{random\PYZus{}normal}\PY{p}{(}\PY{p}{[}\PY{n}{n\PYZus{}hidden1}\PY{p}{,}\PY{n}{n\PYZus{}hidden2}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{biases}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{tf}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{random\PYZus{}normal}\PY{p}{(}\PY{p}{[}\PY{n}{n\PYZus{}hidden2}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{\PYZcb{}}
-        	\PY{n}{hidden\PYZus{}layer3}\PY{o}{=}\PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{weights}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{tf}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{random\PYZus{}normal}\PY{p}{(}\PY{p}{[}\PY{n}{n\PYZus{}hidden2}\PY{p}{,}\PY{n}{n\PYZus{}hidden3}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{biases}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{tf}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{random\PYZus{}normal}\PY{p}{(}\PY{p}{[}\PY{n}{n\PYZus{}hidden3}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{\PYZcb{}}
-        	\PY{n}{hidden\PYZus{}layer4}\PY{o}{=}\PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{weights}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{tf}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{random\PYZus{}normal}\PY{p}{(}\PY{p}{[}\PY{n}{n\PYZus{}hidden3}\PY{p}{,}\PY{n}{n\PYZus{}hidden4}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{biases}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{tf}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{random\PYZus{}normal}\PY{p}{(}\PY{p}{[}\PY{n}{n\PYZus{}hidden4}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{\PYZcb{}}
-        	\PY{n}{hidden\PYZus{}layer5}\PY{o}{=}\PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{weights}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{tf}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{random\PYZus{}normal}\PY{p}{(}\PY{p}{[}\PY{n}{n\PYZus{}hidden4}\PY{p}{,}\PY{n}{n\PYZus{}hidden5}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{biases}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{tf}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{random\PYZus{}normal}\PY{p}{(}\PY{p}{[}\PY{n}{n\PYZus{}hidden5}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{\PYZcb{}}
-        	\PY{n}{hidden\PYZus{}layer6}\PY{o}{=}\PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{weights}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{tf}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{random\PYZus{}normal}\PY{p}{(}\PY{p}{[}\PY{n}{n\PYZus{}hidden5}\PY{p}{,}\PY{n}{n\PYZus{}hidden6}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{biases}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{tf}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{random\PYZus{}normal}\PY{p}{(}\PY{p}{[}\PY{n}{n\PYZus{}hidden6}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{\PYZcb{}}
-        	\PY{n}{hidden\PYZus{}layer7}\PY{o}{=}\PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{weights}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{tf}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{random\PYZus{}normal}\PY{p}{(}\PY{p}{[}\PY{n}{n\PYZus{}hidden6}\PY{p}{,}\PY{n}{n\PYZus{}hidden7}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{biases}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{tf}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{random\PYZus{}normal}\PY{p}{(}\PY{p}{[}\PY{n}{n\PYZus{}hidden7}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{\PYZcb{}}
-        	\PY{n}{hidden\PYZus{}layer8}\PY{o}{=}\PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{weights}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{tf}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{random\PYZus{}normal}\PY{p}{(}\PY{p}{[}\PY{n}{n\PYZus{}hidden7}\PY{p}{,}\PY{n}{n\PYZus{}hidden8}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{biases}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{tf}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{random\PYZus{}normal}\PY{p}{(}\PY{p}{[}\PY{n}{n\PYZus{}hidden8}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{\PYZcb{}}
+        	\PY{n}{hidden\PYZus{}layer1}\PY{o}{=}\PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{weights}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{tf}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{random\PYZus{}normal}\PY{p}{(}\PY{p}{[}\PY{l+m+mi}{784}\PY{p}{,}\PY{n}{n\PYZus{}hidden1}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{,}
+                           \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{biases}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{tf}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{random\PYZus{}normal}\PY{p}{(}\PY{p}{[}\PY{n}{n\PYZus{}hidden1}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{\PYZcb{}}
+        	\PY{n}{hidden\PYZus{}layer2}\PY{o}{=}\PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{weights}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{tf}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{random\PYZus{}normal}\PY{p}{(}\PY{p}{[}\PY{n}{n\PYZus{}hidden1}\PY{p}{,}\PY{n}{n\PYZus{}hidden2}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{,}
+                           \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{biases}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{tf}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{random\PYZus{}normal}\PY{p}{(}\PY{p}{[}\PY{n}{n\PYZus{}hidden2}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{\PYZcb{}}
+        	\PY{n}{hidden\PYZus{}layer3}\PY{o}{=}\PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{weights}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{tf}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{random\PYZus{}normal}\PY{p}{(}\PY{p}{[}\PY{n}{n\PYZus{}hidden2}\PY{p}{,}\PY{n}{n\PYZus{}hidden3}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{,}
+                           \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{biases}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{tf}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{random\PYZus{}normal}\PY{p}{(}\PY{p}{[}\PY{n}{n\PYZus{}hidden3}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{\PYZcb{}}
+        	\PY{n}{hidden\PYZus{}layer4}\PY{o}{=}\PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{weights}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{tf}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{random\PYZus{}normal}\PY{p}{(}\PY{p}{[}\PY{n}{n\PYZus{}hidden3}\PY{p}{,}\PY{n}{n\PYZus{}hidden4}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{,}
+                           \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{biases}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{tf}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{random\PYZus{}normal}\PY{p}{(}\PY{p}{[}\PY{n}{n\PYZus{}hidden4}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{\PYZcb{}}
+        	\PY{n}{hidden\PYZus{}layer5}\PY{o}{=}\PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{weights}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{tf}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{random\PYZus{}normal}\PY{p}{(}\PY{p}{[}\PY{n}{n\PYZus{}hidden4}\PY{p}{,}\PY{n}{n\PYZus{}hidden5}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{,}
+                           \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{biases}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{tf}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{random\PYZus{}normal}\PY{p}{(}\PY{p}{[}\PY{n}{n\PYZus{}hidden5}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{\PYZcb{}}
+        	\PY{n}{hidden\PYZus{}layer6}\PY{o}{=}\PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{weights}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{tf}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{random\PYZus{}normal}\PY{p}{(}\PY{p}{[}\PY{n}{n\PYZus{}hidden5}\PY{p}{,}\PY{n}{n\PYZus{}hidden6}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{,}
+                           \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{biases}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{tf}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{random\PYZus{}normal}\PY{p}{(}\PY{p}{[}\PY{n}{n\PYZus{}hidden6}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{\PYZcb{}}
+        	\PY{n}{hidden\PYZus{}layer7}\PY{o}{=}\PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{weights}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{tf}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{random\PYZus{}normal}\PY{p}{(}\PY{p}{[}\PY{n}{n\PYZus{}hidden6}\PY{p}{,}\PY{n}{n\PYZus{}hidden7}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{,}
+                           \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{biases}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{tf}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{random\PYZus{}normal}\PY{p}{(}\PY{p}{[}\PY{n}{n\PYZus{}hidden7}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{\PYZcb{}}
+        	\PY{n}{hidden\PYZus{}layer8}\PY{o}{=}\PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{weights}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{tf}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{random\PYZus{}normal}\PY{p}{(}\PY{p}{[}\PY{n}{n\PYZus{}hidden7}\PY{p}{,}\PY{n}{n\PYZus{}hidden8}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{,}
+                           \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{biases}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{tf}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{random\PYZus{}normal}\PY{p}{(}\PY{p}{[}\PY{n}{n\PYZus{}hidden8}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{\PYZcb{}}
         
         
-        	\PY{n}{output\PYZus{}layer1}\PY{o}{=}\PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{weights}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{tf}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{random\PYZus{}normal}\PY{p}{(}\PY{p}{[}\PY{n}{n\PYZus{}hidden1}\PY{p}{,}\PY{n}{n\PYZus{}classes}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{biases}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{tf}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{random\PYZus{}normal}\PY{p}{(}\PY{p}{[}\PY{n}{n\PYZus{}classes}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{\PYZcb{}}
+        	\PY{n}{output\PYZus{}layer1}\PY{o}{=}\PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{weights}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{tf}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{random\PYZus{}normal}\PY{p}{(}\PY{p}{[}\PY{n}{n\PYZus{}hidden1}\PY{p}{,}\PY{n}{n\PYZus{}classes}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{,}
+                           \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{biases}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{tf}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{random\PYZus{}normal}\PY{p}{(}\PY{p}{[}\PY{n}{n\PYZus{}classes}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{\PYZcb{}}
         
-        	\PY{n}{output\PYZus{}layer2}\PY{o}{=}\PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{weights}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{tf}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{random\PYZus{}normal}\PY{p}{(}\PY{p}{[}\PY{n}{n\PYZus{}hidden2}\PY{p}{,}\PY{n}{n\PYZus{}classes}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{biases}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{tf}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{random\PYZus{}normal}\PY{p}{(}\PY{p}{[}\PY{n}{n\PYZus{}classes}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{\PYZcb{}}
+        	\PY{n}{output\PYZus{}layer2}\PY{o}{=}\PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{weights}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{tf}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{random\PYZus{}normal}\PY{p}{(}\PY{p}{[}\PY{n}{n\PYZus{}hidden2}\PY{p}{,}\PY{n}{n\PYZus{}classes}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{,}
+                           \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{biases}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{tf}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{random\PYZus{}normal}\PY{p}{(}\PY{p}{[}\PY{n}{n\PYZus{}classes}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{\PYZcb{}}
         
-        	\PY{n}{output\PYZus{}layer8}\PY{o}{=}\PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{weights}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{tf}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{random\PYZus{}normal}\PY{p}{(}\PY{p}{[}\PY{n}{n\PYZus{}hidden8}\PY{p}{,}\PY{n}{n\PYZus{}classes}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{biases}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{tf}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{random\PYZus{}normal}\PY{p}{(}\PY{p}{[}\PY{n}{n\PYZus{}classes}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{\PYZcb{}}
+        	\PY{n}{output\PYZus{}layer8}\PY{o}{=}\PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{weights}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{tf}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{random\PYZus{}normal}\PY{p}{(}\PY{p}{[}\PY{n}{n\PYZus{}hidden8}\PY{p}{,}\PY{n}{n\PYZus{}classes}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{,}
+                           \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{biases}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{tf}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{random\PYZus{}normal}\PY{p}{(}\PY{p}{[}\PY{n}{n\PYZus{}classes}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{\PYZcb{}}
         
         
-        	\PY{n}{layer1} \PY{o}{=} \PY{n}{tf}\PY{o}{.}\PY{n}{add}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{matmul}\PY{p}{(}\PY{n}{data}\PY{p}{,}\PY{n}{hidden\PYZus{}layer1}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{weights}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}\PY{p}{,}\PY{n}{hidden\PYZus{}layer1}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{biases}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
+        	\PY{n}{layer1} \PY{o}{=} \PY{n}{tf}\PY{o}{.}\PY{n}{add}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{matmul}\PY{p}{(}\PY{n}{data}\PY{p}{,}\PY{n}{hidden\PYZus{}layer1}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{weights}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}\PY{p}{,}
+                            \PY{n}{hidden\PYZus{}layer1}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{biases}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
         	\PY{n}{act\PYZus{}layer1} \PY{o}{=} \PY{n}{tf}\PY{o}{.}\PY{n}{nn}\PY{o}{.}\PY{n}{relu}\PY{p}{(}\PY{n}{layer1}\PY{p}{)}
         
-        	\PY{n}{layer2} \PY{o}{=} \PY{n}{tf}\PY{o}{.}\PY{n}{add}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{matmul}\PY{p}{(}\PY{n}{act\PYZus{}layer1}\PY{p}{,}\PY{n}{hidden\PYZus{}layer2}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{weights}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}\PY{p}{,}\PY{n}{hidden\PYZus{}layer2}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{biases}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
+        	\PY{n}{layer2} \PY{o}{=} \PY{n}{tf}\PY{o}{.}\PY{n}{add}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{matmul}\PY{p}{(}\PY{n}{act\PYZus{}layer1}\PY{p}{,}\PY{n}{hidden\PYZus{}layer2}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{weights}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}\PY{p}{,}
+                            \PY{n}{hidden\PYZus{}layer2}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{biases}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
         	\PY{n}{act\PYZus{}layer2} \PY{o}{=} \PY{n}{tf}\PY{o}{.}\PY{n}{nn}\PY{o}{.}\PY{n}{relu}\PY{p}{(}\PY{n}{layer2}\PY{p}{)}	
         
-        	\PY{n}{layer3} \PY{o}{=} \PY{n}{tf}\PY{o}{.}\PY{n}{add}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{matmul}\PY{p}{(}\PY{n}{act\PYZus{}layer2}\PY{p}{,}\PY{n}{hidden\PYZus{}layer3}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{weights}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}\PY{p}{,}\PY{n}{hidden\PYZus{}layer3}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{biases}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
+        	\PY{n}{layer3} \PY{o}{=} \PY{n}{tf}\PY{o}{.}\PY{n}{add}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{matmul}\PY{p}{(}\PY{n}{act\PYZus{}layer2}\PY{p}{,}\PY{n}{hidden\PYZus{}layer3}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{weights}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}\PY{p}{,}
+                            \PY{n}{hidden\PYZus{}layer3}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{biases}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
         	\PY{n}{act\PYZus{}layer3} \PY{o}{=} \PY{n}{tf}\PY{o}{.}\PY{n}{nn}\PY{o}{.}\PY{n}{relu}\PY{p}{(}\PY{n}{layer3}\PY{p}{)}
         
-        	\PY{n}{layer4} \PY{o}{=} \PY{n}{tf}\PY{o}{.}\PY{n}{add}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{matmul}\PY{p}{(}\PY{n}{act\PYZus{}layer3}\PY{p}{,}\PY{n}{hidden\PYZus{}layer4}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{weights}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}\PY{p}{,}\PY{n}{hidden\PYZus{}layer4}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{biases}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
+        	\PY{n}{layer4} \PY{o}{=} \PY{n}{tf}\PY{o}{.}\PY{n}{add}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{matmul}\PY{p}{(}\PY{n}{act\PYZus{}layer3}\PY{p}{,}\PY{n}{hidden\PYZus{}layer4}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{weights}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}\PY{p}{,}
+                            \PY{n}{hidden\PYZus{}layer4}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{biases}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
         	\PY{n}{act\PYZus{}layer4} \PY{o}{=} \PY{n}{tf}\PY{o}{.}\PY{n}{nn}\PY{o}{.}\PY{n}{relu}\PY{p}{(}\PY{n}{layer4}\PY{p}{)}
         
-        	\PY{n}{layer5} \PY{o}{=} \PY{n}{tf}\PY{o}{.}\PY{n}{add}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{matmul}\PY{p}{(}\PY{n}{act\PYZus{}layer4}\PY{p}{,}\PY{n}{hidden\PYZus{}layer5}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{weights}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}\PY{p}{,}\PY{n}{hidden\PYZus{}layer5}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{biases}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
+        	\PY{n}{layer5} \PY{o}{=} \PY{n}{tf}\PY{o}{.}\PY{n}{add}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{matmul}\PY{p}{(}\PY{n}{act\PYZus{}layer4}\PY{p}{,}\PY{n}{hidden\PYZus{}layer5}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{weights}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}\PY{p}{,}
+                            \PY{n}{hidden\PYZus{}layer5}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{biases}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
         	\PY{n}{act\PYZus{}layer5} \PY{o}{=} \PY{n}{tf}\PY{o}{.}\PY{n}{nn}\PY{o}{.}\PY{n}{relu}\PY{p}{(}\PY{n}{layer5}\PY{p}{)}
         
-        	\PY{n}{layer6} \PY{o}{=} \PY{n}{tf}\PY{o}{.}\PY{n}{add}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{matmul}\PY{p}{(}\PY{n}{act\PYZus{}layer5}\PY{p}{,}\PY{n}{hidden\PYZus{}layer6}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{weights}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}\PY{p}{,}\PY{n}{hidden\PYZus{}layer6}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{biases}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
+        	\PY{n}{layer6} \PY{o}{=} \PY{n}{tf}\PY{o}{.}\PY{n}{add}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{matmul}\PY{p}{(}\PY{n}{act\PYZus{}layer5}\PY{p}{,}\PY{n}{hidden\PYZus{}layer6}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{weights}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}\PY{p}{,}
+                            \PY{n}{hidden\PYZus{}layer6}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{biases}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
         	\PY{n}{act\PYZus{}layer6} \PY{o}{=} \PY{n}{tf}\PY{o}{.}\PY{n}{nn}\PY{o}{.}\PY{n}{relu}\PY{p}{(}\PY{n}{layer6}\PY{p}{)}
         
-        	\PY{n}{layer7} \PY{o}{=} \PY{n}{tf}\PY{o}{.}\PY{n}{add}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{matmul}\PY{p}{(}\PY{n}{act\PYZus{}layer6}\PY{p}{,}\PY{n}{hidden\PYZus{}layer7}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{weights}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}\PY{p}{,}\PY{n}{hidden\PYZus{}layer7}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{biases}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
+        	\PY{n}{layer7} \PY{o}{=} \PY{n}{tf}\PY{o}{.}\PY{n}{add}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{matmul}\PY{p}{(}\PY{n}{act\PYZus{}layer6}\PY{p}{,}\PY{n}{hidden\PYZus{}layer7}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{weights}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}\PY{p}{,}
+                            \PY{n}{hidden\PYZus{}layer7}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{biases}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
         	\PY{n}{act\PYZus{}layer7} \PY{o}{=} \PY{n}{tf}\PY{o}{.}\PY{n}{nn}\PY{o}{.}\PY{n}{relu}\PY{p}{(}\PY{n}{layer7}\PY{p}{)}
         
-        	\PY{n}{layer8} \PY{o}{=} \PY{n}{tf}\PY{o}{.}\PY{n}{add}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{matmul}\PY{p}{(}\PY{n}{act\PYZus{}layer7}\PY{p}{,}\PY{n}{hidden\PYZus{}layer8}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{weights}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}\PY{p}{,}\PY{n}{hidden\PYZus{}layer8}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{biases}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
+        	\PY{n}{layer8} \PY{o}{=} \PY{n}{tf}\PY{o}{.}\PY{n}{add}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{matmul}\PY{p}{(}\PY{n}{act\PYZus{}layer7}\PY{p}{,}\PY{n}{hidden\PYZus{}layer8}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{weights}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}\PY{p}{,}
+                            \PY{n}{hidden\PYZus{}layer8}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{biases}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
         	\PY{n}{act\PYZus{}layer8} \PY{o}{=} \PY{n}{tf}\PY{o}{.}\PY{n}{nn}\PY{o}{.}\PY{n}{relu}\PY{p}{(}\PY{n}{layer8}\PY{p}{)}
         
         
-        	\PY{n}{model\PYZus{}1} \PY{o}{=} \PY{n}{tf}\PY{o}{.}\PY{n}{matmul}\PY{p}{(}\PY{n}{act\PYZus{}layer1}\PY{p}{,}\PY{n}{output\PYZus{}layer1}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{weights}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}\PY{o}{+}\PY{n}{output\PYZus{}layer1}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{biases}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+        	\PY{n}{model\PYZus{}1} \PY{o}{=} \PY{n}{tf}\PY{o}{.}\PY{n}{matmul}\PY{p}{(}\PY{n}{act\PYZus{}layer1}\PY{p}{,}\PY{n}{output\PYZus{}layer1}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{weights}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}\PY{o}{+}
+            \PY{n}{output\PYZus{}layer1}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{biases}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
         
-        	\PY{n}{model\PYZus{}2} \PY{o}{=} \PY{n}{tf}\PY{o}{.}\PY{n}{matmul}\PY{p}{(}\PY{n}{act\PYZus{}layer2}\PY{p}{,}\PY{n}{output\PYZus{}layer2}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{weights}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}\PY{o}{+}\PY{n}{output\PYZus{}layer2}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{biases}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+        	\PY{n}{model\PYZus{}2} \PY{o}{=} \PY{n}{tf}\PY{o}{.}\PY{n}{matmul}\PY{p}{(}\PY{n}{act\PYZus{}layer2}\PY{p}{,}\PY{n}{output\PYZus{}layer2}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{weights}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}\PY{o}{+}
+            \PY{n}{output\PYZus{}layer2}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{biases}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
         
-        	\PY{n}{model\PYZus{}8} \PY{o}{=} \PY{n}{tf}\PY{o}{.}\PY{n}{matmul}\PY{p}{(}\PY{n}{act\PYZus{}layer8}\PY{p}{,}\PY{n}{output\PYZus{}layer8}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{weights}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}\PY{o}{+}\PY{n}{output\PYZus{}layer8}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{biases}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+        	\PY{n}{model\PYZus{}8} \PY{o}{=} \PY{n}{tf}\PY{o}{.}\PY{n}{matmul}\PY{p}{(}\PY{n}{act\PYZus{}layer8}\PY{p}{,}\PY{n}{output\PYZus{}layer8}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{weights}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}\PY{o}{+}
+            \PY{n}{output\PYZus{}layer8}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{biases}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
         
         
         	\PY{k}{return} \PY{n}{model\PYZus{}1}\PY{p}{,}\PY{n}{model\PYZus{}2}\PY{p}{,}\PY{n}{model\PYZus{}8}
@@ -544,13 +574,16 @@ function. So the results are comparable and meaningful.
         
         	\PY{n}{prep\PYZus{}model1}\PY{p}{,}\PY{n}{prep\PYZus{}model2}\PY{p}{,}\PY{n}{prep\PYZus{}model8}\PY{o}{=}\PY{n}{deep\PYZus{}neural\PYZus{}network}\PY{p}{(}\PY{n}{models}\PY{p}{)}
         
-        	\PY{n}{cost1}\PY{o}{=}\PY{n}{tf}\PY{o}{.}\PY{n}{reduce\PYZus{}mean}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{nn}\PY{o}{.}\PY{n}{softmax\PYZus{}cross\PYZus{}entropy\PYZus{}with\PYZus{}logits}\PY{p}{(}\PY{n}{logits}\PY{o}{=}\PY{n}{prep\PYZus{}model1}\PY{p}{,} \PY{n}{labels}\PY{o}{=}\PY{n}{label}\PY{p}{)}\PY{p}{)}
+        	\PY{n}{cost1}\PY{o}{=}\PY{n}{tf}\PY{o}{.}\PY{n}{reduce\PYZus{}mean}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{nn}\PY{o}{.}\PY{n}{softmax\PYZus{}cross\PYZus{}entropy\PYZus{}with\PYZus{}logits}
+                                 \PY{p}{(}\PY{n}{logits}\PY{o}{=}\PY{n}{prep\PYZus{}model1}\PY{p}{,} \PY{n}{labels}\PY{o}{=}\PY{n}{label}\PY{p}{)}\PY{p}{)}
         	\PY{n}{opitimizer1}\PY{o}{=}\PY{n}{tf}\PY{o}{.}\PY{n}{train}\PY{o}{.}\PY{n}{AdamOptimizer}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{minimize}\PY{p}{(}\PY{n}{cost1}\PY{p}{)}
         
-        	\PY{n}{cost2}\PY{o}{=}\PY{n}{tf}\PY{o}{.}\PY{n}{reduce\PYZus{}mean}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{nn}\PY{o}{.}\PY{n}{softmax\PYZus{}cross\PYZus{}entropy\PYZus{}with\PYZus{}logits}\PY{p}{(}\PY{n}{logits}\PY{o}{=}\PY{n}{prep\PYZus{}model2}\PY{p}{,} \PY{n}{labels}\PY{o}{=}\PY{n}{label}\PY{p}{)}\PY{p}{)}
+        	\PY{n}{cost2}\PY{o}{=}\PY{n}{tf}\PY{o}{.}\PY{n}{reduce\PYZus{}mean}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{nn}\PY{o}{.}\PY{n}{softmax\PYZus{}cross\PYZus{}entropy\PYZus{}with\PYZus{}logits}
+                                 \PY{p}{(}\PY{n}{logits}\PY{o}{=}\PY{n}{prep\PYZus{}model2}\PY{p}{,} \PY{n}{labels}\PY{o}{=}\PY{n}{label}\PY{p}{)}\PY{p}{)}
         	\PY{n}{opitimizer2}\PY{o}{=}\PY{n}{tf}\PY{o}{.}\PY{n}{train}\PY{o}{.}\PY{n}{AdamOptimizer}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{minimize}\PY{p}{(}\PY{n}{cost2}\PY{p}{)}
         
-        	\PY{n}{cost8}\PY{o}{=}\PY{n}{tf}\PY{o}{.}\PY{n}{reduce\PYZus{}mean}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{nn}\PY{o}{.}\PY{n}{softmax\PYZus{}cross\PYZus{}entropy\PYZus{}with\PYZus{}logits}\PY{p}{(}\PY{n}{logits}\PY{o}{=}\PY{n}{prep\PYZus{}model8}\PY{p}{,} \PY{n}{labels}\PY{o}{=}\PY{n}{label}\PY{p}{)}\PY{p}{)}
+        	\PY{n}{cost8}\PY{o}{=}\PY{n}{tf}\PY{o}{.}\PY{n}{reduce\PYZus{}mean}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{nn}\PY{o}{.}\PY{n}{softmax\PYZus{}cross\PYZus{}entropy\PYZus{}with\PYZus{}logits}
+                                 \PY{p}{(}\PY{n}{logits}\PY{o}{=}\PY{n}{prep\PYZus{}model8}\PY{p}{,} \PY{n}{labels}\PY{o}{=}\PY{n}{label}\PY{p}{)}\PY{p}{)}
         	\PY{n}{opitimizer8}\PY{o}{=}\PY{n}{tf}\PY{o}{.}\PY{n}{train}\PY{o}{.}\PY{n}{AdamOptimizer}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{minimize}\PY{p}{(}\PY{n}{cost8}\PY{p}{)}
         
         	\PY{n}{step\PYZus{}epochs}\PY{o}{=}\PY{l+m+mi}{10}
@@ -563,12 +596,14 @@ function. So the results are comparable and meaningful.
         			\PY{n}{Loss}\PY{o}{=}\PY{l+m+mi}{0}
         			\PY{k}{for} \PY{n}{\PYZus{}} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n+nb}{int}\PY{p}{(}\PY{n}{mnist}\PY{o}{.}\PY{n}{train}\PY{o}{.}\PY{n}{num\PYZus{}examples}\PY{o}{/}\PY{n}{n\PYZus{}each\PYZus{}group}\PY{p}{)}\PY{p}{)}\PY{p}{:}
         				\PY{n}{epoch\PYZus{}x}\PY{p}{,}\PY{n}{epoch\PYZus{}y} \PY{o}{=} \PY{n}{mnist}\PY{o}{.}\PY{n}{train}\PY{o}{.}\PY{n}{next\PYZus{}batch}\PY{p}{(}\PY{n}{n\PYZus{}each\PYZus{}group}\PY{p}{)}
-        				\PY{n}{\PYZus{}}\PY{p}{,}\PY{n}{loss} \PY{o}{=} \PY{n}{sess}\PY{o}{.}\PY{n}{run}\PY{p}{(}\PY{p}{[}\PY{n}{opitimizer1}\PY{p}{,}\PY{n}{cost1}\PY{p}{]}\PY{p}{,}\PY{n}{feed\PYZus{}dict}\PY{o}{=}\PY{p}{\PYZob{}}\PY{n}{models}\PY{p}{:}\PY{n}{epoch\PYZus{}x}\PY{p}{,}\PY{n}{label}\PY{p}{:}\PY{n}{epoch\PYZus{}y}\PY{p}{\PYZcb{}}\PY{p}{)}
+        				\PY{n}{\PYZus{}}\PY{p}{,}\PY{n}{loss} \PY{o}{=} \PY{n}{sess}\PY{o}{.}\PY{n}{run}\PY{p}{(}\PY{p}{[}\PY{n}{opitimizer1}\PY{p}{,}\PY{n}{cost1}\PY{p}{]}\PY{p}{,}
+                                          \PY{n}{feed\PYZus{}dict}\PY{o}{=}\PY{p}{\PYZob{}}\PY{n}{models}\PY{p}{:}\PY{n}{epoch\PYZus{}x}\PY{p}{,}\PY{n}{label}\PY{p}{:}\PY{n}{epoch\PYZus{}y}\PY{p}{\PYZcb{}}\PY{p}{)}
         				\PY{n}{Loss}\PY{o}{+}\PY{o}{=}\PY{n}{loss}
         
         		\PY{n}{correct1}\PY{o}{=}\PY{n}{tf}\PY{o}{.}\PY{n}{equal}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{argmax}\PY{p}{(}\PY{n}{prep\PYZus{}model1}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{,}\PY{n}{tf}\PY{o}{.}\PY{n}{argmax}\PY{p}{(}\PY{n}{label}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{)}
         		\PY{n}{accuracy1}\PY{o}{=}\PY{n}{tf}\PY{o}{.}\PY{n}{reduce\PYZus{}mean}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{cast}\PY{p}{(}\PY{n}{correct1}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{float}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{)}
-        		\PY{k}{print} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{baseline accuracy:}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{accuracy1}\PY{o}{.}\PY{n}{eval}\PY{p}{(}\PY{p}{\PYZob{}}\PY{n}{models}\PY{p}{:}\PY{n}{mnist}\PY{o}{.}\PY{n}{test}\PY{o}{.}\PY{n}{images}\PY{p}{,}\PY{n}{label}\PY{p}{:}\PY{n}{mnist}\PY{o}{.}\PY{n}{test}\PY{o}{.}\PY{n}{labels}\PY{p}{\PYZcb{}}\PY{p}{)}
+        		\PY{k}{print} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{baseline accuracy:}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}
+                \PY{n}{accuracy1}\PY{o}{.}\PY{n}{eval}\PY{p}{(}\PY{p}{\PYZob{}}\PY{n}{models}\PY{p}{:}\PY{n}{mnist}\PY{o}{.}\PY{n}{test}\PY{o}{.}\PY{n}{images}\PY{p}{,}\PY{n}{label}\PY{p}{:}\PY{n}{mnist}\PY{o}{.}\PY{n}{test}\PY{o}{.}\PY{n}{labels}\PY{p}{\PYZcb{}}\PY{p}{)}
         
         
         		\PY{c+c1}{\PYZsh{} 2 layes}
@@ -576,12 +611,14 @@ function. So the results are comparable and meaningful.
         			\PY{n}{Loss}\PY{o}{=}\PY{l+m+mi}{0}
         			\PY{k}{for} \PY{n}{\PYZus{}} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n+nb}{int}\PY{p}{(}\PY{n}{mnist}\PY{o}{.}\PY{n}{train}\PY{o}{.}\PY{n}{num\PYZus{}examples}\PY{o}{/}\PY{n}{n\PYZus{}each\PYZus{}group}\PY{p}{)}\PY{p}{)}\PY{p}{:}
         				\PY{n}{epoch\PYZus{}x}\PY{p}{,}\PY{n}{epoch\PYZus{}y} \PY{o}{=} \PY{n}{mnist}\PY{o}{.}\PY{n}{train}\PY{o}{.}\PY{n}{next\PYZus{}batch}\PY{p}{(}\PY{n}{n\PYZus{}each\PYZus{}group}\PY{p}{)}
-        				\PY{n}{\PYZus{}}\PY{p}{,}\PY{n}{loss} \PY{o}{=} \PY{n}{sess}\PY{o}{.}\PY{n}{run}\PY{p}{(}\PY{p}{[}\PY{n}{opitimizer2}\PY{p}{,}\PY{n}{cost2}\PY{p}{]}\PY{p}{,}\PY{n}{feed\PYZus{}dict}\PY{o}{=}\PY{p}{\PYZob{}}\PY{n}{models}\PY{p}{:}\PY{n}{epoch\PYZus{}x}\PY{p}{,}\PY{n}{label}\PY{p}{:}\PY{n}{epoch\PYZus{}y}\PY{p}{\PYZcb{}}\PY{p}{)}
+        				\PY{n}{\PYZus{}}\PY{p}{,}\PY{n}{loss} \PY{o}{=} \PY{n}{sess}\PY{o}{.}\PY{n}{run}\PY{p}{(}\PY{p}{[}\PY{n}{opitimizer2}\PY{p}{,}\PY{n}{cost2}\PY{p}{]}\PY{p}{,}
+                                          \PY{n}{feed\PYZus{}dict}\PY{o}{=}\PY{p}{\PYZob{}}\PY{n}{models}\PY{p}{:}\PY{n}{epoch\PYZus{}x}\PY{p}{,}\PY{n}{label}\PY{p}{:}\PY{n}{epoch\PYZus{}y}\PY{p}{\PYZcb{}}\PY{p}{)}
         				\PY{n}{Loss}\PY{o}{+}\PY{o}{=}\PY{n}{loss}
         
         		\PY{n}{correct2}\PY{o}{=}\PY{n}{tf}\PY{o}{.}\PY{n}{equal}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{argmax}\PY{p}{(}\PY{n}{prep\PYZus{}model2}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{,}\PY{n}{tf}\PY{o}{.}\PY{n}{argmax}\PY{p}{(}\PY{n}{label}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{)}
         		\PY{n}{accuracy2}\PY{o}{=}\PY{n}{tf}\PY{o}{.}\PY{n}{reduce\PYZus{}mean}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{cast}\PY{p}{(}\PY{n}{correct2}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{float}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{)}
-        		\PY{k}{print} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{2 layers accuracy:}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{accuracy2}\PY{o}{.}\PY{n}{eval}\PY{p}{(}\PY{p}{\PYZob{}}\PY{n}{models}\PY{p}{:}\PY{n}{mnist}\PY{o}{.}\PY{n}{test}\PY{o}{.}\PY{n}{images}\PY{p}{,}\PY{n}{label}\PY{p}{:}\PY{n}{mnist}\PY{o}{.}\PY{n}{test}\PY{o}{.}\PY{n}{labels}\PY{p}{\PYZcb{}}\PY{p}{)}
+        		\PY{k}{print} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{2 layers accuracy:}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}
+                \PY{n}{accuracy2}\PY{o}{.}\PY{n}{eval}\PY{p}{(}\PY{p}{\PYZob{}}\PY{n}{models}\PY{p}{:}\PY{n}{mnist}\PY{o}{.}\PY{n}{test}\PY{o}{.}\PY{n}{images}\PY{p}{,}\PY{n}{label}\PY{p}{:}\PY{n}{mnist}\PY{o}{.}\PY{n}{test}\PY{o}{.}\PY{n}{labels}\PY{p}{\PYZcb{}}\PY{p}{)}
         
         
         		\PY{c+c1}{\PYZsh{} 8 layers}
@@ -589,13 +626,16 @@ function. So the results are comparable and meaningful.
         			\PY{n}{Loss}\PY{o}{=}\PY{l+m+mi}{0}
         			\PY{k}{for} \PY{n}{\PYZus{}} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n+nb}{int}\PY{p}{(}\PY{n}{mnist}\PY{o}{.}\PY{n}{train}\PY{o}{.}\PY{n}{num\PYZus{}examples}\PY{o}{/}\PY{n}{n\PYZus{}each\PYZus{}group}\PY{p}{)}\PY{p}{)}\PY{p}{:}
         				\PY{n}{epoch\PYZus{}x}\PY{p}{,}\PY{n}{epoch\PYZus{}y} \PY{o}{=} \PY{n}{mnist}\PY{o}{.}\PY{n}{train}\PY{o}{.}\PY{n}{next\PYZus{}batch}\PY{p}{(}\PY{n}{n\PYZus{}each\PYZus{}group}\PY{p}{)}
-        				\PY{n}{\PYZus{}}\PY{p}{,}\PY{n}{loss} \PY{o}{=} \PY{n}{sess}\PY{o}{.}\PY{n}{run}\PY{p}{(}\PY{p}{[}\PY{n}{opitimizer8}\PY{p}{,}\PY{n}{cost8}\PY{p}{]}\PY{p}{,}\PY{n}{feed\PYZus{}dict}\PY{o}{=}\PY{p}{\PYZob{}}\PY{n}{models}\PY{p}{:}\PY{n}{epoch\PYZus{}x}\PY{p}{,}\PY{n}{label}\PY{p}{:}\PY{n}{epoch\PYZus{}y}\PY{p}{\PYZcb{}}\PY{p}{)}
+        				\PY{n}{\PYZus{}}\PY{p}{,}\PY{n}{loss} \PY{o}{=} \PY{n}{sess}\PY{o}{.}\PY{n}{run}\PY{p}{(}\PY{p}{[}\PY{n}{opitimizer8}\PY{p}{,}\PY{n}{cost8}\PY{p}{]}\PY{p}{,}
+                                          \PY{n}{feed\PYZus{}dict}\PY{o}{=}\PY{p}{\PYZob{}}\PY{n}{models}\PY{p}{:}\PY{n}{epoch\PYZus{}x}\PY{p}{,}\PY{n}{label}\PY{p}{:}\PY{n}{epoch\PYZus{}y}\PY{p}{\PYZcb{}}\PY{p}{)}
         				\PY{n}{Loss}\PY{o}{+}\PY{o}{=}\PY{n}{loss}
-        			\PY{k}{print} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Step}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{epoch}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{is completed out of}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{step\PYZus{}epochs}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{. Loss is }\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{Loss}
+        			\PY{k}{print} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Step}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{epoch}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{is completed out of}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{step\PYZus{}epochs}\PY{p}{,}
+                    \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{. Loss is }\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{Loss}
         
         		\PY{n}{correct8}\PY{o}{=}\PY{n}{tf}\PY{o}{.}\PY{n}{equal}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{argmax}\PY{p}{(}\PY{n}{prep\PYZus{}model8}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{,}\PY{n}{tf}\PY{o}{.}\PY{n}{argmax}\PY{p}{(}\PY{n}{label}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{)}
         		\PY{n}{accuracy8}\PY{o}{=}\PY{n}{tf}\PY{o}{.}\PY{n}{reduce\PYZus{}mean}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{cast}\PY{p}{(}\PY{n}{correct8}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{float}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{)}
-        		\PY{k}{print} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{8 layers accuracy:}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{accuracy8}\PY{o}{.}\PY{n}{eval}\PY{p}{(}\PY{p}{\PYZob{}}\PY{n}{models}\PY{p}{:}\PY{n}{mnist}\PY{o}{.}\PY{n}{test}\PY{o}{.}\PY{n}{images}\PY{p}{,}\PY{n}{label}\PY{p}{:}\PY{n}{mnist}\PY{o}{.}\PY{n}{test}\PY{o}{.}\PY{n}{labels}\PY{p}{\PYZcb{}}\PY{p}{)}
+        		\PY{k}{print} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{8 layers accuracy:}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}
+                \PY{n}{accuracy8}\PY{o}{.}\PY{n}{eval}\PY{p}{(}\PY{p}{\PYZob{}}\PY{n}{models}\PY{p}{:}\PY{n}{mnist}\PY{o}{.}\PY{n}{test}\PY{o}{.}\PY{n}{images}\PY{p}{,}\PY{n}{label}\PY{p}{:}\PY{n}{mnist}\PY{o}{.}\PY{n}{test}\PY{o}{.}\PY{n}{labels}\PY{p}{\PYZcb{}}\PY{p}{)}
 \end{Verbatim}
 
 
@@ -657,18 +697,26 @@ to get the model. The basic computational idea is still:
     \begin{Verbatim}[commandchars=\\\{\}]
 {\color{incolor}In [{\color{incolor}10}]:} \PY{k}{def} \PY{n+nf}{convolutional\PYZus{}neural\PYZus{}network}\PY{p}{(}\PY{n}{data}\PY{p}{)}\PY{p}{:}
          
-         	\PY{n}{weights}\PY{o}{=}\PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{W\PYZus{}conv1}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{tf}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{random\PYZus{}normal}\PY{p}{(}\PY{p}{[}\PY{l+m+mi}{5}\PY{p}{,}\PY{l+m+mi}{5}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{32}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{W\PYZus{}conv2}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{tf}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{random\PYZus{}normal}\PY{p}{(}\PY{p}{[}\PY{l+m+mi}{5}\PY{p}{,}\PY{l+m+mi}{5}\PY{p}{,}\PY{l+m+mi}{32}\PY{p}{,}\PY{l+m+mi}{64}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{,}
-         	         \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{W\PYZus{}fc}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{tf}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{random\PYZus{}normal}\PY{p}{(}\PY{p}{[}\PY{l+m+mi}{7}\PY{o}{*}\PY{l+m+mi}{7}\PY{o}{*}\PY{l+m+mi}{64}\PY{p}{,}\PY{l+m+mi}{1024}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{out}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{tf}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{random\PYZus{}normal}\PY{p}{(}\PY{p}{[}\PY{l+m+mi}{1024}\PY{p}{,}\PY{n}{n\PYZus{}classes}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{\PYZcb{}}
-         	\PY{n}{biases}\PY{o}{=}\PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{b\PYZus{}conv1}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{tf}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{random\PYZus{}normal}\PY{p}{(}\PY{p}{[}\PY{l+m+mi}{32}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{b\PYZus{}conv2}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{tf}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{random\PYZus{}normal}\PY{p}{(}\PY{p}{[}\PY{l+m+mi}{64}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{,}
-         	         \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{b\PYZus{}fc}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{tf}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{random\PYZus{}normal}\PY{p}{(}\PY{p}{[}\PY{l+m+mi}{1024}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{out}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{tf}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{random\PYZus{}normal}\PY{p}{(}\PY{p}{[}\PY{n}{n\PYZus{}classes}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{\PYZcb{}}
+         	\PY{n}{weights}\PY{o}{=}\PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{W\PYZus{}conv1}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{tf}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{random\PYZus{}normal}\PY{p}{(}\PY{p}{[}\PY{l+m+mi}{5}\PY{p}{,}\PY{l+m+mi}{5}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{32}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{,}
+                      \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{W\PYZus{}conv2}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{tf}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{random\PYZus{}normal}\PY{p}{(}\PY{p}{[}\PY{l+m+mi}{5}\PY{p}{,}\PY{l+m+mi}{5}\PY{p}{,}\PY{l+m+mi}{32}\PY{p}{,}\PY{l+m+mi}{64}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{,}
+         	         \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{W\PYZus{}fc}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{tf}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{random\PYZus{}normal}\PY{p}{(}\PY{p}{[}\PY{l+m+mi}{7}\PY{o}{*}\PY{l+m+mi}{7}\PY{o}{*}\PY{l+m+mi}{64}\PY{p}{,}\PY{l+m+mi}{1024}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{,}
+                      \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{out}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{tf}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{random\PYZus{}normal}\PY{p}{(}\PY{p}{[}\PY{l+m+mi}{1024}\PY{p}{,}\PY{n}{n\PYZus{}classes}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{\PYZcb{}}
+         	\PY{n}{biases}\PY{o}{=}\PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{b\PYZus{}conv1}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{tf}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{random\PYZus{}normal}\PY{p}{(}\PY{p}{[}\PY{l+m+mi}{32}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{,}
+                     \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{b\PYZus{}conv2}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{tf}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{random\PYZus{}normal}\PY{p}{(}\PY{p}{[}\PY{l+m+mi}{64}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{,}
+         	         \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{b\PYZus{}fc}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{tf}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{random\PYZus{}normal}\PY{p}{(}\PY{p}{[}\PY{l+m+mi}{1024}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{,}
+                     \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{out}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{tf}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{random\PYZus{}normal}\PY{p}{(}\PY{p}{[}\PY{n}{n\PYZus{}classes}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{\PYZcb{}}
          
          	\PY{n}{data}\PY{o}{=}\PY{n}{tf}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{n}{data}\PY{p}{,}\PY{n}{shape}\PY{o}{=}\PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{28}\PY{p}{,}\PY{l+m+mi}{28}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}
          
-         	\PY{n}{conv1}\PY{o}{=}\PY{n}{tf}\PY{o}{.}\PY{n}{nn}\PY{o}{.}\PY{n}{conv2d}\PY{p}{(}\PY{n}{data}\PY{p}{,}\PY{n}{weights}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{W\PYZus{}conv1}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,}\PY{n}{strides}\PY{o}{=}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,}\PY{n}{padding}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{SAME}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
-         	\PY{n}{conv1}\PY{o}{=}\PY{n}{tf}\PY{o}{.}\PY{n}{nn}\PY{o}{.}\PY{n}{max\PYZus{}pool}\PY{p}{(}\PY{n}{conv1}\PY{p}{,}\PY{n}{ksize}\PY{o}{=}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,}\PY{n}{strides}\PY{o}{=}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,}\PY{n}{padding}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{SAME}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+         	\PY{n}{conv1}\PY{o}{=}\PY{n}{tf}\PY{o}{.}\PY{n}{nn}\PY{o}{.}\PY{n}{conv2d}\PY{p}{(}\PY{n}{data}\PY{p}{,}\PY{n}{weights}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{W\PYZus{}conv1}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,}
+                                \PY{n}{strides}\PY{o}{=}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,}\PY{n}{padding}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{SAME}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+         	\PY{n}{conv1}\PY{o}{=}\PY{n}{tf}\PY{o}{.}\PY{n}{nn}\PY{o}{.}\PY{n}{max\PYZus{}pool}\PY{p}{(}\PY{n}{conv1}\PY{p}{,}\PY{n}{ksize}\PY{o}{=}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,}
+                                  \PY{n}{strides}\PY{o}{=}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,}\PY{n}{padding}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{SAME}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
          
-         	\PY{n}{conv2}\PY{o}{=}\PY{n}{tf}\PY{o}{.}\PY{n}{nn}\PY{o}{.}\PY{n}{conv2d}\PY{p}{(}\PY{n}{conv1}\PY{p}{,}\PY{n}{weights}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{W\PYZus{}conv2}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,}\PY{n}{strides}\PY{o}{=}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,}\PY{n}{padding}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{SAME}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
-         	\PY{n}{conv2}\PY{o}{=}\PY{n}{tf}\PY{o}{.}\PY{n}{nn}\PY{o}{.}\PY{n}{max\PYZus{}pool}\PY{p}{(}\PY{n}{conv2}\PY{p}{,}\PY{n}{ksize}\PY{o}{=}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,}\PY{n}{strides}\PY{o}{=}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,}\PY{n}{padding}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{SAME}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+         	\PY{n}{conv2}\PY{o}{=}\PY{n}{tf}\PY{o}{.}\PY{n}{nn}\PY{o}{.}\PY{n}{conv2d}\PY{p}{(}\PY{n}{conv1}\PY{p}{,}\PY{n}{weights}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{W\PYZus{}conv2}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,}
+                                \PY{n}{strides}\PY{o}{=}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,}\PY{n}{padding}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{SAME}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+         	\PY{n}{conv2}\PY{o}{=}\PY{n}{tf}\PY{o}{.}\PY{n}{nn}\PY{o}{.}\PY{n}{max\PYZus{}pool}\PY{p}{(}\PY{n}{conv2}\PY{p}{,}\PY{n}{ksize}\PY{o}{=}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,}
+                                  \PY{n}{strides}\PY{o}{=}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,}\PY{n}{padding}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{SAME}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
          
          	\PY{n}{fc}\PY{o}{=}\PY{n}{tf}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{n}{conv2}\PY{p}{,}\PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{7}\PY{o}{*}\PY{l+m+mi}{7}\PY{o}{*}\PY{l+m+mi}{64}\PY{p}{]}\PY{p}{)}
          	\PY{n}{fc}\PY{o}{=}\PY{n}{tf}\PY{o}{.}\PY{n}{nn}\PY{o}{.}\PY{n}{relu}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{matmul}\PY{p}{(}\PY{n}{fc}\PY{p}{,}\PY{n}{weights}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{W\PYZus{}fc}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}\PY{o}{+}\PY{n}{biases}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{b\PYZus{}fc}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
@@ -687,7 +735,8 @@ except for calling the CNN model.
 {\color{incolor}In [{\color{incolor}11}]:} \PY{k}{def} \PY{n+nf}{train\PYZus{}CNN}\PY{p}{(}\PY{n}{models}\PY{p}{)}\PY{p}{:}
          
          	\PY{n}{prep\PYZus{}model}\PY{o}{=}\PY{n}{convolutional\PYZus{}neural\PYZus{}network}\PY{p}{(}\PY{n}{models}\PY{p}{)}
-         	\PY{n}{cost}\PY{o}{=}\PY{n}{tf}\PY{o}{.}\PY{n}{reduce\PYZus{}mean}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{nn}\PY{o}{.}\PY{n}{softmax\PYZus{}cross\PYZus{}entropy\PYZus{}with\PYZus{}logits}\PY{p}{(}\PY{n}{logits}\PY{o}{=}\PY{n}{prep\PYZus{}model}\PY{p}{,} \PY{n}{labels}\PY{o}{=}\PY{n}{label}\PY{p}{)}\PY{p}{)}
+         	\PY{n}{cost}\PY{o}{=}\PY{n}{tf}\PY{o}{.}\PY{n}{reduce\PYZus{}mean}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{nn}\PY{o}{.}\PY{n}{softmax\PYZus{}cross\PYZus{}entropy\PYZus{}with\PYZus{}logits}
+                                 \PY{p}{(}\PY{n}{logits}\PY{o}{=}\PY{n}{prep\PYZus{}model}\PY{p}{,} \PY{n}{labels}\PY{o}{=}\PY{n}{label}\PY{p}{)}\PY{p}{)}
          	\PY{n}{opitimizer}\PY{o}{=}\PY{n}{tf}\PY{o}{.}\PY{n}{train}\PY{o}{.}\PY{n}{AdamOptimizer}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{minimize}\PY{p}{(}\PY{n}{cost}\PY{p}{)}
          
          	\PY{n}{step\PYZus{}epochs}\PY{o}{=}\PY{l+m+mi}{10}
@@ -699,13 +748,16 @@ except for calling the CNN model.
          			\PY{n}{Loss}\PY{o}{=}\PY{l+m+mi}{0}
          			\PY{k}{for} \PY{n}{\PYZus{}} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n+nb}{int}\PY{p}{(}\PY{n}{mnist}\PY{o}{.}\PY{n}{train}\PY{o}{.}\PY{n}{num\PYZus{}examples}\PY{o}{/}\PY{n}{n\PYZus{}each\PYZus{}group}\PY{p}{)}\PY{p}{)}\PY{p}{:}
          				\PY{n}{epoch\PYZus{}x}\PY{p}{,}\PY{n}{epoch\PYZus{}y} \PY{o}{=} \PY{n}{mnist}\PY{o}{.}\PY{n}{train}\PY{o}{.}\PY{n}{next\PYZus{}batch}\PY{p}{(}\PY{n}{n\PYZus{}each\PYZus{}group}\PY{p}{)}
-         				\PY{n}{\PYZus{}}\PY{p}{,}\PY{n}{loss} \PY{o}{=} \PY{n}{sess}\PY{o}{.}\PY{n}{run}\PY{p}{(}\PY{p}{[}\PY{n}{opitimizer}\PY{p}{,}\PY{n}{cost}\PY{p}{]}\PY{p}{,}\PY{n}{feed\PYZus{}dict}\PY{o}{=}\PY{p}{\PYZob{}}\PY{n}{models}\PY{p}{:}\PY{n}{epoch\PYZus{}x}\PY{p}{,}\PY{n}{label}\PY{p}{:}\PY{n}{epoch\PYZus{}y}\PY{p}{\PYZcb{}}\PY{p}{)}
+         				\PY{n}{\PYZus{}}\PY{p}{,}\PY{n}{loss} \PY{o}{=} \PY{n}{sess}\PY{o}{.}\PY{n}{run}\PY{p}{(}\PY{p}{[}\PY{n}{opitimizer}\PY{p}{,}\PY{n}{cost}\PY{p}{]}\PY{p}{,}
+                                           \PY{n}{feed\PYZus{}dict}\PY{o}{=}\PY{p}{\PYZob{}}\PY{n}{models}\PY{p}{:}\PY{n}{epoch\PYZus{}x}\PY{p}{,}\PY{n}{label}\PY{p}{:}\PY{n}{epoch\PYZus{}y}\PY{p}{\PYZcb{}}\PY{p}{)}
          				\PY{n}{Loss}\PY{o}{+}\PY{o}{=}\PY{n}{loss}
-         			\PY{k}{print} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Step}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{epoch}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{is completed out of}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{step\PYZus{}epochs}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{. Loss is }\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{Loss}
+         			\PY{k}{print} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Step}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{epoch}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{is completed out of}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{step\PYZus{}epochs}\PY{p}{,} 
+                     \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{. Loss is }\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{Loss}
          
          		\PY{n}{correct}\PY{o}{=}\PY{n}{tf}\PY{o}{.}\PY{n}{equal}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{argmax}\PY{p}{(}\PY{n}{prep\PYZus{}model}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{,}\PY{n}{tf}\PY{o}{.}\PY{n}{argmax}\PY{p}{(}\PY{n}{label}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{)}
          		\PY{n}{accuracy}\PY{o}{=}\PY{n}{tf}\PY{o}{.}\PY{n}{reduce\PYZus{}mean}\PY{p}{(}\PY{n}{tf}\PY{o}{.}\PY{n}{cast}\PY{p}{(}\PY{n}{correct}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{float}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{)}
-         		\PY{k}{print} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{CNN accuracy:}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{accuracy}\PY{o}{.}\PY{n}{eval}\PY{p}{(}\PY{p}{\PYZob{}}\PY{n}{models}\PY{p}{:}\PY{n}{mnist}\PY{o}{.}\PY{n}{test}\PY{o}{.}\PY{n}{images}\PY{p}{,}\PY{n}{label}\PY{p}{:}\PY{n}{mnist}\PY{o}{.}\PY{n}{test}\PY{o}{.}\PY{n}{labels}\PY{p}{\PYZcb{}}\PY{p}{)}
+         		\PY{k}{print} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{CNN accuracy:}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}
+                 \PY{n}{accuracy}\PY{o}{.}\PY{n}{eval}\PY{p}{(}\PY{p}{\PYZob{}}\PY{n}{models}\PY{p}{:}\PY{n}{mnist}\PY{o}{.}\PY{n}{test}\PY{o}{.}\PY{n}{images}\PY{p}{,}\PY{n}{label}\PY{p}{:}\PY{n}{mnist}\PY{o}{.}\PY{n}{test}\PY{o}{.}\PY{n}{labels}\PY{p}{\PYZcb{}}\PY{p}{)}
 \end{Verbatim}
 
 
