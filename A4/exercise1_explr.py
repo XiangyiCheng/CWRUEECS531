@@ -2,6 +2,7 @@ from scipy.signal import correlate2d
 import numpy as np
 import matplotlib.pyplot as plt
 from skimage import io
+from scipy.fftpack import dct,idct
 
 seq1 = {'I1': io.imread('data/image/seq1/frame1.png', as_grey=True), 
         'I2': io.imread('data/image/seq1/frame3.png', as_grey=True),
@@ -14,6 +15,11 @@ rubic = {'I1':io.imread('data/rubic/rubic.0.png', as_grey=True),
 sphere= {'I1': io.imread('data/sphere/sphere.1.png', as_grey=True), 
          'I2': io.imread('data/sphere/sphere.3.png', as_grey=True)}
 
+def dct2(image):
+    return dct(dct(image.T,norm='ortho').T,norm='ortho')
+
+def idct2(dctmatrix):
+    return idct(idct(dctmatrix.T,norm='ortho').T,norm='ortho')
 
 def correlation_each_grid(I1, I2, x, y, width, region_expand):
     h= I1.shape[0]
@@ -44,12 +50,14 @@ def correlation_each_grid(I1, I2, x, y, width, region_expand):
         p_y_right=x+half_width+1
     else:
         p_y_right=w
+    
 
-    patch = I1[p_x_up:p_x_down, p_y_left:p_y_right]
+    dct_img=dct2(I1)
+    patch = dct_img[p_x_up:p_x_down, p_y_left:p_y_right]
     
     # correlation region
     if y-half_width-region_expand> 0:
-        r_x_up=y-half_width-region_expand
+        r_x_up=y-half_width+region_expand
     else:
         r_x_up=0
 
@@ -59,7 +67,7 @@ def correlation_each_grid(I1, I2, x, y, width, region_expand):
         r_x_down=h
 
     if x-half_width-region_expand > 0:
-        r_y_left = x-half_width-region_expand
+        r_y_left = x-half_width+region_expand
     else:
         r_y_left=0
 
@@ -68,10 +76,14 @@ def correlation_each_grid(I1, I2, x, y, width, region_expand):
     else:
         r_y_right=w
 
-    region = I2[r_x_up:r_x_down, r_y_left:r_y_right]
+    dct_region=dct2(I2)
+    region = dct_region[r_x_up:r_x_down, r_y_left:r_y_right]
     
     # correlation
-    correlation = correlate2d(region, patch, 'valid')
+    #correlation = correlate2d(region, patch, 'valid')
+    correlation=idct(patch*np.conjugate(region))
+
+  
     i, j = np.unravel_index(correlation.argmax(), correlation.shape)
     u = j+r_y_left-p_y_left
     v = i+r_x_up-p_x_up
@@ -93,14 +105,14 @@ def optical_flow_estimation(img_series):
     h_img= img_series['I1'].shape[0]
     w_img= img_series['I1'].shape[1]
 
-    grid_size = 5
+    grid_size = 10
     width  = 5
 
     x = np.arange(0, w_img-grid_size, grid_size) + np.floor(grid_size/2);
     y = np.arange(0, h_img-grid_size, grid_size) + np.floor(grid_size/2);
     x_grid, y_grid = np.meshgrid(x,y);
 
-    region_expand = 10
+    region_expand = 0
 
     h_grid = x_grid.shape[0]
     w_grid = x_grid.shape[1]

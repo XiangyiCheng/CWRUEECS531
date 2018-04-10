@@ -1,20 +1,21 @@
+import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 from skimage import io
 
-seq1 = {'I1': io.imread('data/image/seq1/frame1.png', as_grey=True), 
-        'I2': io.imread('data/image/seq1/frame3.png', as_grey=True),
-        'U' : np.loadtxt('data/flow/seq1/flow3.u', dtype='double', delimiter=','),
-        'V' : np.loadtxt('data/flow/seq1/flow3.v', dtype='double', delimiter=',')}
+rubic_start=cv2.imread('data/rubic/rubic.0.png')
+rubic_end=cv2.imread('data/rubic/rubic.5.png')
 
-rubic = {'I1':io.imread('data/rubic/rubic.0.png', as_grey=True), 
-         'I2':io.imread('data/rubic/rubic.5.png', as_grey=True)}
+# canny edge detector, set different lower and upper thresholds for the detector.
+rubic_s=cv2.Canny(rubic_start,400,400)
+rubic_e=cv2.Canny(rubic_end,400,400)
+cv2.imwrite('rubic_s.png',rubic_s)
+cv2.imwrite('rubic_e.png',rubic_e)
+#cv2.waitKey()
 
-sphere= {'I1': io.imread('data/sphere/sphere.1.png', as_grey=True), 
-         'I2': io.imread('data/sphere/sphere.3.png', as_grey=True)}
+rubic = {'I1':io.imread('rubic_s.png', as_grey=True), 
+         'I2':io.imread('rubic_e.png', as_grey=True)}
 
-
-# I is the image. x_grid, y_grid are the locations of the arrows. U, V are the x, y components of the arrows.
 def quiver_drawing(I, x_grid, y_grid, U, V, scale):
     fig, ax = plt.subplots(figsize=(10, 10), dpi=80)
     ax.imshow(I, cmap='gray')
@@ -115,4 +116,3 @@ def estimate_flow(img_series):
     quiver_drawing(img_series["I1"], x, y, U, V, 5)
 
 estimate_flow(rubic)
-
