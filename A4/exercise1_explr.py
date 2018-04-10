@@ -83,7 +83,7 @@ def correlation_each_grid(I1, I2, x, y, width, region_expand):
     #correlation = correlate2d(region, patch, 'valid')
     correlation=idct(patch*np.conjugate(region))
 
-  
+  optical_flow_estimation(sphere)
     i, j = np.unravel_index(correlation.argmax(), correlation.shape)
     u = j+r_y_left-p_y_left
     v = i+r_x_up-p_x_up
