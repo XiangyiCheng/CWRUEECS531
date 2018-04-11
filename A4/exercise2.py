@@ -104,7 +104,7 @@ def estimate_flow(img_series):
     disy = disy.reshape(width*width, 1)
 
     
-    # get the U,V matrix
+    # get the U,V matrixestimate_flow
     for i in range(0, h_grid):
         for j in range(0, w_grid):
             # x_grid[i,j] is the x coordinate; y_grid[i,j] is the y coordinate.

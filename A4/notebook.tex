@@ -141,7 +141,7 @@
     \def\gt{>}
     \def\lt{<}
     % Document parameters
-    \title{Exercise 1  Correlation Method}
+    \title{Exercise 2  Gradient Method}
     
     
     
@@ -282,67 +282,66 @@
     
     ** Xiangyi Cheng (xxc283)**
 
-    \hypertarget{concepts-and-background}{%
-\section{Concepts and Background}\label{concepts-and-background}}
+    \hypertarget{concepts-and-backgroud}{%
+\section{Concepts and Backgroud}\label{concepts-and-backgroud}}
 
-    This notebook is created for explaining the basic idea of motion
-estimation using correlation method. Motion estimation is the process of
-determining motion vectors that describe the changing from one image to
-another. The usage of motion estimation is highly critical and broad.
-Tracking, detecting and identifying objects, computation of 3D structure
-and position, object and scene segmentation are all the practical
-applications related to motion estimation. Although the need and market
-of the motion estimation is giant, motion estimation is still in
-developing stage and there is no algorithm could ganrantee the high
-accuracy in every motion. The good side is that there are various
-algothrim are come up with by researchers in decades and it remains
-interesting fields for us to dig deeper.
+    This notebook is for explaining the motion estimation with gradient
+method. As discussed in exercise 1, the application of motion estimation
+is broad and useful in reality such as object tracking, detecting, 3D
+reconstruction and etc.. One of the most popular method is called
+gradient-based motion estimation. Unless using a patch and doing
+correlation with the search region, the gadient method is focusing on
+deriving the changing in mathematical approach and set several
+constraints to solve the motion matrix.
 
-There are numerous motion estimation method such as block-matching
-algorithm, phase correlation method, gradient method with solving motion
-gradient constraint equation. This notebook is about to apply the
-block-matching algorithm with correlation to estimate motion in two
-images. The basic idea behind this algothrim is to split the first frame
-into several blocks or grids. Then extract a patch from the previous
-frame and set a larger area near this patch in the next frame called
-search region as shown below. Correlations are calculated in each
-location and check the biggest response in the computation. The maximum
-response may be the same location in the next frame.
-\includegraphics{block_r.png}
+The transformation in two different frames can be described by Talyor
+expanding around the first frame as:
 
-As for correlation, it is a useful concept in statistics. Correlation is
-any of a broad class of statistical relationships and it most often
-refers to how close two variables are to having a linear relationship
-with each other. The population correlation coefficient ρX,Y between two
-random variables X and Y with expected values μX and μY and standard
-deviations σX and σY is defined as: \includegraphics{cor.png}
+\begin{figure}
+\centering
+\includegraphics{eq1_r4.jpg}
+\caption{caption}
+\end{figure}
 
-If a series of n measurements of X and Y are obtained as xi and yi for i
-= 1, 2, \ldots{}, n, then the sample correlation coefficient can be used
-to estimate the population Pearson correlation r between X and Y. The
-sample correlation coefficient is written as: \includegraphics{cor1.png}
+And the derivatives above can be expressed with \(h=1\) into:
+\textbackslash{}begin\{aligned\} I\_x \&=
+\frac{I(x+1, y) - I(x-1, y)}{2} \textbackslash{} I\_y \&=
+\frac{I(x, y+1) - I(x, y-1)}{2} \textbackslash{}
+\textbackslash{}end\{aligned\} \(I_t\) is simplified with only two
+frames as: \[I_t = I(x, t+1) - I(x, t)\]
 
-However, a build-in function to compute the correlation between two
-matrix already exists in python so that the application is easier. With
-the idea above, we can demonstrate the motion estimation in a simple
-example as shown below.
+    This problem therefore becomes a least square problem, we have a
+equation to solve the motion: \includegraphics{eq2_r2.jpg} where
+\includegraphics{eq3_r4.jpg}
+
+    As a Ax=b problem, we can easily solve the motion matrix v using some
+build-in functions in python.
+
+However, this is only the gradient calculation in one grid while
+computation in different grids are needed. Therefore, a function needs
+to be developed to fill all the motion information into the matrices.
+With these matrices, we are able to plot the optical flow.
 
     \hypertarget{implement}{%
 \section{Implement}\label{implement}}
 
-    To estimate the motion with correlation, several libraries are used and
+    The example below demonstrates the gradient method for displaying the
+optical flow field by solving the least square problem with the motion
+gradient constraint equation.
+
+At the first beginning, several libraries which will be used is
 imported.
 
     \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}1}]:} \PY{k+kn}{from} \PY{n+nn}{scipy.signal} \PY{k+kn}{import} \PY{n}{correlate2d}
-        \PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k+kn}{as} \PY{n+nn}{np}
+{\color{incolor}In [{\color{incolor}1}]:} \PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k+kn}{as} \PY{n+nn}{np}
         \PY{k+kn}{import} \PY{n+nn}{matplotlib.pyplot} \PY{k+kn}{as} \PY{n+nn}{plt}
         \PY{k+kn}{from} \PY{n+nn}{skimage} \PY{k+kn}{import} \PY{n}{io}
 \end{Verbatim}
 
 
-    Read the image series into the computer. The first frame is named I1 and
-the next frame is called I2.
+    The image series are read in using io.imread. The first frame is called
+I1 and the next frame is called I2. The motion is about to obtain by
+comparing and calculating based on these two frames.
 
     \begin{Verbatim}[commandchars=\\\{\}]
 {\color{incolor}In [{\color{incolor}2}]:} \PY{n}{seq1} \PY{o}{=} \PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{I1}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{n}{io}\PY{o}{.}\PY{n}{imread}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{data/image/seq1/frame1.png}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{as\PYZus{}grey}\PY{o}{=}\PY{n+nb+bp}{True}\PY{p}{)}\PY{p}{,} 
@@ -358,100 +357,163 @@ the next frame is called I2.
 \end{Verbatim}
 
 
-    Define a function called correlation\_each\_grid() to extract the patch,
-set the search region and calculate the correlation between two frames.
-Firstly, some parameters such as image shape are given to the paramters.
+    \hypertarget{discrete-derivative-components-computation}{%
+\subsection{Discrete Derivative Components
+Computation}\label{discrete-derivative-components-computation}}
 
-Then the patch should be extracted from the first frame which is called
-I1. Some conditions should be satisfied due to the image got the
-boundaries and the patch cannot go beyond these boundaries.
+    The image is seperated into grids and a self-defined function is
+developed to calculate the derivative components, \(I_x\),\(I_y\) and
+\(I_t\), on each grid location based on \textbackslash{}begin\{aligned\}
+I\_x \&= \frac{I(x+1, y) - I(x-1, y)}{2} \textbackslash{} I\_y \&=
+\frac{I(x, y+1) - I(x, y-1)}{2} \textbackslash{}
+\textbackslash{}end\{aligned\} \[I_t = I(x, t+1) - I(x, t)\]
 
-The search region is based on the expand size and the patch with several
-conditions as well.
-
-Finally, the correlation is calculated using correlate2d(region, patch,
-`valid') which is a build-in function for computing the corelation
-between two matrices. The location of the maximum correlation is
-obtained afterwards by np.unravel\_index(correlation.argmax(),
-correlation.shape).
+Several boundary conditions should be satisfied to aviod the value going
+beyond the reality.
 
     \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}7}]:} \PY{k}{def} \PY{n+nf}{correlation\PYZus{}each\PYZus{}grid}\PY{p}{(}\PY{n}{I1}\PY{p}{,} \PY{n}{I2}\PY{p}{,} \PY{n}{x}\PY{p}{,} \PY{n}{y}\PY{p}{,} \PY{n}{width}\PY{p}{,} \PY{n}{region\PYZus{}expand}\PY{p}{)}\PY{p}{:}
-            \PY{n}{h}\PY{o}{=} \PY{n}{I1}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}
-            \PY{n}{w}\PY{o}{=} \PY{n}{I1}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}
+{\color{incolor}In [{\color{incolor}3}]:} \PY{k}{def} \PY{n+nf}{derivative\PYZus{}components}\PY{p}{(}\PY{n}{I1}\PY{p}{,} \PY{n}{I2}\PY{p}{,} \PY{n}{x\PYZus{}grid}\PY{p}{,} \PY{n}{y\PYZus{}grid}\PY{p}{)}\PY{p}{:}
+            \PY{n}{h\PYZus{}img}\PY{o}{=} \PY{n}{I1}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}
+            \PY{n}{w\PYZus{}imd}\PY{o}{=} \PY{n}{I1}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}
+            \PY{n}{x\PYZus{}grid} \PY{o}{=} \PY{n+nb}{int}\PY{p}{(}\PY{n}{x\PYZus{}grid}\PY{p}{)}
+            \PY{n}{y\PYZus{}grid} \PY{o}{=} \PY{n+nb}{int}\PY{p}{(}\PY{n}{y\PYZus{}grid}\PY{p}{)}
         
-            \PY{n}{x} \PY{o}{=} \PY{n+nb}{int}\PY{p}{(}\PY{n}{x}\PY{p}{)}
-            \PY{n}{y} \PY{o}{=} \PY{n+nb}{int}\PY{p}{(}\PY{n}{y}\PY{p}{)}
-        
-            \PY{n}{half\PYZus{}width} \PY{o}{=} \PY{n+nb}{int}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{floor}\PY{p}{(}\PY{n}{width}\PY{o}{/}\PY{l+m+mi}{2}\PY{p}{)}\PY{p}{)}
-            
-            
-        \PY{c+c1}{\PYZsh{} patch construction}
-            \PY{k}{if} \PY{p}{(}\PY{n}{y}\PY{o}{\PYZhy{}}\PY{n}{half\PYZus{}width}\PY{p}{)}\PY{o}{\PYZgt{}} \PY{l+m+mi}{0}\PY{p}{:}
-                \PY{n}{p\PYZus{}x\PYZus{}up}\PY{o}{=}\PY{n}{y}\PY{o}{\PYZhy{}}\PY{n}{half\PYZus{}width}
+            \PY{k}{if} \PY{n}{x\PYZus{}grid}\PY{o}{\PYZgt{}}\PY{l+m+mi}{0} \PY{o+ow}{and} \PY{n}{x\PYZus{}grid}\PY{o}{\PYZlt{}} \PY{p}{(}\PY{n}{w\PYZus{}imd}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{)} \PY{o+ow}{and} \PY{n}{y\PYZus{}grid}\PY{o}{\PYZgt{}}\PY{o}{=}\PY{l+m+mi}{0} \PY{o+ow}{and} \PY{n}{y\PYZus{}grid}\PY{o}{\PYZlt{}}\PY{n}{h\PYZus{}img}\PY{p}{:}
+                \PY{n}{Ix}\PY{o}{=}\PY{p}{(}\PY{n}{I1}\PY{p}{[}\PY{n}{y\PYZus{}grid}\PY{p}{,} \PY{n}{x\PYZus{}grid}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{]} \PY{o}{\PYZhy{}} \PY{n}{I1}\PY{p}{[}\PY{n}{y\PYZus{}grid}\PY{p}{,} \PY{n}{x\PYZus{}grid}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}\PY{o}{/}\PY{l+m+mi}{2}\PY{p}{;}
             \PY{k}{else}\PY{p}{:}
-                \PY{n}{p\PYZus{}x\PYZus{}up}\PY{o}{=}\PY{l+m+mi}{0}
+                \PY{n}{Ix}\PY{o}{=}\PY{l+m+mi}{0}
         
-            \PY{k}{if} \PY{p}{(}\PY{n}{y}\PY{o}{+}\PY{n}{half\PYZus{}width}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{)} \PY{o}{\PYZlt{}} \PY{n}{h}\PY{p}{:}
-                \PY{n}{p\PYZus{}x\PYZus{}down}\PY{o}{=}\PY{n}{y}\PY{o}{+}\PY{n}{half\PYZus{}width}\PY{o}{+}\PY{l+m+mi}{1}
+            \PY{k}{if} \PY{n}{x\PYZus{}grid}\PY{o}{\PYZgt{}}\PY{o}{=}\PY{l+m+mi}{0} \PY{o+ow}{and} \PY{n}{x\PYZus{}grid}\PY{o}{\PYZlt{}}\PY{n}{w\PYZus{}imd} \PY{o+ow}{and} \PY{n}{y\PYZus{}grid}\PY{o}{\PYZgt{}}\PY{l+m+mi}{0} \PY{o+ow}{and} \PY{n}{y\PYZus{}grid}\PY{o}{\PYZlt{}} \PY{p}{(}\PY{n}{h\PYZus{}img}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{:}
+                \PY{n}{Iy}\PY{o}{=}\PY{p}{(}\PY{n}{I1}\PY{p}{[}\PY{n}{y\PYZus{}grid}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{x\PYZus{}grid}\PY{p}{]} \PY{o}{\PYZhy{}} \PY{n}{I1}\PY{p}{[}\PY{n}{y\PYZus{}grid}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{x\PYZus{}grid}\PY{p}{]}\PY{p}{)}\PY{o}{/}\PY{l+m+mi}{2}\PY{p}{;}
             \PY{k}{else}\PY{p}{:}
-                \PY{n}{p\PYZus{}x\PYZus{}down}\PY{o}{=}\PY{n}{h}
+                \PY{n}{Iy}\PY{o}{=}\PY{l+m+mi}{0}
         
-            \PY{k}{if} \PY{p}{(}\PY{n}{x}\PY{o}{\PYZhy{}}\PY{n}{half\PYZus{}width}\PY{p}{)}\PY{o}{\PYZgt{}} \PY{l+m+mi}{0}\PY{p}{:}
-                \PY{n}{p\PYZus{}y\PYZus{}left}\PY{o}{=}\PY{n}{x}\PY{o}{\PYZhy{}}\PY{n}{half\PYZus{}width}
+            \PY{k}{if} \PY{n}{x\PYZus{}grid}\PY{o}{\PYZgt{}}\PY{o}{=}\PY{l+m+mi}{0} \PY{o+ow}{and} \PY{n}{x\PYZus{}grid}\PY{o}{\PYZlt{}}\PY{n}{w\PYZus{}imd} \PY{o+ow}{and} \PY{n}{y\PYZus{}grid}\PY{o}{\PYZgt{}}\PY{o}{=}\PY{l+m+mi}{0} \PY{o+ow}{and} \PY{n}{y\PYZus{}grid}\PY{o}{\PYZlt{}}\PY{n}{h\PYZus{}img}\PY{p}{:}
+                \PY{n}{It}\PY{o}{=}\PY{n}{I2}\PY{p}{[}\PY{n}{y\PYZus{}grid}\PY{p}{,}\PY{n}{x\PYZus{}grid}\PY{p}{]} \PY{o}{\PYZhy{}} \PY{n}{I1}\PY{p}{[}\PY{n}{y\PYZus{}grid}\PY{p}{,}\PY{n}{x\PYZus{}grid}\PY{p}{]}
             \PY{k}{else}\PY{p}{:}
-                \PY{n}{p\PYZus{}y\PYZus{}left}\PY{o}{=}\PY{l+m+mi}{0}
+                \PY{n}{It}\PY{o}{=}\PY{l+m+mi}{0}
         
-            \PY{k}{if} \PY{p}{(}\PY{n}{x}\PY{o}{+}\PY{n}{half\PYZus{}width}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{)} \PY{o}{\PYZlt{}} \PY{n}{w}\PY{p}{:}
-                \PY{n}{p\PYZus{}y\PYZus{}right}\PY{o}{=}\PY{n}{x}\PY{o}{+}\PY{n}{half\PYZus{}width}\PY{o}{+}\PY{l+m+mi}{1}
-            \PY{k}{else}\PY{p}{:}
-                \PY{n}{p\PYZus{}y\PYZus{}right}\PY{o}{=}\PY{n}{w}
-        
-            \PY{n}{patch} \PY{o}{=} \PY{n}{I1}\PY{p}{[}\PY{n}{p\PYZus{}x\PYZus{}up}\PY{p}{:}\PY{n}{p\PYZus{}x\PYZus{}down}\PY{p}{,} \PY{n}{p\PYZus{}y\PYZus{}left}\PY{p}{:}\PY{n}{p\PYZus{}y\PYZus{}right}\PY{p}{]}
-            
-            
-            \PY{c+c1}{\PYZsh{} search region}
-            \PY{k}{if} \PY{n}{y}\PY{o}{\PYZhy{}}\PY{n}{half\PYZus{}width}\PY{o}{\PYZhy{}}\PY{n}{region\PYZus{}expand}\PY{o}{\PYZgt{}} \PY{l+m+mi}{0}\PY{p}{:}
-                \PY{n}{r\PYZus{}x\PYZus{}up}\PY{o}{=}\PY{n}{y}\PY{o}{\PYZhy{}}\PY{n}{half\PYZus{}width}\PY{o}{\PYZhy{}}\PY{n}{region\PYZus{}expand}
-            \PY{k}{else}\PY{p}{:}
-                \PY{n}{r\PYZus{}x\PYZus{}up}\PY{o}{=}\PY{l+m+mi}{0}
-        
-            \PY{k}{if} \PY{n}{y}\PY{o}{+}\PY{n}{half\PYZus{}width}\PY{o}{+}\PY{l+m+mi}{1}\PY{o}{+}\PY{n}{region\PYZus{}expand} \PY{o}{\PYZlt{}} \PY{n}{h}\PY{p}{:}
-                \PY{n}{r\PYZus{}x\PYZus{}down}\PY{o}{=}\PY{n}{y}\PY{o}{+}\PY{n}{half\PYZus{}width}\PY{o}{+}\PY{l+m+mi}{1}\PY{o}{+}\PY{n}{region\PYZus{}expand}
-            \PY{k}{else}\PY{p}{:}
-                \PY{n}{r\PYZus{}x\PYZus{}down}\PY{o}{=}\PY{n}{h}
-        
-            \PY{k}{if} \PY{n}{x}\PY{o}{\PYZhy{}}\PY{n}{half\PYZus{}width}\PY{o}{\PYZhy{}}\PY{n}{region\PYZus{}expand} \PY{o}{\PYZgt{}} \PY{l+m+mi}{0}\PY{p}{:}
-                \PY{n}{r\PYZus{}y\PYZus{}left} \PY{o}{=} \PY{n}{x}\PY{o}{\PYZhy{}}\PY{n}{half\PYZus{}width}\PY{o}{\PYZhy{}}\PY{n}{region\PYZus{}expand}
-            \PY{k}{else}\PY{p}{:}
-                \PY{n}{r\PYZus{}y\PYZus{}left}\PY{o}{=}\PY{l+m+mi}{0}
-        
-            \PY{k}{if} \PY{n}{x}\PY{o}{+}\PY{n}{half\PYZus{}width}\PY{o}{+}\PY{l+m+mi}{1}\PY{o}{+}\PY{n}{region\PYZus{}expand} \PY{o}{\PYZlt{}} \PY{n}{w}\PY{p}{:}
-                \PY{n}{r\PYZus{}y\PYZus{}right}\PY{o}{=}\PY{n}{x}\PY{o}{+}\PY{n}{half\PYZus{}width}\PY{o}{+}\PY{l+m+mi}{1}\PY{o}{+}\PY{n}{region\PYZus{}expand}
-            \PY{k}{else}\PY{p}{:}
-                \PY{n}{r\PYZus{}y\PYZus{}right}\PY{o}{=}\PY{n}{w}
-        
-            \PY{n}{region} \PY{o}{=} \PY{n}{I2}\PY{p}{[}\PY{n}{r\PYZus{}x\PYZus{}up}\PY{p}{:}\PY{n}{r\PYZus{}x\PYZus{}down}\PY{p}{,} \PY{n}{r\PYZus{}y\PYZus{}left}\PY{p}{:}\PY{n}{r\PYZus{}y\PYZus{}right}\PY{p}{]}
-            
-            
-            \PY{c+c1}{\PYZsh{} correlation}
-            \PY{n}{correlation} \PY{o}{=} \PY{n}{correlate2d}\PY{p}{(}\PY{n}{region}\PY{p}{,} \PY{n}{patch}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{valid}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
-            \PY{n}{i}\PY{p}{,} \PY{n}{j} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{unravel\PYZus{}index}\PY{p}{(}\PY{n}{correlation}\PY{o}{.}\PY{n}{argmax}\PY{p}{(}\PY{p}{)}\PY{p}{,} \PY{n}{correlation}\PY{o}{.}\PY{n}{shape}\PY{p}{)}
-            \PY{n}{u} \PY{o}{=} \PY{n}{j}\PY{o}{+}\PY{n}{r\PYZus{}y\PYZus{}left}\PY{o}{\PYZhy{}}\PY{n}{p\PYZus{}y\PYZus{}left}
-            \PY{n}{v} \PY{o}{=} \PY{n}{i}\PY{o}{+}\PY{n}{r\PYZus{}x\PYZus{}up}\PY{o}{\PYZhy{}}\PY{n}{p\PYZus{}x\PYZus{}up}
-        
-            \PY{k}{return} \PY{p}{(}\PY{n}{u}\PY{p}{,} \PY{n}{v}\PY{p}{)}
+            \PY{k}{return} \PY{p}{(}\PY{n}{Ix}\PY{p}{,} \PY{n}{Iy}\PY{p}{,} \PY{n}{It}\PY{p}{)}
 \end{Verbatim}
 
 
-    As shown above, the u and v matrices reflecting the motion is obtained
-with this function. However, this is only for one block or grid not all
-grids. Before solving that, to show the optical flow with quiver, a
-function is defined to draw the vectors on the first frame with the
-motion vectors to check the results.
+    \hypertarget{matrix-a-and-vector-b-calculation-equation-solving-for-one-grid}{%
+\subsection{Matrix A and Vector b Calculation \& Equation Solving for
+one
+grid}\label{matrix-a-and-vector-b-calculation-equation-solving-for-one-grid}}
+
+    To calculate the motion matrix v, it should satisfy:
+\[ A^T W^2 A v = A^T W^2 b \]
+
+After simplifying, the equation looks like: \[ A v = b \]
+
+where
+
+\textbackslash{}begin\{aligned\} A \&= \textbackslash{}begin\{bmatrix\}
+I\_x(x\_1) \& I\_y(x\_1) \textbackslash{} \dots \textbackslash{}
+I\_x(x\_n) \& I\_y(x\_n) \textbackslash{}end\{bmatrix\} \textbackslash{}
+b \&= -\textbackslash{}begin\{bmatrix\} I\_t(x\_1)\textbackslash{}
+\dots\textbackslash{}
+I\_t(x\_n)\textbackslash{}\textbackslash{}end\{bmatrix\}~
+\textbackslash{}end\{aligned\}
+
+And the v matrix can be obtained by np.linalg.lstsq() which returns the
+least-squares solution to a linear matrix equation. The returned result
+in this case is called motion\_estimation which is the v matrix.
 
     \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}8}]:} \PY{k}{def} \PY{n+nf}{quiver\PYZus{}drawing}\PY{p}{(}\PY{n}{I}\PY{p}{,} \PY{n}{x\PYZus{}grid}\PY{p}{,} \PY{n}{y\PYZus{}grid}\PY{p}{,} \PY{n}{U}\PY{p}{,} \PY{n}{V}\PY{p}{,} \PY{n}{scale}\PY{p}{)}\PY{p}{:}
+{\color{incolor}In [{\color{incolor}4}]:} \PY{k}{def} \PY{n+nf}{solve\PYZus{}motion\PYZus{}gradient\PYZus{}equation}\PY{p}{(}\PY{n}{I1}\PY{p}{,}\PY{n}{I2}\PY{p}{,}\PY{n}{x\PYZus{}grid}\PY{p}{,}\PY{n}{y\PYZus{}grid}\PY{p}{,}\PY{n}{width}\PY{p}{,}\PY{n}{disx}\PY{p}{,}\PY{n}{disy}\PY{p}{)}\PY{p}{:}
+        
+        
+            \PY{n}{A} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{p}{(}\PY{n}{width}\PY{o}{*}\PY{n}{width}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{)}\PY{p}{)}
+            \PY{n}{b} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{n}{width}\PY{o}{*}\PY{n}{width}\PY{p}{)}
+            
+        
+        
+            \PY{c+c1}{\PYZsh{} obtain A and b from I matrix}
+            \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{n}{width}\PY{o}{*}\PY{n}{width}\PY{p}{)}\PY{p}{:}
+        
+                \PY{n}{x\PYZus{}grid\PYZus{}m}\PY{o}{=} \PY{n}{x\PYZus{}grid}\PY{o}{+}\PY{n}{disx}\PY{p}{[}\PY{n}{i}\PY{p}{]}
+                \PY{n}{y\PYZus{}grid\PYZus{}m}\PY{o}{=} \PY{n}{y\PYZus{}grid}\PY{o}{+}\PY{n}{disy}\PY{p}{[}\PY{n}{i}\PY{p}{]}
+        
+                \PY{n}{Ix}\PY{p}{,} \PY{n}{Iy}\PY{p}{,} \PY{n}{It} \PY{o}{=} \PY{n}{derivative\PYZus{}components}\PY{p}{(}\PY{n}{I1}\PY{p}{,} \PY{n}{I2}\PY{p}{,} \PY{n}{x\PYZus{}grid\PYZus{}m}\PY{p}{,} \PY{n}{y\PYZus{}grid\PYZus{}m}\PY{p}{)}
+                \PY{n}{A}\PY{p}{[}\PY{n}{i}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{]} \PY{o}{=} \PY{n}{Ix} 
+                \PY{n}{A}\PY{p}{[}\PY{n}{i}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{]} \PY{o}{=} \PY{n}{Iy}
+                \PY{n}{b}\PY{p}{[}\PY{n}{i}\PY{p}{]} \PY{o}{=} \PY{o}{\PYZhy{}}\PY{n}{It}
+        
+            \PY{n}{motion\PYZus{}matrix} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{linalg}\PY{o}{.}\PY{n}{lstsq}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{matmul}\PY{p}{(}\PY{n}{A}\PY{o}{.}\PY{n}{T}\PY{p}{,} \PY{n}{A}\PY{p}{)}\PY{p}{,} \PY{n}{np}\PY{o}{.}\PY{n}{matmul}\PY{p}{(}\PY{n}{A}\PY{o}{.}\PY{n}{T}\PY{p}{,} \PY{n}{b}\PY{p}{)}\PY{p}{)}
+        
+            \PY{n}{motion\PYZus{}estimation} \PY{o}{=} \PY{n}{motion\PYZus{}matrix}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}
+            
+            \PY{k}{return} \PY{n}{motion\PYZus{}estimation}
+\end{Verbatim}
+
+
+    \hypertarget{motion-estimation-for-the-whole-image}{%
+\subsection{Motion Estimation for the whole
+image}\label{motion-estimation-for-the-whole-image}}
+
+    The motion\_estimation obtained above is only for one grid. However, the
+image consists of numerous of grids. One iteration is needed to fill all
+the motion vector into matrices that express the motion in the whole
+image.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}5}]:} \PY{k}{def} \PY{n+nf}{estimate\PYZus{}flow}\PY{p}{(}\PY{n}{img\PYZus{}series}\PY{p}{)}\PY{p}{:}
+            \PY{c+c1}{\PYZsh{} get the image size.}
+            \PY{n}{h\PYZus{}img} \PY{o}{=} \PY{n}{img\PYZus{}series}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{I1}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}
+            \PY{n}{w\PYZus{}img}\PY{o}{=} \PY{n}{img\PYZus{}series}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{I1}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}
+        
+            \PY{c+c1}{\PYZsh{} define the grid size}
+            \PY{n}{grid\PYZus{}size} \PY{o}{=} \PY{l+m+mi}{9}
+            \PY{n}{width}  \PY{o}{=} \PY{l+m+mi}{21}
+        
+            \PY{c+c1}{\PYZsh{} x, y are the locations of the grids.}
+            \PY{n}{x} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{arange}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{n}{w\PYZus{}img}\PY{o}{\PYZhy{}}\PY{n}{grid\PYZus{}size}\PY{p}{,} \PY{n}{grid\PYZus{}size}\PY{p}{)} \PY{o}{+} \PY{n}{np}\PY{o}{.}\PY{n}{floor}\PY{p}{(}\PY{n}{grid\PYZus{}size}\PY{o}{/}\PY{l+m+mi}{2}\PY{p}{)}\PY{p}{;}
+            \PY{n}{y} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{arange}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{n}{h\PYZus{}img}\PY{o}{\PYZhy{}}\PY{n}{grid\PYZus{}size}\PY{p}{,} \PY{n}{grid\PYZus{}size}\PY{p}{)} \PY{o}{+} \PY{n}{np}\PY{o}{.}\PY{n}{floor}\PY{p}{(}\PY{n}{grid\PYZus{}size}\PY{o}{/}\PY{l+m+mi}{2}\PY{p}{)}\PY{p}{;}
+        
+         
+            \PY{n}{x\PYZus{}grid}\PY{p}{,} \PY{n}{y\PYZus{}grid} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{meshgrid}\PY{p}{(}\PY{n}{x}\PY{p}{,}\PY{n}{y}\PY{p}{)}\PY{p}{;}
+        
+            
+            \PY{c+c1}{\PYZsh{} get the height and width of the grid}
+            \PY{n}{h\PYZus{}grid}\PY{o}{=} \PY{n}{x\PYZus{}grid}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}
+            \PY{n}{w\PYZus{}grid}\PY{o}{=} \PY{n}{x\PYZus{}grid}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}  
+           
+            \PY{n}{U} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{p}{(}\PY{n}{h\PYZus{}grid}\PY{p}{,} \PY{n}{w\PYZus{}grid}\PY{p}{)}\PY{p}{)}
+            \PY{n}{V} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{p}{(}\PY{n}{h\PYZus{}grid}\PY{p}{,} \PY{n}{w\PYZus{}grid}\PY{p}{)}\PY{p}{)}
+        
+            \PY{n}{grid\PYZus{}center} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{arange}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{n}{width}\PY{p}{)} \PY{o}{\PYZhy{}} \PY{n}{np}\PY{o}{.}\PY{n}{floor}\PY{p}{(}\PY{n}{width}\PY{o}{/}\PY{l+m+mi}{2}\PY{p}{)}
+            \PY{n}{disx}\PY{p}{,} \PY{n}{disy} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{meshgrid}\PY{p}{(}\PY{n}{grid\PYZus{}center}\PY{p}{,} \PY{n}{grid\PYZus{}center}\PY{p}{)}
+            \PY{n}{disx} \PY{o}{=} \PY{n}{disx}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{n}{width}\PY{o}{*}\PY{n}{width}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{)}
+            \PY{n}{disy} \PY{o}{=} \PY{n}{disy}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{n}{width}\PY{o}{*}\PY{n}{width}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{)}
+        
+            
+            \PY{c+c1}{\PYZsh{} get the U,V matrix}
+            \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{n}{h\PYZus{}grid}\PY{p}{)}\PY{p}{:}
+                \PY{k}{for} \PY{n}{j} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{n}{w\PYZus{}grid}\PY{p}{)}\PY{p}{:}
+                    \PY{c+c1}{\PYZsh{} x\PYZus{}grid[i,j] is the x coordinate; y\PYZus{}grid[i,j] is the y coordinate.}
+                    \PY{n}{motion\PYZus{}estimation} \PY{o}{=}  \PY{n}{solve\PYZus{}motion\PYZus{}gradient\PYZus{}equation}\PY{p}{(}\PY{n}{img\PYZus{}series}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{I1}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{,} \PY{n}{img\PYZus{}series}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{I2}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{,}
+                                                                        \PY{n}{x\PYZus{}grid}\PY{p}{[}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{p}{]}\PY{p}{,} \PY{n}{y\PYZus{}grid}\PY{p}{[}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{p}{]}\PY{p}{,} \PY{n}{width}\PY{p}{,}\PY{n}{disx}\PY{p}{,}\PY{n}{disy}\PY{p}{)}
+                    \PY{n}{U}\PY{p}{[}\PY{n}{i}\PY{p}{,} \PY{n}{j}\PY{p}{]} \PY{o}{=} \PY{n}{motion\PYZus{}estimat} \PY{o}{\PYZam{}}\PY{n}{ion}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}
+                    \PY{n}{V}\PY{p}{[}\PY{n}{i}\PY{p}{,} \PY{n}{j}\PY{p}{]} \PY{o}{=} \PY{n}{motion\PYZus{}estimation}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}
+        
+            \PY{n}{quiver\PYZus{}drawing}\PY{p}{(}\PY{n}{img\PYZus{}series}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{I1}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{,} \PY{n}{x}\PY{p}{,} \PY{n}{y}\PY{p}{,} \PY{n}{U}\PY{p}{,} \PY{n}{V}\PY{p}{,} \PY{l+m+mi}{5}\PY{p}{)}
+\end{Verbatim}
+
+
+    \hypertarget{optical-flow-field-display}{%
+\subsection{Optical Flow Field
+Display}\label{optical-flow-field-display}}
+
+    A function called quiver\_drawing() in the last line has not been
+explained yet. As its name, the function is built for drawing quivers to
+display the optical flow field. The basic idea behind this is simply
+that drawing quivers based on the grid locations, motion matrices
+returned back from estimate\_flow() as well as a scale scalar.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}6}]:} \PY{k}{def} \PY{n+nf}{quiver\PYZus{}drawing}\PY{p}{(}\PY{n}{I}\PY{p}{,} \PY{n}{x\PYZus{}grid}\PY{p}{,} \PY{n}{y\PYZus{}grid}\PY{p}{,} \PY{n}{U}\PY{p}{,} \PY{n}{V}\PY{p}{,} \PY{n}{scale}\PY{p}{)}\PY{p}{:}
             \PY{n}{fig}\PY{p}{,} \PY{n}{ax} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{subplots}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{)}\PY{p}{,} \PY{n}{dpi}\PY{o}{=}\PY{l+m+mi}{80}\PY{p}{)}
             \PY{n}{ax}\PY{o}{.}\PY{n}{imshow}\PY{p}{(}\PY{n}{I}\PY{p}{,} \PY{n}{cmap}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{gray}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
             \PY{n}{ax}\PY{o}{.}\PY{n}{quiver}\PY{p}{(}\PY{n}{x\PYZus{}grid}\PY{p}{,} \PY{n}{y\PYZus{}grid}\PY{p}{,} \PY{n}{U}\PY{o}{*}\PY{n}{scale}\PY{p}{,} \PY{n}{V}\PY{o}{*}\PY{n}{scale}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{red}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{angles}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{xy}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{scale\PYZus{}units}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{xy}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{scale}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{)}
@@ -460,275 +522,143 @@ motion vectors to check the results.
 \end{Verbatim}
 
 
-    A self-defined function is needed to calculate the motion vectors in
-different grids. To achieve this goal, each grid is calculated and
-filled in U and V matrices by iterations shown below.
-
-quiver\_drawing() defined above is called to show the motion estimation
-results which is also called optical flow.
+    Apply image series into the function to check the results.
 
     \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}9}]:} \PY{k}{def} \PY{n+nf}{optical\PYZus{}flow\PYZus{}estimation}\PY{p}{(}\PY{n}{img\PYZus{}series}\PY{p}{)}\PY{p}{:}
-            \PY{n}{h\PYZus{}img}\PY{o}{=} \PY{n}{img\PYZus{}series}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{I1}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}
-            \PY{n}{w\PYZus{}img}\PY{o}{=} \PY{n}{img\PYZus{}series}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{I1}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}
-        
-            \PY{n}{grid\PYZus{}size} \PY{o}{=} \PY{l+m+mi}{5}
-            \PY{n}{width}  \PY{o}{=} \PY{l+m+mi}{5}
-        
-            \PY{n}{x} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{arange}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{n}{w\PYZus{}img}\PY{o}{\PYZhy{}}\PY{n}{grid\PYZus{}size}\PY{p}{,} \PY{n}{grid\PYZus{}size}\PY{p}{)} \PY{o}{+} \PY{n}{np}\PY{o}{.}\PY{n}{floor}\PY{p}{(}\PY{n}{grid\PYZus{}size}\PY{o}{/}\PY{l+m+mi}{2}\PY{p}{)}\PY{p}{;}
-            \PY{n}{y} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{arange}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{n}{h\PYZus{}img}\PY{o}{\PYZhy{}}\PY{n}{grid\PYZus{}size}\PY{p}{,} \PY{n}{grid\PYZus{}size}\PY{p}{)} \PY{o}{+} \PY{n}{np}\PY{o}{.}\PY{n}{floor}\PY{p}{(}\PY{n}{grid\PYZus{}size}\PY{o}{/}\PY{l+m+mi}{2}\PY{p}{)}\PY{p}{;}
-            \PY{n}{x\PYZus{}grid}\PY{p}{,} \PY{n}{y\PYZus{}grid} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{meshgrid}\PY{p}{(}\PY{n}{x}\PY{p}{,}\PY{n}{y}\PY{p}{)}\PY{p}{;}
-        
-            \PY{n}{region\PYZus{}expand} \PY{o}{=} \PY{l+m+mi}{10}
-        
-            \PY{n}{h\PYZus{}grid} \PY{o}{=} \PY{n}{x\PYZus{}grid}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}
-            \PY{n}{w\PYZus{}grid} \PY{o}{=} \PY{n}{x\PYZus{}grid}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}
-        
-            \PY{n}{U} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{p}{(}\PY{n}{h\PYZus{}grid}\PY{p}{,} \PY{n}{w\PYZus{}grid}\PY{p}{)}\PY{p}{)}
-            \PY{n}{V} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{p}{(}\PY{n}{h\PYZus{}grid}\PY{p}{,} \PY{n}{w\PYZus{}grid}\PY{p}{)}\PY{p}{)}
-            
-            \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{n}{h\PYZus{}grid}\PY{p}{)}\PY{p}{:}
-                \PY{k}{for} \PY{n}{j} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{n}{w\PYZus{}grid}\PY{p}{)}\PY{p}{:}
-                    \PY{n}{u}\PY{p}{,}\PY{n}{v} \PY{o}{=}  \PY{n}{correlation\PYZus{}each\PYZus{}grid}\PY{p}{(}\PY{n}{img\PYZus{}series}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{I1}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,} \PY{n}{img\PYZus{}series}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{I2}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,}
-                                                 \PY{n}{x\PYZus{}grid}\PY{p}{[}\PY{n}{i}\PY{p}{,} \PY{n}{j}\PY{p}{]}\PY{p}{,} \PY{n}{y\PYZus{}grid}\PY{p}{[}\PY{n}{i}\PY{p}{,} \PY{n}{j}\PY{p}{]}\PY{p}{,} \PY{n}{width}\PY{p}{,} \PY{n}{region\PYZus{}expand}\PY{p}{)}
-                    \PY{n}{U}\PY{p}{[}\PY{n}{i}\PY{p}{,} \PY{n}{j}\PY{p}{]} \PY{o}{=} \PY{n}{u}
-                    \PY{n}{V}\PY{p}{[}\PY{n}{i}\PY{p}{,} \PY{n}{j}\PY{p}{]} \PY{o}{=} \PY{n}{v}
-        
-        
-            \PY{n}{quiver\PYZus{}drawing}\PY{p}{(}\PY{n}{img\PYZus{}series}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{I1}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,}\PY{n}{x\PYZus{}grid}\PY{p}{,} \PY{n}{y\PYZus{}grid}\PY{p}{,} \PY{n}{U}\PY{p}{,} \PY{n}{V}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{)}
-\end{Verbatim}
-
-
-    Call the optical\_flow\_estimation() with different images and check the
-result.
-
-    \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}10}]:} \PY{n}{optical\PYZus{}flow\PYZus{}estimation}\PY{p}{(}\PY{n}{sphere}\PY{p}{)}
+{\color{incolor}In [{\color{incolor}7}]:} \PY{n}{estimate\PYZus{}flow}\PY{p}{(}\PY{n}{rubic}\PY{p}{)}
 \end{Verbatim}
 
 
     \begin{center}
-    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_15_0.png}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_23_0.png}
     \end{center}
     { \hspace*{\fill} \\}
     
     \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}11}]:} \PY{n}{optical\PYZus{}flow\PYZus{}estimation}\PY{p}{(}\PY{n}{rubic}\PY{p}{)}
+{\color{incolor}In [{\color{incolor}8}]:} \PY{n}{estimate\PYZus{}flow}\PY{p}{(}\PY{n}{sphere}\PY{p}{)}
 \end{Verbatim}
 
 
     \begin{center}
-    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_16_0.png}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_24_0.png}
     \end{center}
     { \hspace*{\fill} \\}
     
     \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}12}]:} \PY{n}{optical\PYZus{}flow\PYZus{}estimation}\PY{p}{(}\PY{n}{seq1}\PY{p}{)}
+{\color{incolor}In [{\color{incolor}9}]:} \PY{n}{estimate\PYZus{}flow}\PY{p}{(}\PY{n}{seq1}\PY{p}{)}
 \end{Verbatim}
 
 
     \begin{center}
-    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_17_0.png}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_25_0.png}
     \end{center}
     { \hspace*{\fill} \\}
     
+    \hypertarget{comparison-between-gradient-method-and-correlation-method}{%
+\subsection{Comparison between Gradient Method and Correlation
+Method}\label{comparison-between-gradient-method-and-correlation-method}}
+
+    The results from the correlation method are:
+\includegraphics{output_16_0.png} \includegraphics{output_15_0.png}
+\includegraphics{output_17_0.png}
+
+Compare these three optical flow field images with the results using
+gradient and we can say that the gradient method definitely works
+better. It is not saying that correlation method is worse than gradient
+method in general. We have to admit that correlation method is
+outstanding in some cases but not in these specific ones.
+
     \hypertarget{exploration}{%
 \section{Exploration}\label{exploration}}
 
-    Another popular method in motion estimation similar to image corelation
-is called \textbf{phase correlation}. Unlike the previous method with
-calculating the correlation directly based on the image pixel, the phase
-correlation method measures the movement between two frames from their
-phases.
+    From the results above, the estimated motion is meaning and does reflect
+the correct direction of the movement. However, the background sometimes
+is meaningless to be detected and wastes the computation storage while
+people mostly focus on the objects. How about using the edge detector to
+highlight the edge and then apply the gradient method to estimate the
+motion? The code shown below is a demonstration for this idea.
 
-To calculate the phase correlation of the grids in respective frames,
-FFT are first performed on the different frames. And the inverse FFT of
-the multiplication of one spectrum and the conjugate of the other is
-their phase correlation. The highest peak is picked out from the phase
-corelation matrix to estimate the displacement vectors.
-
-    To calculate the 2D FFT and inverse FFT, the functions are defined as
-shown below.
+    Take the rubic image series for an example. Use canny edge detector with
+different threshold to do the image pre-processing.
 
     \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}16}]:} \PY{k+kn}{from} \PY{n+nn}{scipy.fftpack} \PY{k+kn}{import} \PY{n}{dct}\PY{p}{,}\PY{n}{idct}
-         \PY{k}{def} \PY{n+nf}{dct2}\PY{p}{(}\PY{n}{image}\PY{p}{)}\PY{p}{:}
-             \PY{k}{return} \PY{n}{dct}\PY{p}{(}\PY{n}{dct}\PY{p}{(}\PY{n}{image}\PY{o}{.}\PY{n}{T}\PY{p}{,}\PY{n}{norm}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ortho}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{o}{.}\PY{n}{T}\PY{p}{,}\PY{n}{norm}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ortho}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+{\color{incolor}In [{\color{incolor}16}]:} \PY{k+kn}{import} \PY{n+nn}{cv2}
          
-         \PY{k}{def} \PY{n+nf}{idct2}\PY{p}{(}\PY{n}{dctmatrix}\PY{p}{)}\PY{p}{:}
-             \PY{k}{return} \PY{n}{idct}\PY{p}{(}\PY{n}{idct}\PY{p}{(}\PY{n}{dctmatrix}\PY{o}{.}\PY{n}{T}\PY{p}{,}\PY{n}{norm}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ortho}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{o}{.}\PY{n}{T}\PY{p}{,}\PY{n}{norm}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ortho}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+         \PY{n}{rubic\PYZus{}start}\PY{o}{=}\PY{n}{cv2}\PY{o}{.}\PY{n}{imread}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{data/rubic/rubic.0.png}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+         \PY{n}{rubic\PYZus{}end}\PY{o}{=}\PY{n}{cv2}\PY{o}{.}\PY{n}{imread}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{data/rubic/rubic.5.png}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+         
+         \PY{c+c1}{\PYZsh{} canny edge detector, set different lower and upper thresholds for the detector.}
+         \PY{n}{rubic\PYZus{}s300}\PY{o}{=}\PY{n}{cv2}\PY{o}{.}\PY{n}{Canny}\PY{p}{(}\PY{n}{rubic\PYZus{}start}\PY{p}{,}\PY{l+m+mi}{300}\PY{p}{,}\PY{l+m+mi}{300}\PY{p}{)}
+         \PY{n}{rubic\PYZus{}e300}\PY{o}{=}\PY{n}{cv2}\PY{o}{.}\PY{n}{Canny}\PY{p}{(}\PY{n}{rubic\PYZus{}end}\PY{p}{,}\PY{l+m+mi}{300}\PY{p}{,}\PY{l+m+mi}{300}\PY{p}{)}
+         \PY{n}{rubic\PYZus{}s400}\PY{o}{=}\PY{n}{cv2}\PY{o}{.}\PY{n}{Canny}\PY{p}{(}\PY{n}{rubic\PYZus{}start}\PY{p}{,}\PY{l+m+mi}{400}\PY{p}{,}\PY{l+m+mi}{400}\PY{p}{)}
+         \PY{n}{rubic\PYZus{}e400}\PY{o}{=}\PY{n}{cv2}\PY{o}{.}\PY{n}{Canny}\PY{p}{(}\PY{n}{rubic\PYZus{}end}\PY{p}{,}\PY{l+m+mi}{400}\PY{p}{,}\PY{l+m+mi}{400}\PY{p}{)}
+         \PY{n}{cv2}\PY{o}{.}\PY{n}{imwrite}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{rubic\PYZus{}s300.png}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{rubic\PYZus{}s300}\PY{p}{)}
+         \PY{n}{cv2}\PY{o}{.}\PY{n}{imwrite}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{rubic\PYZus{}e300.png}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{rubic\PYZus{}e300}\PY{p}{)}
+         \PY{n}{cv2}\PY{o}{.}\PY{n}{imwrite}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{rubic\PYZus{}s400.png}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{rubic\PYZus{}s400}\PY{p}{)}
+         \PY{n}{cv2}\PY{o}{.}\PY{n}{imwrite}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{rubic\PYZus{}e400.png}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{rubic\PYZus{}e400}\PY{p}{)}
 \end{Verbatim}
 
 
-    Then redefine the correlation\_each\_grid() function to calculate the
-correlation based on phase. Basically, apply FFT to the two frames, and
-use the idea that the inverse FFT of the multiplication of one spectrum
-and the conjugate of the other is their phase correlation to get the
-correlation. Then check the highest response of the result.
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}16}]:} True
+\end{Verbatim}
+            
+    Read the images in with io.image as the same as the previous step.
 
     \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}17}]:} \PY{k}{def} \PY{n+nf}{correlation\PYZus{}each\PYZus{}grid}\PY{p}{(}\PY{n}{I1}\PY{p}{,} \PY{n}{I2}\PY{p}{,} \PY{n}{x}\PY{p}{,} \PY{n}{y}\PY{p}{,} \PY{n}{width}\PY{p}{,} \PY{n}{region\PYZus{}expand}\PY{p}{)}\PY{p}{:}
-             \PY{n}{h}\PY{o}{=} \PY{n}{I1}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}
-             \PY{n}{w}\PY{o}{=} \PY{n}{I1}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}
-         
-             \PY{n}{x} \PY{o}{=} \PY{n+nb}{int}\PY{p}{(}\PY{n}{x}\PY{p}{)}
-             \PY{n}{y} \PY{o}{=} \PY{n+nb}{int}\PY{p}{(}\PY{n}{y}\PY{p}{)}
-         
-             \PY{n}{half\PYZus{}width} \PY{o}{=} \PY{n+nb}{int}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{floor}\PY{p}{(}\PY{n}{width}\PY{o}{/}\PY{l+m+mi}{2}\PY{p}{)}\PY{p}{)}
-         
-             \PY{c+c1}{\PYZsh{} patch construction}
-             \PY{k}{if} \PY{p}{(}\PY{n}{y}\PY{o}{\PYZhy{}}\PY{n}{half\PYZus{}width}\PY{p}{)}\PY{o}{\PYZgt{}} \PY{l+m+mi}{0}\PY{p}{:}
-                 \PY{n}{p\PYZus{}x\PYZus{}up}\PY{o}{=}\PY{n}{y}\PY{o}{\PYZhy{}}\PY{n}{half\PYZus{}width}
-             \PY{k}{else}\PY{p}{:}
-                 \PY{n}{p\PYZus{}x\PYZus{}up}\PY{o}{=}\PY{l+m+mi}{0}
-         
-             \PY{k}{if} \PY{p}{(}\PY{n}{y}\PY{o}{+}\PY{n}{half\PYZus{}width}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{)} \PY{o}{\PYZlt{}} \PY{n}{h}\PY{p}{:}
-                 \PY{n}{p\PYZus{}x\PYZus{}down}\PY{o}{=}\PY{n}{y}\PY{o}{+}\PY{n}{half\PYZus{}width}\PY{o}{+}\PY{l+m+mi}{1}
-             \PY{k}{else}\PY{p}{:}
-                 \PY{n}{p\PYZus{}x\PYZus{}down}\PY{o}{=}\PY{n}{h}
-         
-             \PY{k}{if} \PY{p}{(}\PY{n}{x}\PY{o}{\PYZhy{}}\PY{n}{half\PYZus{}width}\PY{p}{)}\PY{o}{\PYZgt{}} \PY{l+m+mi}{0}\PY{p}{:}
-                 \PY{n}{p\PYZus{}y\PYZus{}left}\PY{o}{=}\PY{n}{x}\PY{o}{\PYZhy{}}\PY{n}{half\PYZus{}width}
-             \PY{k}{else}\PY{p}{:}
-                 \PY{n}{p\PYZus{}y\PYZus{}left}\PY{o}{=}\PY{l+m+mi}{0}
-         
-             \PY{k}{if} \PY{p}{(}\PY{n}{x}\PY{o}{+}\PY{n}{half\PYZus{}width}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{)} \PY{o}{\PYZlt{}} \PY{n}{w}\PY{p}{:}
-                 \PY{n}{p\PYZus{}y\PYZus{}right}\PY{o}{=}\PY{n}{x}\PY{o}{+}\PY{n}{half\PYZus{}width}\PY{o}{+}\PY{l+m+mi}{1}
-             \PY{k}{else}\PY{p}{:}
-                 \PY{n}{p\PYZus{}y\PYZus{}right}\PY{o}{=}\PY{n}{w}
-             
-         
-             \PY{n}{dct\PYZus{}img}\PY{o}{=}\PY{n}{dct2}\PY{p}{(}\PY{n}{I1}\PY{p}{)}
-             \PY{n}{patch} \PY{o}{=} \PY{n}{dct\PYZus{}img}\PY{p}{[}\PY{n}{p\PYZus{}x\PYZus{}up}\PY{p}{:}\PY{n}{p\PYZus{}x\PYZus{}down}\PY{p}{,} \PY{n}{p\PYZus{}y\PYZus{}left}\PY{p}{:}\PY{n}{p\PYZus{}y\PYZus{}right}\PY{p}{]}
-             
-             \PY{c+c1}{\PYZsh{} correlation region}
-             \PY{k}{if} \PY{n}{y}\PY{o}{\PYZhy{}}\PY{n}{half\PYZus{}width}\PY{o}{\PYZhy{}}\PY{n}{region\PYZus{}expand}\PY{o}{\PYZgt{}} \PY{l+m+mi}{0}\PY{p}{:}
-                 \PY{n}{r\PYZus{}x\PYZus{}up}\PY{o}{=}\PY{n}{y}\PY{o}{\PYZhy{}}\PY{n}{half\PYZus{}width}\PY{o}{+}\PY{n}{region\PYZus{}expand}
-             \PY{k}{else}\PY{p}{:}
-                 \PY{n}{r\PYZus{}x\PYZus{}up}\PY{o}{=}\PY{l+m+mi}{0}
-         
-             \PY{k}{if} \PY{n}{y}\PY{o}{+}\PY{n}{half\PYZus{}width}\PY{o}{+}\PY{l+m+mi}{1}\PY{o}{+}\PY{n}{region\PYZus{}expand} \PY{o}{\PYZlt{}} \PY{n}{h}\PY{p}{:}
-                 \PY{n}{r\PYZus{}x\PYZus{}down}\PY{o}{=}\PY{n}{y}\PY{o}{+}\PY{n}{half\PYZus{}width}\PY{o}{+}\PY{l+m+mi}{1}\PY{o}{+}\PY{n}{region\PYZus{}expand}
-             \PY{k}{else}\PY{p}{:}
-                 \PY{n}{r\PYZus{}x\PYZus{}down}\PY{o}{=}\PY{n}{h}
-         
-             \PY{k}{if} \PY{n}{x}\PY{o}{\PYZhy{}}\PY{n}{half\PYZus{}width}\PY{o}{\PYZhy{}}\PY{n}{region\PYZus{}expand} \PY{o}{\PYZgt{}} \PY{l+m+mi}{0}\PY{p}{:}
-                 \PY{n}{r\PYZus{}y\PYZus{}left} \PY{o}{=} \PY{n}{x}\PY{o}{\PYZhy{}}\PY{n}{half\PYZus{}width}\PY{o}{+}\PY{n}{region\PYZus{}expand}
-             \PY{k}{else}\PY{p}{:}
-                 \PY{n}{r\PYZus{}y\PYZus{}left}\PY{o}{=}\PY{l+m+mi}{0}
-         
-             \PY{k}{if} \PY{n}{x}\PY{o}{+}\PY{n}{half\PYZus{}width}\PY{o}{+}\PY{l+m+mi}{1}\PY{o}{+}\PY{n}{region\PYZus{}expand} \PY{o}{\PYZlt{}} \PY{n}{w}\PY{p}{:}
-                 \PY{n}{r\PYZus{}y\PYZus{}right}\PY{o}{=}\PY{n}{x}\PY{o}{+}\PY{n}{half\PYZus{}width}\PY{o}{+}\PY{l+m+mi}{1}\PY{o}{+}\PY{n}{region\PYZus{}expand}
-             \PY{k}{else}\PY{p}{:}
-                 \PY{n}{r\PYZus{}y\PYZus{}right}\PY{o}{=}\PY{n}{w}
-         
-             \PY{n}{dct\PYZus{}region}\PY{o}{=}\PY{n}{dct2}\PY{p}{(}\PY{n}{I2}\PY{p}{)}
-             \PY{n}{region} \PY{o}{=} \PY{n}{dct\PYZus{}region}\PY{p}{[}\PY{n}{r\PYZus{}x\PYZus{}up}\PY{p}{:}\PY{n}{r\PYZus{}x\PYZus{}down}\PY{p}{,} \PY{n}{r\PYZus{}y\PYZus{}left}\PY{p}{:}\PY{n}{r\PYZus{}y\PYZus{}right}\PY{p}{]}
-             
-             \PY{c+c1}{\PYZsh{} correlation}
-             \PY{c+c1}{\PYZsh{}correlation = correlate2d(region, patch, \PYZsq{}valid\PYZsq{})}
-             \PY{n}{correlation}\PY{o}{=}\PY{n}{idct}\PY{p}{(}\PY{n}{patch}\PY{o}{*}\PY{n}{np}\PY{o}{.}\PY{n}{conjugate}\PY{p}{(}\PY{n}{region}\PY{p}{)}\PY{p}{)}
-         
-           
-             \PY{n}{i}\PY{p}{,} \PY{n}{j} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{unravel\PYZus{}index}\PY{p}{(}\PY{n}{correlation}\PY{o}{.}\PY{n}{argmax}\PY{p}{(}\PY{p}{)}\PY{p}{,} \PY{n}{correlation}\PY{o}{.}\PY{n}{shape}\PY{p}{)}
-             \PY{n}{u} \PY{o}{=} \PY{n}{j}\PY{o}{+}\PY{n}{r\PYZus{}y\PYZus{}left}\PY{o}{\PYZhy{}}\PY{n}{p\PYZus{}y\PYZus{}left}
-             \PY{n}{v} \PY{o}{=} \PY{n}{i}\PY{o}{+}\PY{n}{r\PYZus{}x\PYZus{}up}\PY{o}{\PYZhy{}}\PY{n}{p\PYZus{}x\PYZus{}up}
-         
-             \PY{k}{return} \PY{p}{(}\PY{n}{u}\PY{p}{,} \PY{n}{v}\PY{p}{)}
+{\color{incolor}In [{\color{incolor}17}]:} \PY{n}{rubic300} \PY{o}{=} \PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{I1}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{io}\PY{o}{.}\PY{n}{imread}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{rubic\PYZus{}s300.png}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{as\PYZus{}grey}\PY{o}{=}\PY{n+nb+bp}{True}\PY{p}{)}\PY{p}{,} 
+                  \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{I2}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{io}\PY{o}{.}\PY{n}{imread}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{rubic\PYZus{}e300.png}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{as\PYZus{}grey}\PY{o}{=}\PY{n+nb+bp}{True}\PY{p}{)}\PY{p}{\PYZcb{}}
+         \PY{n}{rubic400} \PY{o}{=} \PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{I1}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{io}\PY{o}{.}\PY{n}{imread}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{rubic\PYZus{}s400.png}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{as\PYZus{}grey}\PY{o}{=}\PY{n+nb+bp}{True}\PY{p}{)}\PY{p}{,} 
+                  \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{I2}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{io}\PY{o}{.}\PY{n}{imread}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{rubic\PYZus{}e400.png}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{as\PYZus{}grey}\PY{o}{=}\PY{n+nb+bp}{True}\PY{p}{)}\PY{p}{\PYZcb{}}
 \end{Verbatim}
 
 
-    Make the region\_expand=0 to ensure patch and region have the same size
-so that they can be multipiled.
+    Test the image on the functions defined above.
 
     \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}19}]:} \PY{k}{def} \PY{n+nf}{optical\PYZus{}flow\PYZus{}estimation}\PY{p}{(}\PY{n}{img\PYZus{}series}\PY{p}{)}\PY{p}{:}
-             \PY{n}{h\PYZus{}img}\PY{o}{=} \PY{n}{img\PYZus{}series}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{I1}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}
-             \PY{n}{w\PYZus{}img}\PY{o}{=} \PY{n}{img\PYZus{}series}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{I1}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}
-         
-             \PY{n}{grid\PYZus{}size} \PY{o}{=} \PY{l+m+mi}{10}
-             \PY{n}{width}  \PY{o}{=} \PY{l+m+mi}{5}
-         
-             \PY{n}{x} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{arange}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{n}{w\PYZus{}img}\PY{o}{\PYZhy{}}\PY{n}{grid\PYZus{}size}\PY{p}{,} \PY{n}{grid\PYZus{}size}\PY{p}{)} \PY{o}{+} \PY{n}{np}\PY{o}{.}\PY{n}{floor}\PY{p}{(}\PY{n}{grid\PYZus{}size}\PY{o}{/}\PY{l+m+mi}{2}\PY{p}{)}\PY{p}{;}
-             \PY{n}{y} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{arange}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{n}{h\PYZus{}img}\PY{o}{\PYZhy{}}\PY{n}{grid\PYZus{}size}\PY{p}{,} \PY{n}{grid\PYZus{}size}\PY{p}{)} \PY{o}{+} \PY{n}{np}\PY{o}{.}\PY{n}{floor}\PY{p}{(}\PY{n}{grid\PYZus{}size}\PY{o}{/}\PY{l+m+mi}{2}\PY{p}{)}\PY{p}{;}
-             \PY{n}{x\PYZus{}grid}\PY{p}{,} \PY{n}{y\PYZus{}grid} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{meshgrid}\PY{p}{(}\PY{n}{x}\PY{p}{,}\PY{n}{y}\PY{p}{)}\PY{p}{;}
-         
-             \PY{n}{region\PYZus{}expand} \PY{o}{=} \PY{l+m+mi}{0}
-         
-             \PY{n}{h\PYZus{}grid} \PY{o}{=} \PY{n}{x\PYZus{}grid}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}
-             \PY{n}{w\PYZus{}grid} \PY{o}{=} \PY{n}{x\PYZus{}grid}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}
-         
-             \PY{n}{U} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{p}{(}\PY{n}{h\PYZus{}grid}\PY{p}{,} \PY{n}{w\PYZus{}grid}\PY{p}{)}\PY{p}{)}
-             \PY{n}{V} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{p}{(}\PY{n}{h\PYZus{}grid}\PY{p}{,} \PY{n}{w\PYZus{}grid}\PY{p}{)}\PY{p}{)}
-             
-             \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{n}{h\PYZus{}grid}\PY{p}{)}\PY{p}{:}
-                 \PY{k}{for} \PY{n}{j} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{n}{w\PYZus{}grid}\PY{p}{)}\PY{p}{:}
-                     \PY{n}{u}\PY{p}{,}\PY{n}{v} \PY{o}{=}  \PY{n}{correlation\PYZus{}each\PYZus{}grid}\PY{p}{(}\PY{n}{img\PYZus{}series}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{I1}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,} 
-                                                  \PY{n}{img\PYZus{}series}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{I2}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,}\PY{n}{x\PYZus{}grid}\PY{p}{[}\PY{n}{i}\PY{p}{,} \PY{n}{j}\PY{p}{]}\PY{p}{,} \PY{n}{y\PYZus{}grid}\PY{p}{[}\PY{n}{i}\PY{p}{,} \PY{n}{j}\PY{p}{]}\PY{p}{,} \PY{n}{width}\PY{p}{,} \PY{n}{region\PYZus{}expand}\PY{p}{)}
-                     \PY{n}{U}\PY{p}{[}\PY{n}{i}\PY{p}{,} \PY{n}{j}\PY{p}{]} \PY{o}{=} \PY{n}{u}
-                     \PY{n}{V}\PY{p}{[}\PY{n}{i}\PY{p}{,} \PY{n}{j}\PY{p}{]} \PY{o}{=} \PY{n}{v}
-         
-         
-             \PY{n}{quiver\PYZus{}drawing}\PY{p}{(}\PY{n}{img\PYZus{}series}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{I1}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,}\PY{n}{x\PYZus{}grid}\PY{p}{,} \PY{n}{y\PYZus{}grid}\PY{p}{,} \PY{n}{U}\PY{p}{,} \PY{n}{V}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{)}
+{\color{incolor}In [{\color{incolor}18}]:} \PY{n}{estimate\PYZus{}flow}\PY{p}{(}\PY{n}{rubic300}\PY{p}{)}
+         \PY{n}{estimate\PYZus{}flow}\PY{p}{(}\PY{n}{rubic400}\PY{p}{)}
 \end{Verbatim}
 
 
-    Check the results.
-
     \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}20}]:} \PY{n}{optical\PYZus{}flow\PYZus{}estimation}\PY{p}{(}\PY{n}{sphere}\PY{p}{)}
-\end{Verbatim}
+/usr/local/lib/python2.7/dist-packages/ipykernel\_launcher.py:8: RuntimeWarning: overflow encountered in ubyte\_scalars
+  
+/usr/local/lib/python2.7/dist-packages/ipykernel\_launcher.py:13: RuntimeWarning: overflow encountered in ubyte\_scalars
+  del sys.path[0]
+/usr/local/lib/python2.7/dist-packages/ipykernel\_launcher.py:18: RuntimeWarning: overflow encountered in ubyte\_scalars
 
+    \end{Verbatim}
 
     \begin{center}
-    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_27_0.png}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_35_1.png}
     \end{center}
     { \hspace*{\fill} \\}
     
-    The result seems not really reasonable. However, in one paper called
-``Phase- Correlation Motion Estimation'' written by Yi Liang, the result
-is robuster than the image correlation. An example he post is to compare
-these two methods by estimating the bus motion as shown below.
-
-\begin{figure}
-\centering
-\includegraphics{ex2.jpg}
-\caption{caption}
-\end{figure}
-
-\begin{figure}
-\centering
-\includegraphics{ex.jpg}
-\caption{caption}
-\end{figure}
-
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_35_2.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
     \hypertarget{conclusion-and-discussion}{%
 \section{Conclusion and Discussion}\label{conclusion-and-discussion}}
 
-    From the results shown above, we can tell that the correlation method is
-not reliable in some cases. The optical flow is relatively messy
-compared to gradient method which will be explained in exercise 2. And
-the application with phase correlation is not matching the reality as
-well. After changing the grid in the code, I found that grid size
-greatly affects the performances.
+    Motion is successfully estimated with gradient method which is basically
+to solve the motion matrix using the motion gradient constraint equation
+and least-square equation.The quivers correctly reflect the direction of
+the object movement in three different image series. Compared with the
+results obtained from correlation method, this optical flow field make
+more sense and is more realistic.
 
-However, for the bus example within paper ``Phase- Correlation Motion
-Estimation'', it demonstrates that phase correlation works better than
-the image correlation does in the cases of large scale translation
-motion. Moreover, phase correlation is computationally efficient and it
-produces much smoother motion field.
-
-    \hypertarget{reference}{%
-\section{Reference}\label{reference}}
-
-    https://en.wikipedia.org/wiki/Motion\_estimation
-
-https://en.wikipedia.org/wiki/Block-matching\_algorithm
-
-https://en.wikipedia.org/wiki/Correlation\_and\_dependence
-
-Yi Liang, ``Phase- Correlation Motion Estimation'', EE392J Final
-Project, Stanford University.
+As for the exploration, although the results are not as good as the ones
+without applying edge detector, it illuminates how robust the gradient
+method is. The values of the pixels in original images are from 0 to 255
+while they are only 0 or 255 after pre-processing. In other words, most
+of the information are lost during the processing. Surprisely, most of
+the flow are still pointing to the correct direction. Moreover, without
+annoying by the background, the movement of the object is shown
+explicitly. Also, the results are slightly different with the changing
+of the threshold of the canny edge detector.
 
 
     % Add a bibliography block to the postdoc
