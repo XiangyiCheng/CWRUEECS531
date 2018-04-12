@@ -346,8 +346,10 @@ comparing and calculating based on these two frames.
     \begin{Verbatim}[commandchars=\\\{\}]
 {\color{incolor}In [{\color{incolor}2}]:} \PY{n}{seq1} \PY{o}{=} \PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{I1}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{n}{io}\PY{o}{.}\PY{n}{imread}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{data/image/seq1/frame1.png}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{as\PYZus{}grey}\PY{o}{=}\PY{n+nb+bp}{True}\PY{p}{)}\PY{p}{,} 
                 \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{I2}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{n}{io}\PY{o}{.}\PY{n}{imread}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{data/image/seq1/frame3.png}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{as\PYZus{}grey}\PY{o}{=}\PY{n+nb+bp}{True}\PY{p}{)}\PY{p}{,}
-                \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{U}\PY{l+s+s1}{\PYZsq{}} \PY{p}{:} \PY{n}{np}\PY{o}{.}\PY{n}{loadtxt}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{data/flow/seq1/flow3.u}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{dtype}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{double}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{delimiter}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{,}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{,}
-                \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{V}\PY{l+s+s1}{\PYZsq{}} \PY{p}{:} \PY{n}{np}\PY{o}{.}\PY{n}{loadtxt}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{data/flow/seq1/flow3.v}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{dtype}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{double}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{delimiter}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{,}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{\PYZcb{}}
+                \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{U}\PY{l+s+s1}{\PYZsq{}} \PY{p}{:} \PY{n}{np}\PY{o}{.}\PY{n}{loadtxt}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{data/flow/seq1/flow3.u}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{dtype}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{double}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} 
+                                 \PY{n}{delimiter}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{,}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{,}
+                \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{V}\PY{l+s+s1}{\PYZsq{}} \PY{p}{:} \PY{n}{np}\PY{o}{.}\PY{n}{loadtxt}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{data/flow/seq1/flow3.v}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{dtype}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{double}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} 
+                                 \PY{n}{pdelimiter}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{,}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{\PYZcb{}}
         
         \PY{n}{rubic} \PY{o}{=} \PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{I1}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{io}\PY{o}{.}\PY{n}{imread}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{data/rubic/rubic.0.png}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{as\PYZus{}grey}\PY{o}{=}\PY{n+nb+bp}{True}\PY{p}{)}\PY{p}{,} 
                  \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{I2}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{io}\PY{o}{.}\PY{n}{imread}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{data/rubic/rubic.5.png}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{as\PYZus{}grey}\PY{o}{=}\PY{n+nb+bp}{True}\PY{p}{)}\PY{p}{\PYZcb{}}
@@ -441,7 +443,8 @@ in this case is called motion\_estimation which is the v matrix.
                 \PY{n}{A}\PY{p}{[}\PY{n}{i}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{]} \PY{o}{=} \PY{n}{Iy}
                 \PY{n}{b}\PY{p}{[}\PY{n}{i}\PY{p}{]} \PY{o}{=} \PY{o}{\PYZhy{}}\PY{n}{It}
         
-            \PY{n}{motion\PYZus{}matrix} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{linalg}\PY{o}{.}\PY{n}{lstsq}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{matmul}\PY{p}{(}\PY{n}{A}\PY{o}{.}\PY{n}{T}\PY{p}{,} \PY{n}{A}\PY{p}{)}\PY{p}{,} \PY{n}{np}\PY{o}{.}\PY{n}{matmul}\PY{p}{(}\PY{n}{A}\PY{o}{.}\PY{n}{T}\PY{p}{,} \PY{n}{b}\PY{p}{)}\PY{p}{)}
+            \PY{n}{motion\PYZus{}matrix} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{linalg}\PY{o}{.}\PY{n}{lstsq}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{matmul}\PY{p}{(}\PY{n}{A}\PY{o}{.}\PY{n}{T}\PY{p}{,} \PY{n}{A}\PY{p}{)}\PY{p}{,} 
+                                            \PY{n}{np}\PY{o}{.}\PY{n}{matmul}\PY{p}{(}\PY{n}{A}\PY{o}{.}\PY{n}{T}\PY{p}{,} \PY{n}{b}\PY{p}{)}\PY{p}{)}
         
             \PY{n}{motion\PYZus{}estimation} \PY{o}{=} \PY{n}{motion\PYZus{}matrix}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}
             
@@ -493,8 +496,10 @@ image.
             \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{n}{h\PYZus{}grid}\PY{p}{)}\PY{p}{:}
                 \PY{k}{for} \PY{n}{j} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{n}{w\PYZus{}grid}\PY{p}{)}\PY{p}{:}
                     \PY{c+c1}{\PYZsh{} x\PYZus{}grid[i,j] is the x coordinate; y\PYZus{}grid[i,j] is the y coordinate.}
-                    \PY{n}{motion\PYZus{}estimation} \PY{o}{=}  \PY{n}{solve\PYZus{}motion\PYZus{}gradient\PYZus{}equation}\PY{p}{(}\PY{n}{img\PYZus{}series}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{I1}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{,} \PY{n}{img\PYZus{}series}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{I2}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{,}
-                                                                        \PY{n}{x\PYZus{}grid}\PY{p}{[}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{p}{]}\PY{p}{,} \PY{n}{y\PYZus{}grid}\PY{p}{[}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{p}{]}\PY{p}{,} \PY{n}{width}\PY{p}{,}\PY{n}{disx}\PY{p}{,}\PY{n}{disy}\PY{p}{)}
+                    \PY{n}{motion\PYZus{}estimation} \PY{o}{=}  
+                    \PY{n}{solve\PYZus{}motion\PYZus{}gradient\PYZus{}equation}\PY{p}{(}\PY{n}{img\PYZus{}series}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{I1}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{,}
+                                                   \PY{n}{img\PYZus{}series}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{I2}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{,}\PY{n}{x\PYZus{}grid}\PY{p}{[}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{p}{]}\PY{p}{,} 
+                                                   \PY{n}{y\PYZus{}grid}\PY{p}{[}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{p}{]}\PY{p}{,} \PY{n}{width}\PY{p}{,}\PY{n}{disx}\PY{p}{,}\PY{n}{disy}\PY{p}{)}
                     \PY{n}{U}\PY{p}{[}\PY{n}{i}\PY{p}{,} \PY{n}{j}\PY{p}{]} \PY{o}{=} \PY{n}{motion\PYZus{}estimat} \PY{o}{\PYZam{}}\PY{n}{ion}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}
                     \PY{n}{V}\PY{p}{[}\PY{n}{i}\PY{p}{,} \PY{n}{j}\PY{p}{]} \PY{o}{=} \PY{n}{motion\PYZus{}estimation}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}
         
@@ -516,7 +521,8 @@ returned back from estimate\_flow() as well as a scale scalar.
 {\color{incolor}In [{\color{incolor}6}]:} \PY{k}{def} \PY{n+nf}{quiver\PYZus{}drawing}\PY{p}{(}\PY{n}{I}\PY{p}{,} \PY{n}{x\PYZus{}grid}\PY{p}{,} \PY{n}{y\PYZus{}grid}\PY{p}{,} \PY{n}{U}\PY{p}{,} \PY{n}{V}\PY{p}{,} \PY{n}{scale}\PY{p}{)}\PY{p}{:}
             \PY{n}{fig}\PY{p}{,} \PY{n}{ax} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{subplots}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{)}\PY{p}{,} \PY{n}{dpi}\PY{o}{=}\PY{l+m+mi}{80}\PY{p}{)}
             \PY{n}{ax}\PY{o}{.}\PY{n}{imshow}\PY{p}{(}\PY{n}{I}\PY{p}{,} \PY{n}{cmap}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{gray}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
-            \PY{n}{ax}\PY{o}{.}\PY{n}{quiver}\PY{p}{(}\PY{n}{x\PYZus{}grid}\PY{p}{,} \PY{n}{y\PYZus{}grid}\PY{p}{,} \PY{n}{U}\PY{o}{*}\PY{n}{scale}\PY{p}{,} \PY{n}{V}\PY{o}{*}\PY{n}{scale}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{red}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{angles}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{xy}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{scale\PYZus{}units}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{xy}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{scale}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{)}
+            \PY{n}{ax}\PY{o}{.}\PY{n}{quiver}\PY{p}{(}\PY{n}{x\PYZus{}grid}\PY{p}{,} \PY{n}{y\PYZus{}grid}\PY{p}{,} \PY{n}{U}\PY{o}{*}\PY{n}{scale}\PY{p}{,} \PY{n}{V}\PY{o}{*}\PY{n}{scale}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{red}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}
+                      \PY{n}{angles}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{xy}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{scale\PYZus{}units}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{xy}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{scale}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{)}
             \PY{n}{ax}\PY{o}{.}\PY{n}{set\PYZus{}aspect}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{equal}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
             \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
 \end{Verbatim}
@@ -587,7 +593,8 @@ different threshold to do the image pre-processing.
          \PY{n}{rubic\PYZus{}start}\PY{o}{=}\PY{n}{cv2}\PY{o}{.}\PY{n}{imread}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{data/rubic/rubic.0.png}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
          \PY{n}{rubic\PYZus{}end}\PY{o}{=}\PY{n}{cv2}\PY{o}{.}\PY{n}{imread}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{data/rubic/rubic.5.png}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
          
-         \PY{c+c1}{\PYZsh{} canny edge detector, set different lower and upper thresholds for the detector.}
+         \PY{c+c1}{\PYZsh{} canny edge detector, set different }
+         \PY{c+c1}{\PYZsh{} lower and upper thresholds for the detector.}
          \PY{n}{rubic\PYZus{}s300}\PY{o}{=}\PY{n}{cv2}\PY{o}{.}\PY{n}{Canny}\PY{p}{(}\PY{n}{rubic\PYZus{}start}\PY{p}{,}\PY{l+m+mi}{300}\PY{p}{,}\PY{l+m+mi}{300}\PY{p}{)}
          \PY{n}{rubic\PYZus{}e300}\PY{o}{=}\PY{n}{cv2}\PY{o}{.}\PY{n}{Canny}\PY{p}{(}\PY{n}{rubic\PYZus{}end}\PY{p}{,}\PY{l+m+mi}{300}\PY{p}{,}\PY{l+m+mi}{300}\PY{p}{)}
          \PY{n}{rubic\PYZus{}s400}\PY{o}{=}\PY{n}{cv2}\PY{o}{.}\PY{n}{Canny}\PY{p}{(}\PY{n}{rubic\PYZus{}start}\PY{p}{,}\PY{l+m+mi}{400}\PY{p}{,}\PY{l+m+mi}{400}\PY{p}{)}
@@ -653,12 +660,18 @@ more sense and is more realistic.
 As for the exploration, although the results are not as good as the ones
 without applying edge detector, it illuminates how robust the gradient
 method is. The values of the pixels in original images are from 0 to 255
-while they are only 0 or 255 after pre-processing. In other words, most
-of the information are lost during the processing. Surprisely, most of
-the flow are still pointing to the correct direction. Moreover, without
-annoying by the background, the movement of the object is shown
-explicitly. Also, the results are slightly different with the changing
-of the threshold of the canny edge detector.
+while they are binary after pre-processing. In other words, most of the
+information are lost during the processing. Surprisely, most of the flow
+are still pointing to the correct direction. Moreover, without annoying
+by the background, the movement of the object is shown explicitly. Also,
+the results are slightly different with the changing of the threshold of
+the canny edge detector. The interesting field is that some quivers in
+the black area near the object are still pointing to the correct
+direction. An initial thought of it is that point actually is a key
+point in the second frame which didn't show directly on the first frame.
+I don't have time to explore more on this, but a way to solve this is to
+circle this key point on the second frame out on the first frame.
+Therefore, we would have a straightforward view of this point.
 
 
     % Add a bibliography block to the postdoc
