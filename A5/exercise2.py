@@ -77,10 +77,10 @@ def extrinsic_matrix(camera):
 
 	xcam,ycam,zcam=camera_view_unit(target,cam_pos,up)
 
-	R=np.column_stack((xcam,ycam,zcam))
-	rotation_matrix=np.vstack([R,cam_pos])
+	rotation_matrix=np.column_stack((xcam,ycam,zcam))
+	extrinsic_matrix=np.vstack([rotation_matrix,cam_pos])
 
-	return rotation_matrix
+	return extrinsic_matrix
 
 	
 def intrinsic_matrix(camera):
@@ -91,10 +91,18 @@ def intrinsic_matrix(camera):
 	fx= focal_length* width /film_width
 	fy= focal_length* height/film_height
 
+	intrinsic_matrix= [[fx,0,0],[0,fy,0],[cx,cy,1]]
+
+	return intrinsic_matrix
+
+def camera_matrix(extrinsic_matrix,intrinsic_matrix):
+	camera_matrix= np.dot(extrinsic_matrix, intrinsic_matrix)
 	
+	return camera_matrix
 
-
-#extrinsic_matrix(1)
-intrinsic_matrix(1)
+camera=1
+extrinsic_matrix=extrinsic_matrix(camera)
+intrinsic_matrix=intrinsic_matrix(camera)
+camera_matrix=camera_matrix(extrinsic_matrix,intrinsic_matrix)
 
 
