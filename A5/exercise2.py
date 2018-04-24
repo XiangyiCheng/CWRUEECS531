@@ -5,24 +5,19 @@ from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 
 
 def define_3Dpoints():
-	colors=np.random.rand(27)
-	fig=plt.figure()
-	ax=fig.add_subplot(111,projection='3d')
+	
 	x=[-0.5, 0, 0.5]
 	y=[-0.5, 0, 0.5]
 	z=[-0.5, 0, 0.5]
-	X, Y, Z = np.meshgrid(x, y, z)
+	X, Z, Y = np.meshgrid(x, y, z)
 
-	ax.scatter(X,Y,Z,marker='.',c=colors)
+	dimension=X.shape[0]*Y.shape[0]*Z.shape[0]
+	
+	colors=np.zeros((dimension,3))
+	for i in range (0, dimension):
+		colors[i,:]=np.random.rand(3)
 
-	ax.set_xlabel('X label')
-	ax.set_ylabel('y label')
-	ax.set_zlabel('z label')
-	ax.set_xlim([-3,4])
-	ax.set_ylim([-3,3])
-	ax.set_zlim([-2,3])
-
-	return ax
+	return X,Y,Z,colors
 
 
 def camera_specification():
@@ -78,7 +73,9 @@ def extrinsic_matrix(camera):
 	xcam,ycam,zcam=camera_view_unit(target,cam_pos,up)
 
 	rotation_matrix=np.column_stack((xcam,ycam,zcam))
-	extrinsic_matrix=np.vstack([rotation_matrix,cam_pos])
+	add=np.dot(np.dot(-1,cam_pos),rotation_matrix)
+
+	extrinsic_matrix=np.vstack([rotation_matrix,add])
 
 	return extrinsic_matrix
 
@@ -95,14 +92,57 @@ def intrinsic_matrix(camera):
 
 	return intrinsic_matrix
 
-def camera_matrix(extrinsic_matrix,intrinsic_matrix):
+def camera_matrix(camera,extrinsic_matrix,intrinsic_matrix):
+	extrinsic_matrix=extrinsic_matrix(camera)
+	intrinsic_matrix=intrinsic_matrix(camera)
 	camera_matrix= np.dot(extrinsic_matrix, intrinsic_matrix)
-	
+
 	return camera_matrix
 
-camera=1
-extrinsic_matrix=extrinsic_matrix(camera)
-intrinsic_matrix=intrinsic_matrix(camera)
-camera_matrix=camera_matrix(extrinsic_matrix,intrinsic_matrix)
 
+def conv_2Dimage(camera,camera_matrix):
+	X,Y,Z,colors=define_3Dpoints()
+	X_reshape=X.reshape(1,-1)
+	Y_reshape=Y.reshape(1,-1)
+	Z_reshape=Z.reshape(1,-1)
+	_,dimension=X_reshape.shape
+
+	point=np.column_stack((X_reshape,Y_reshape,Z_reshape,np.ones((1,dimension))))
+	point_reshape=np.transpose(point.reshape(4,-1))
+	pt=np.dot(point_reshape,camera_matrix)
+	object_x=np.transpose(pt[:,0]/pt[:,2])
+	object_y=np.transpose(pt[:,1]/pt[:,2])
+
+	#object_2D=np.column_stack((object_x,object_y))
+
+	return object_x,object_y,colors
+
+
+def plot_2Dimage(object_x,object_y,colors):
+	_,_,_,_,_,_,_,width,height=camera_specification()
+	color_matrix= np.zeros((height,width,3))
+	object_number=object_x.shape[0]
+	show_region=5
+
+	for i in range (0,object_number):
+		r1= int(max(1,np.floor(object_y[i]-show_region))) 
+		r2= int(min(height,np.ceil(object_y[i]+show_region)))
+		c1= int(max(1,np.floor(object_x[i]-show_region)))
+		c2= int(min(width,np.ceil(object_x[i]+show_region)))
+
+		for r in range (r1,r2+1):
+			for c in range (c1,c2+1):
+				if (r-object_y[i])**2+(c-object_x[i])**2< show_region**2:
+					color_matrix[r,c,:]=colors[i,:]
+	
+					
+	plt.imshow(color_matrix)
+	plt.show()
+
+
+
+camera=1
+camera_matrix=camera_matrix(camera,extrinsic_matrix,intrinsic_matrix)
+object_x,object_y,colors=conv_2Dimage(camera,camera_matrix)
+plot_2Dimage(object_x,object_y,colors)
 

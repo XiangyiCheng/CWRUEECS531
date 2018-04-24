@@ -5,13 +5,18 @@ from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 
 
 def define_3Dpoints():
-	colors=np.random.rand(27)
+	
 	fig=plt.figure()
 	ax=fig.add_subplot(111,projection='3d')
 	x=[-0.5, 0, 0.5]
 	y=[-0.5, 0, 0.5]
 	z=[-0.5, 0, 0.5]
-	X, Y, Z = np.meshgrid(x, y, z)
+	X, Z, Y = np.meshgrid(x, y, z)
+	dimension=X.shape[0]*Y.shape[0]*Z.shape[0]
+	
+	colors=np.zeros((dimension,3))
+	for i in range (0, dimension):
+		colors[i,:]=np.random.rand(3)
 
 	ax.scatter(X,Y,Z,marker='.',c=colors)
 
@@ -21,7 +26,7 @@ def define_3Dpoints():
 	ax.set_xlim([-3,4])
 	ax.set_ylim([-3,3])
 	ax.set_zlim([-2,3])
-
+	
 	return ax
 
 
