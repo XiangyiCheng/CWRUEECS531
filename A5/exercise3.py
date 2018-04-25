@@ -190,6 +190,7 @@ def reconstruction3D(object1_2D,object2_2D,camera1_matrix,camera2_matrix):
 
 
 
+
 camera=1
 camera1_matrix=camera_matrix(camera,extrinsic_matrix,intrinsic_matrix)
 object1_2D,_,_,_=conv_2Dimage(camera,camera1_matrix)
@@ -197,4 +198,12 @@ object1_2D,_,_,_=conv_2Dimage(camera,camera1_matrix)
 camera=2
 camera2_matrix=camera_matrix(camera,extrinsic_matrix,intrinsic_matrix)
 object2_2D,_,_,_=conv_2Dimage(camera,camera2_matrix)
-reconstruction3D(object1_2D,object2_2D,camera1_matrix,camera2_matrix)
+#reconstruction3D(object1_2D,object2_2D,camera1_matrix,camera2_matrix)
+
+sigma=0.75
+object1_2D_noise= object1_2D+ sigma* np.random.rand(object1_2D.shape[0],object1_2D.shape[1])
+object2_2D_noise= object2_2D+ sigma* np.random.rand(object1_2D.shape[0],object1_2D.shape[1])
+#reconstruction3D(object1_2D_noise,object2_2D_noise,camera1_matrix,camera2_matrix)
+camera1_matrix_noise= camera1_matrix+ sigma* np.random.rand(camera1_matrix.shape[0],camera1_matrix.shape[1])
+camera2_matrix_noise= camera2_matrix+ sigma* np.random.rand(camera2_matrix.shape[0],camera2_matrix.shape[1])
+reconstruction3D(object1_2D,object2_2D,camera1_matrix_noise,camera2_matrix_noise)

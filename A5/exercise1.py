@@ -121,9 +121,10 @@ def plot_camera(ax,camera):
 ax=define_3Dpoints()
 plot_camera(ax,1)
 plot_camera(ax,2)
-#plt.show()
+
 #ax.view_init(elev=35,azim=65)
-#ax.view_init(elev=30,azim=30)
+ax.view_init(elev=37.5,azim=34)
+
 
 plt.show()
 #camera_specification()
