@@ -88,6 +88,7 @@ def intrinsic_matrix(camera):
 	fx= focal_length* width /film_width
 	fy= focal_length* height/film_height
 
+	# K matrix
 	intrinsic_matrix= [[fx,0,0],[0,fy,0],[cx,cy,1]]
 
 	return intrinsic_matrix
@@ -97,6 +98,7 @@ def camera_matrix(camera,extrinsic_matrix,intrinsic_matrix):
 	intrinsic_matrix=intrinsic_matrix(camera)
 	camera_matrix= np.dot(extrinsic_matrix, intrinsic_matrix)
 
+	# P matrix
 	return camera_matrix
 
 
@@ -120,23 +122,27 @@ def conv_2Dimage(camera,camera_matrix):
 
 def plot_2Dimage(object_x,object_y,colors):
 	_,_,_,_,_,_,_,width,height=camera_specification()
-	color_matrix= np.zeros((height,width,3))
+	color_matrix_white= np.ones((height,width,3))
+	color_matrix_black= np.zeros((height,width,3))
 	object_number=object_x.shape[0]
 	show_region=5
 
 	for i in range (0,object_number):
-		r1= int(max(1,np.floor(object_y[i]-show_region))) 
-		r2= int(min(height,np.ceil(object_y[i]+show_region)))
-		c1= int(max(1,np.floor(object_x[i]-show_region)))
-		c2= int(min(width,np.ceil(object_x[i]+show_region)))
+		r1= int(max(0,np.floor(object_y[i]-show_region))) 
+		r2= int(min(height-1,np.ceil(object_y[i]+show_region)))
+		c1= int(max(0,np.floor(object_x[i]-show_region)))
+		c2= int(min(width-1,np.ceil(object_x[i]+show_region)))
 
 		for r in range (r1,r2+1):
 			for c in range (c1,c2+1):
 				if (r-object_y[i])**2+(c-object_x[i])**2< show_region**2:
-					color_matrix[r,c,:]=colors[i,:]
+					color_matrix_black[r,c,:]=colors[i,:]
+					color_matrix_white[r,c,:]=colors[i,:]
 	
-					
-	plt.imshow(color_matrix)
+	plt.subplot(1,2,1)				
+	plt.imshow(color_matrix_black)
+	plt.subplot(1,2,2)				
+	plt.imshow(color_matrix_white)
 	plt.show()
 
 

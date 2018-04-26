@@ -90,10 +90,10 @@ def plot_camera(ax,camera):
 	x= 0.5* film_width*d/focal_length
 	y= 0.5* film_height*d/focal_length
 
-	p1 = cam_pos + x* xcam + y* ycam + d* zcam;
-	p2 = cam_pos + x* xcam - y* ycam + d* zcam;
-	p3 = cam_pos - x* xcam - y* ycam + d* zcam;
-	p4 = cam_pos - x* xcam + y* ycam + d* zcam;
+	p1 = cam_pos + x* xcam + y* ycam + d* zcam
+	p2 = cam_pos + x* xcam - y* ycam + d* zcam
+	p3 = cam_pos - x* xcam - y* ycam + d* zcam
+	p4 = cam_pos - x* xcam + y* ycam + d* zcam
 
 	# connect these 4 points
 	plotx=[p1[0],p2[0],p3[0],p4[0],p1[0]]
@@ -123,7 +123,7 @@ plot_camera(ax,1)
 plot_camera(ax,2)
 
 #ax.view_init(elev=35,azim=65)
-ax.view_init(elev=37.5,azim=34)
+#ax.view_init(elev=37.5,azim=34)
 
 
 plt.show()

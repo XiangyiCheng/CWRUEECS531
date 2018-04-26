@@ -121,27 +121,6 @@ def conv_2Dimage(camera,camera_matrix):
 	return object_2D,object_x,object_y,colors
 
 
-def plot_2Dimage(object_x,object_y,colors):
-	_,_,_,_,_,_,_,width,height=camera_specification()
-	color_matrix= np.zeros((height,width,3))
-	object_number=object_x.shape[0]
-	show_region=5
-
-	for i in range (0,object_number):
-		r1= int(max(1,np.floor(object_y[i]-show_region))) 
-		r2= int(min(height,np.ceil(object_y[i]+show_region)))
-		c1= int(max(1,np.floor(object_x[i]-show_region)))
-		c2= int(min(width,np.ceil(object_x[i]+show_region)))
-
-		for r in range (r1,r2+1):
-			for c in range (c1,c2+1):
-				if (r-object_y[i])**2+(c-object_x[i])**2< show_region**2:
-					color_matrix[r,c,:]=colors[i,:]
-	
-					
-	plt.imshow(color_matrix)
-	plt.show()
-
 
 
 def triangulation(object1_2D,object2_2D,camera1_matrix,camera2_matrix):
@@ -194,11 +173,11 @@ def reconstruction3D(object1_2D,object2_2D,camera1_matrix,camera2_matrix):
 camera=1
 camera1_matrix=camera_matrix(camera,extrinsic_matrix,intrinsic_matrix)
 object1_2D,_,_,_=conv_2Dimage(camera,camera1_matrix)
-#plot_2Dimage(object_x,object_y,colors)
+
 camera=2
 camera2_matrix=camera_matrix(camera,extrinsic_matrix,intrinsic_matrix)
 object2_2D,_,_,_=conv_2Dimage(camera,camera2_matrix)
-#reconstruction3D(object1_2D,object2_2D,camera1_matrix,camera2_matrix)
+reconstruction3D(object1_2D,object2_2D,camera1_matrix,camera2_matrix)
 
 sigma=0.75
 object1_2D_noise= object1_2D+ sigma* np.random.rand(object1_2D.shape[0],object1_2D.shape[1])
