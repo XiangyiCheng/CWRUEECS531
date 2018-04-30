@@ -141,7 +141,7 @@
     \def\gt{>}
     \def\lt{<}
     % Document parameters
-    \title{Vocal Cord Detection}
+    \title{Vocal Cords Detection}
     
     
     
@@ -321,7 +321,7 @@ sum of pixels of areas inside the rectangle, which can be at any
 position and scale within the original image, as shown below. The
 obvious advantage of a haar-like feature over other features is the fast
 computation speed. Therefore, haar-like features are proper to be used
-in real-time detection. \includegraphics{haar.png}
+in real-time detection. \includegraphics{haar2.png}
 
 After cascade classifier is trained, the classifier will be implemented
 to detect the vocal cords on a series of images for testing. The results
@@ -353,7 +353,8 @@ stored into two different folders.
          \PY{k+kn}{import} \PY{n+nn}{matplotlib.image} \PY{k+kn}{as} \PY{n+nn}{mping}
          
          \PY{k}{def} \PY{n+nf}{randomly\PYZus{}select\PYZus{}test\PYZus{}image}\PY{p}{(}\PY{p}{)}\PY{p}{:}
-             \PY{n}{image\PYZus{}list}\PY{o}{=}\PY{n}{os}\PY{o}{.}\PY{n}{listdir}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{vc\PYZus{}training/raw\PYZus{}images/Closed\PYZus{}vocal\PYZus{}cord\PYZus{}Expansion}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+             \PY{n}{image\PYZus{}list}\PY{o}{=}\PY{n}{os}\PY{o}{.}\PY{n}{listdir}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{vc\PYZus{}training/raw\PYZus{}images/}
+                                   \PY{n}{Closed\PYZus{}vocal\PYZus{}cord\PYZus{}Expansion}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{)}
              \PY{c+c1}{\PYZsh{}image\PYZus{}list=os.listdir(\PYZsq{}vc\PYZus{}training/raw\PYZus{}images/Open\PYZus{}vocal\PYZus{}cord\PYZsq{})}
              \PY{n}{select\PYZus{}num}\PY{o}{=}\PY{l+m+mi}{74}
              \PY{n}{select\PYZus{}image}\PY{o}{=}\PY{n}{random}\PY{o}{.}\PY{n}{sample}\PY{p}{(}\PY{n}{image\PYZus{}list}\PY{p}{,}\PY{n}{select\PYZus{}num}\PY{p}{)}
@@ -364,14 +365,20 @@ stored into two different folders.
                  \PY{n}{os}\PY{o}{.}\PY{n}{makedirs}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{test\PYZus{}resized}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
              \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range} \PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,}\PY{n}{select\PYZus{}num}\PY{p}{)}\PY{p}{:}
                  \PY{k}{try}\PY{p}{:}
-                     \PY{c+c1}{\PYZsh{}pre\PYZus{}name= \PYZsq{}vc\PYZus{}training/raw\PYZus{}images/Open\PYZus{}vocal\PYZus{}cord/\PYZsq{}+ str(select\PYZus{}image[i])}
-                     \PY{n}{pre\PYZus{}name}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{vc\PYZus{}training/raw\PYZus{}images/Closed\PYZus{}vocal\PYZus{}cord\PYZus{}Expansion/}\PY{l+s+s1}{\PYZsq{}}\PY{o}{+}\PY{n+nb}{str}\PY{p}{(}\PY{n}{select\PYZus{}image}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{)}
-                     \PY{n}{new\PYZus{}name}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{vc\PYZus{}training/test\PYZus{}pos\PYZus{}img/}\PY{l+s+s1}{\PYZsq{}}\PY{o}{+}\PY{n+nb}{str}\PY{p}{(}\PY{n}{test\PYZus{}image\PYZus{}num}\PY{p}{)}\PY{o}{+}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{.jpg}\PY{l+s+s1}{\PYZsq{}}
+                     \PY{c+c1}{\PYZsh{}pre\PYZus{}name= \PYZsq{}vc\PYZus{}training/raw\PYZus{}images/Open\PYZus{}vocal\PYZus{}cord/\PYZsq{}+ }
+                     \PY{n+nb}{str}\PY{p}{(}\PY{n}{select\PYZus{}image}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{)}
+                     \PY{n}{pre\PYZus{}name}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{vc\PYZus{}training/raw\PYZus{}images/}
+                                   \PY{n}{Closed\PYZus{}vocal\PYZus{}cord\PYZus{}Expansion}\PY{o}{/}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{+}
+                     \PY{n+nb}{str}\PY{p}{(}\PY{n}{select\PYZus{}image}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{)}
+                     \PY{n}{new\PYZus{}name}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{vc\PYZus{}training/test\PYZus{}pos\PYZus{}img/}\PY{l+s+s1}{\PYZsq{}}\PY{o}{+}
+                                   \PY{n+nb}{str}\PY{p}{(}\PY{n}{test\PYZus{}image\PYZus{}num}\PY{p}{)}\PY{o}{+}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{.jpg}\PY{l+s+s1}{\PYZsq{}}
          
                      \PY{n}{os}\PY{o}{.}\PY{n}{rename}\PY{p}{(}\PY{n}{pre\PYZus{}name}\PY{p}{,}\PY{n}{new\PYZus{}name}\PY{p}{)}
-                     \PY{c+c1}{\PYZsh{}raw\PYZus{}test\PYZus{}image=cv2.imread(\PYZsq{}test/\PYZsq{}+str(test\PYZus{}image\PYZus{}num)+\PYZsq{}.jpg\PYZsq{})}
+                     \PY{c+c1}{\PYZsh{}raw\PYZus{}test\PYZus{}image=cv2.imread(\PYZsq{}test/\PYZsq{}+}
+                                   \PY{c+c1}{\PYZsh{}str(test\PYZus{}image\PYZus{}num)+\PYZsq{}.jpg\PYZsq{})}
                      \PY{c+c1}{\PYZsh{}resized\PYZus{}image=cv2.resize(raw\PYZus{}test\PYZus{}image,(50,50))}
-                     \PY{c+c1}{\PYZsh{}cv2.imwrite(\PYZsq{}test1/\PYZsq{}+str(test\PYZus{}image\PYZus{}num)+\PYZsq{}.jpg\PYZsq{},raw\PYZus{}test\PYZus{}image)}
+                     \PY{c+c1}{\PYZsh{}cv2.imwrite(\PYZsq{}test1/\PYZsq{}+str(test\PYZus{}image\PYZus{}num)+}
+                                   \PY{c+c1}{\PYZsh{}\PYZsq{}.jpg\PYZsq{},raw\PYZus{}test\PYZus{}image)}
                      \PY{n}{test\PYZus{}image\PYZus{}num}\PY{o}{+}\PY{o}{=}\PY{l+m+mi}{1}
                  \PY{k}{except} \PY{n+ne}{Exception} \PY{k}{as} \PY{n}{e}\PY{p}{:}
                      \PY{k}{print} \PY{n+nb}{str}\PY{p}{(}\PY{n}{e}\PY{p}{)}
@@ -394,9 +401,12 @@ images into the same size and modify the color.
              \PY{n}{pic\PYZus{}num}\PY{o}{=}\PY{l+m+mi}{1}
              \PY{k}{for} \PY{n}{img} \PY{o+ow}{in} \PY{n}{os}\PY{o}{.}\PY{n}{listdir}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{vc\PYZus{}training/raw\PYZus{}images/pos\PYZus{}target}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{:}
                  \PY{k}{try}\PY{p}{:}
-                     \PY{n}{img}\PY{o}{=}\PY{n}{cv2}\PY{o}{.}\PY{n}{imread}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{vc\PYZus{}training/raw\PYZus{}images/pos\PYZus{}target/}\PY{l+s+s1}{\PYZsq{}}\PY{o}{+}\PY{n+nb}{str}\PY{p}{(}\PY{n}{img}\PY{p}{)}\PY{p}{,}\PY{n}{cv2}\PY{o}{.}\PY{n}{IMREAD\PYZus{}GRAYSCALE}\PY{p}{)}
+                     \PY{n}{img}\PY{o}{=}\PY{n}{cv2}\PY{o}{.}\PY{n}{imread}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{vc\PYZus{}training/raw\PYZus{}images/}
+                                    \PY{n}{pos\PYZus{}target}\PY{o}{/}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{+str(img),}
+                                    \PY{n}{cv2}\PY{o}{.}\PY{n}{IMREAD\PYZus{}GRAYSCALE}\PY{p}{)}
                      \PY{n}{resized\PYZus{}img}\PY{o}{=}\PY{n}{cv2}\PY{o}{.}\PY{n}{resize}\PY{p}{(}\PY{n}{img}\PY{p}{,}\PY{p}{(}\PY{l+m+mi}{50}\PY{p}{,}\PY{l+m+mi}{50}\PY{p}{)}\PY{p}{)}
-                     \PY{n}{cv2}\PY{o}{.}\PY{n}{imwrite}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{vc\PYZus{}training/pos5050/}\PY{l+s+s1}{\PYZsq{}}\PY{o}{+}\PY{n+nb}{str}\PY{p}{(}\PY{n}{pic\PYZus{}num}\PY{p}{)}\PY{o}{+}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{.jpg}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{resized\PYZus{}img}\PY{p}{)}
+                     \PY{n}{cv2}\PY{o}{.}\PY{n}{imwrite}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{vc\PYZus{}training/pos5050/}\PY{l+s+s1}{\PYZsq{}}\PY{o}{+}\PY{n+nb}{str}\PY{p}{(}\PY{n}{pic\PYZus{}num}\PY{p}{)}\PY{o}{+}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{.jpg}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}
+                                 \PY{n}{resized\PYZus{}img}\PY{p}{)}
                      \PY{n}{pic\PYZus{}num}\PY{o}{+}\PY{o}{=}\PY{l+m+mi}{1}
                  \PY{k}{except} \PY{n+ne}{Exception} \PY{k}{as} \PY{n}{e}\PY{p}{:}
                      \PY{k}{print} \PY{n+nb}{str}\PY{p}{(}\PY{n}{e}\PY{p}{)}
@@ -406,9 +416,11 @@ images into the same size and modify the color.
              \PY{n}{pic\PYZus{}num}\PY{o}{=}\PY{l+m+mi}{1173}
              \PY{k}{for} \PY{n}{img} \PY{o+ow}{in} \PY{n}{os}\PY{o}{.}\PY{n}{listdir}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{vc\PYZus{}training/neg}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{:}
                  \PY{k}{try}\PY{p}{:}
-                     \PY{n}{img}\PY{o}{=}\PY{n}{cv2}\PY{o}{.}\PY{n}{imread}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{vc\PYZus{}training/neg/}\PY{l+s+s1}{\PYZsq{}}\PY{o}{+}\PY{n+nb}{str}\PY{p}{(}\PY{n}{img}\PY{p}{)}\PY{p}{,}\PY{n}{cv2}\PY{o}{.}\PY{n}{IMREAD\PYZus{}GRAYSCALE}\PY{p}{)}
+                     \PY{n}{img}\PY{o}{=}\PY{n}{cv2}\PY{o}{.}\PY{n}{imread}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{vc\PYZus{}training/neg/}\PY{l+s+s1}{\PYZsq{}}\PY{o}{+}\PY{n+nb}{str}\PY{p}{(}\PY{n}{img}\PY{p}{)}\PY{p}{,}
+                                    \PY{n}{cv2}\PY{o}{.}\PY{n}{IMREAD\PYZus{}GRAYSCALE}\PY{p}{)}
                      \PY{n}{resized\PYZus{}img}\PY{o}{=}\PY{n}{cv2}\PY{o}{.}\PY{n}{resize}\PY{p}{(}\PY{n}{img}\PY{p}{,}\PY{p}{(}\PY{l+m+mi}{50}\PY{p}{,}\PY{l+m+mi}{50}\PY{p}{)}\PY{p}{)}
-                     \PY{n}{cv2}\PY{o}{.}\PY{n}{imwrite}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{vc\PYZus{}training/neg/}\PY{l+s+s1}{\PYZsq{}}\PY{o}{+}\PY{n+nb}{str}\PY{p}{(}\PY{n}{pic\PYZus{}num}\PY{p}{)}\PY{o}{+}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{.jpg}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{resized\PYZus{}img}\PY{p}{)}
+                     \PY{n}{cv2}\PY{o}{.}\PY{n}{imwrite}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{vc\PYZus{}training/neg/}\PY{l+s+s1}{\PYZsq{}}\PY{o}{+}\PY{n+nb}{str}\PY{p}{(}\PY{n}{pic\PYZus{}num}\PY{p}{)}\PY{o}{+}
+                                 \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{.jpg}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{resized\PYZus{}img}\PY{p}{)}
                      \PY{n}{pic\PYZus{}num}\PY{o}{+}\PY{o}{=}\PY{l+m+mi}{1}
                  \PY{k}{except} \PY{n+ne}{Exception} \PY{k}{as} \PY{n}{e}\PY{p}{:}
                      \PY{k}{print} \PY{n+nb}{str}\PY{p}{(}\PY{n}{e}\PY{p}{)}
@@ -484,7 +496,7 @@ process. The folder data recieves all the trained outcome files. The
 stage number is set to 10 so that we can have a relatively high accuracy
 file.
 opencv_traincascade -data data -vec positives.vec -bg bg.txt -numPos 600 -numNeg 300 -numStages 10 -w 50 -h 50
-    The trained file is \includegraphics{file.png}
+    The trained file at the 10 stage is \includegraphics{file.png}
 
     \hypertarget{detection-testing}{%
 \section{Detection Testing}\label{detection-testing}}
@@ -494,7 +506,8 @@ how to detect one image with the trained file.
 
     \begin{Verbatim}[commandchars=\\\{\}]
 {\color{incolor}In [{\color{incolor}4}]:} \PY{k}{def} \PY{n+nf}{detect\PYZus{}vocal\PYZus{}cord\PYZus{}from\PYZus{}image}\PY{p}{(}\PY{p}{)}\PY{p}{:}
-            \PY{n}{vocal\PYZus{}cord\PYZus{}cascade}\PY{o}{=}\PY{n}{cv2}\PY{o}{.}\PY{n}{CascadeClassifier}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{vc\PYZus{}training/cascade\PYZus{}10\PYZus{}stage5050.xml}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+            \PY{n}{vocal\PYZus{}cord\PYZus{}cascade}\PY{o}{=}\PY{n}{cv2}\PY{o}{.}\PY{n}{CascadeClassifier}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{vc\PYZus{}training/}
+                                                     \PY{n}{cascade\PYZus{}10\PYZus{}stage5050}\PY{o}{.}\PY{n}{xml}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{)}
             \PY{n}{img\PYZus{}path}\PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{vc\PYZus{}training/test\PYZus{}pos\PYZus{}img/8.jpg}\PY{l+s+s1}{\PYZsq{}}
             \PY{n}{img}\PY{o}{=}\PY{n}{cv2}\PY{o}{.}\PY{n}{imread}\PY{p}{(}\PY{n}{img\PYZus{}path}\PY{p}{)}
             \PY{n}{gray\PYZus{}img}\PY{o}{=}\PY{n}{cv2}\PY{o}{.}\PY{n}{cvtColor}\PY{p}{(}\PY{n}{img}\PY{p}{,}\PY{n}{cv2}\PY{o}{.}\PY{n}{COLOR\PYZus{}BGR2GRAY}\PY{p}{)}
@@ -505,10 +518,12 @@ how to detect one image with the trained file.
                 \PY{k}{print} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Width:}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{w}
                 \PY{k}{print} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Height:}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{h}
                 
-                \PY{c+c1}{\PYZsh{} the image to draw, starting point, ending point, color, line thickness.}
+                \PY{c+c1}{\PYZsh{} the image to draw, starting point, }
+                \PY{c+c1}{\PYZsh{} ending point, color, line thickness.}
                 \PY{n}{cv2}\PY{o}{.}\PY{n}{rectangle}\PY{p}{(}\PY{n}{img}\PY{p}{,}\PY{p}{(}\PY{n}{x}\PY{p}{,}\PY{n}{y}\PY{p}{)}\PY{p}{,}\PY{p}{(}\PY{n}{x}\PY{o}{+}\PY{n}{w}\PY{p}{,}\PY{n}{y}\PY{o}{+}\PY{n}{h}\PY{p}{)}\PY{p}{,}\PY{p}{(}\PY{l+m+mi}{255}\PY{p}{,}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{0}\PY{p}{)}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{)} 
                 \PY{n}{font}\PY{o}{=}\PY{n}{cv2}\PY{o}{.}\PY{n}{FONT\PYZus{}HERSHEY\PYZus{}SIMPLEX}
-                \PY{n}{cv2}\PY{o}{.}\PY{n}{putText}\PY{p}{(}\PY{n}{img}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{vocal cord}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{p}{(}\PY{n}{x}\PY{p}{,}\PY{n}{y}\PY{o}{\PYZhy{}}\PY{l+m+mi}{5}\PY{p}{)}\PY{p}{,}\PY{n}{font}\PY{p}{,}\PY{l+m+mf}{0.4}\PY{p}{,}\PY{p}{(}\PY{l+m+mi}{200}\PY{p}{,}\PY{l+m+mi}{255}\PY{p}{,}\PY{l+m+mi}{255}\PY{p}{)}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{,}\PY{n}{cv2}\PY{o}{.}\PY{n}{LINE\PYZus{}AA}\PY{p}{)}
+                \PY{n}{cv2}\PY{o}{.}\PY{n}{putText}\PY{p}{(}\PY{n}{img}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{vocal cord}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{p}{(}\PY{n}{x}\PY{p}{,}\PY{n}{y}\PY{o}{\PYZhy{}}\PY{l+m+mi}{5}\PY{p}{)}\PY{p}{,}\PY{n}{font}\PY{p}{,}
+                            \PY{l+m+mf}{0.4}\PY{p}{,}\PY{p}{(}\PY{l+m+mi}{200}\PY{p}{,}\PY{l+m+mi}{255}\PY{p}{,}\PY{l+m+mi}{255}\PY{p}{)}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{,}\PY{n}{cv2}\PY{o}{.}\PY{n}{LINE\PYZus{}AA}\PY{p}{)}
             
             \PY{n}{cv2}\PY{o}{.}\PY{n}{imwrite}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{result/vocal\PYZus{}cord\PYZus{}detection.jpg}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{img}\PY{p}{)}
             \PY{n}{img1}\PY{o}{=}\PY{n}{mping}\PY{o}{.}\PY{n}{imread}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{result/vocal\PYZus{}cord\PYZus{}detection.jpg}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
@@ -534,12 +549,13 @@ Height: 50
     \end{center}
     { \hspace*{\fill} \\}
     
-    To detect more images, I also develop a code to detect the testing
+    To detect more images, I also developed a code to detect the testing
 images into the certain folder.
 
     \begin{Verbatim}[commandchars=\\\{\}]
 {\color{incolor}In [{\color{incolor}15}]:} \PY{k}{def} \PY{n+nf}{detect\PYZus{}vocal\PYZus{}cord\PYZus{}from\PYZus{}folder}\PY{p}{(}\PY{p}{)}\PY{p}{:}
-             \PY{n}{vocal\PYZus{}cord\PYZus{}cascade}\PY{o}{=}\PY{n}{cv2}\PY{o}{.}\PY{n}{CascadeClassifier}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{vc\PYZus{}training/cascade\PYZus{}10\PYZus{}stage5050.xml}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+             \PY{n}{vocal\PYZus{}cord\PYZus{}cascade}\PY{o}{=}\PY{n}{cv2}\PY{o}{.}\PY{n}{CascadeClassifier}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{vc\PYZus{}training/}
+                                                      \PY{n}{cascade\PYZus{}10\PYZus{}stage5050}\PY{o}{.}\PY{n}{xml}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{)}
          
              \PY{n}{scale\PYZus{}factor}\PY{o}{=}\PY{l+m+mi}{10}
              \PY{n}{min\PYZus{}neighbors}\PY{o}{=}\PY{l+m+mi}{60}
@@ -548,13 +564,15 @@ images into the certain folder.
                  \PY{n}{img1}\PY{o}{=} \PY{n}{cv2}\PY{o}{.}\PY{n}{imread}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{examples1/}\PY{l+s+s1}{\PYZsq{}}\PY{o}{+}\PY{n+nb}{str}\PY{p}{(}\PY{n}{img}\PY{p}{)}\PY{p}{)}
                  \PY{n}{cv2}\PY{o}{.}\PY{n}{imshow}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{1}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{img1}\PY{p}{)}
                  \PY{n}{gray\PYZus{}img}\PY{o}{=}\PY{n}{cv2}\PY{o}{.}\PY{n}{cvtColor}\PY{p}{(}\PY{n}{img1}\PY{p}{,}\PY{n}{cv2}\PY{o}{.}\PY{n}{COLOR\PYZus{}BGR2GRAY}\PY{p}{)}
-                 \PY{n}{vocal\PYZus{}cord}\PY{o}{=}\PY{n}{vocal\PYZus{}cord\PYZus{}cascade}\PY{o}{.}\PY{n}{detectMultiScale}\PY{p}{(}\PY{n}{img1}\PY{p}{,}\PY{n}{scale\PYZus{}factor}\PY{p}{,}\PY{n}{min\PYZus{}neighbors}\PY{p}{)}
+                 \PY{n}{vocal\PYZus{}cord}\PY{o}{=}\PY{n}{vocal\PYZus{}cord\PYZus{}cascade}\PY{o}{.}\PY{n}{detectMultiScale}\PY{p}{(}\PY{n}{img1}\PY{p}{,}
+                                                 \PY{n}{scale\PYZus{}factor}\PY{p}{,}\PY{n}{min\PYZus{}neighbors}\PY{p}{)}
                 
                  \PY{k}{for} \PY{p}{(}\PY{n}{x}\PY{p}{,}\PY{n}{y}\PY{p}{,}\PY{n}{w}\PY{p}{,}\PY{n}{h}\PY{p}{)} \PY{o+ow}{in} \PY{n}{vocal\PYZus{}cord}\PY{p}{:}
                      \PY{n}{cv2}\PY{o}{.}\PY{n}{rectangle}\PY{p}{(}\PY{n}{img1}\PY{p}{,}\PY{p}{(}\PY{n}{x}\PY{p}{,}\PY{n}{y}\PY{p}{)}\PY{p}{,}\PY{p}{(}\PY{n}{x}\PY{o}{+}\PY{n}{w}\PY{p}{,}\PY{n}{y}\PY{o}{+}\PY{n}{h}\PY{p}{)}\PY{p}{,}\PY{p}{(}\PY{l+m+mi}{255}\PY{p}{,}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{0}\PY{p}{)}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{)}
          
                      \PY{n}{font}\PY{o}{=}\PY{n}{cv2}\PY{o}{.}\PY{n}{FONT\PYZus{}HERSHEY\PYZus{}SIMPLEX}
-                     \PY{n}{cv2}\PY{o}{.}\PY{n}{putText}\PY{p}{(}\PY{n}{img1}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{vocal cord}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{p}{(}\PY{n}{x}\PY{p}{,}\PY{n}{y}\PY{o}{\PYZhy{}}\PY{l+m+mi}{5}\PY{p}{)}\PY{p}{,}\PY{n}{font}\PY{p}{,}\PY{l+m+mf}{0.4}\PY{p}{,}\PY{p}{(}\PY{l+m+mi}{200}\PY{p}{,}\PY{l+m+mi}{255}\PY{p}{,}\PY{l+m+mi}{255}\PY{p}{)}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{,}\PY{n}{cv2}\PY{o}{.}\PY{n}{LINE\PYZus{}AA}\PY{p}{)}
+                     \PY{n}{cv2}\PY{o}{.}\PY{n}{putText}\PY{p}{(}\PY{n}{img1}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{vocal cord}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{p}{(}\PY{n}{x}\PY{p}{,}\PY{n}{y}\PY{o}{\PYZhy{}}\PY{l+m+mi}{5}\PY{p}{)}\PY{p}{,}\PY{n}{font}\PY{p}{,}
+                                 \PY{l+m+mf}{0.4}\PY{p}{,}\PY{p}{(}\PY{l+m+mi}{200}\PY{p}{,}\PY{l+m+mi}{255}\PY{p}{,}\PY{l+m+mi}{255}\PY{p}{)}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{,}\PY{n}{cv2}\PY{o}{.}\PY{n}{LINE\PYZus{}AA}\PY{p}{)}
                      
                  \PY{n}{cv2}\PY{o}{.}\PY{n}{imwrite}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{result/}\PY{l+s+s1}{\PYZsq{}}\PY{o}{+}\PY{n}{img}\PY{p}{,}\PY{n}{img1}\PY{p}{)}
                  
@@ -562,8 +580,8 @@ images into the certain folder.
 \end{Verbatim}
 
 
-    Since there are 100 testing images, I choose 6 of them to show the
-results here.
+    Since it is hard to show the results of those 100 testing images in the
+notebook, I choose 6 of them to show the results here.
 
     \begin{Verbatim}[commandchars=\\\{\}]
 {\color{incolor}In [{\color{incolor}44}]:} \PY{k}{def} \PY{n+nf}{show\PYZus{}images}\PY{p}{(}\PY{p}{)}\PY{p}{:}
@@ -622,38 +640,48 @@ as well.
     \end{center}
     { \hspace*{\fill} \\}
     
+    The accuracy of the detection will be analyzied in the latter part of
+the notebook.
+
     \hypertarget{roc-curve-and-accuracy}{%
 \section{ROC Curve and Accuracy}\label{roc-curve-and-accuracy}}
 
-    The ROC curve is drawn in MATLAB based on the true positive rate (TPR)
-and the false positive rate (FPR) on the stage 10, as shown below.
-\includegraphics{ROC.png}
+    The ROC curve is drawn in MATLAB by plotting on the true positive rate
+(TPR) and the false positive rate (FPR) on the stage 10 at the various
+threshold settings, as shown below. \includegraphics{ROC.png}
 
 With the changing of the threshold, the TPR and FPR are changing as
-shown in the ROC curve. We can see that the accuracy of the training is
-accepable that TPR is above 85\% when FPR is at 22\% or so. This data is
-obtained by testing the images. But if we detect the vocal cords in a
-video with a strict threshold, the performance will be better due to
-amount of frames.
+shown in the ROC curve. As we know, the ideal situation is that the
+point is at the left upper corner of the ROC curve so that TPR is 1 and
+FPR is 0 which means the accuracy is 100\%. In reality, however, it is
+not practical to have the ideal situation. What we are looking for is
+the point near left upper corner. In this way, a proper threshould 60 is
+set and based on this threshold, we can see that the accuracy of the
+training is accepable that TPR is above 85\% when FPR is at 22\% or so.
+This data is obtained by testing the images. But if we detect the vocal
+cords in a video with a strict threshold, the performance will be better
+due to amount of frames.
 
     \hypertarget{conclussion-and-discussion}{%
 \section{Conclussion and Discussion}\label{conclussion-and-discussion}}
 
     From this final project, vocal cords detection using haar-like features
-done in openCV is achieved. Besides 10 stage outcome, I also tested the
-files trained from 6 stage, 8 stage and 12 stage on the images. If the
-stage is too low, the computer will regconize many regions even not real
+done in openCV is achieved. The accuracy is above 85\%. Besides the
+outcome from 10-stage, I also tested the files trained from 6-stage,
+8-stage and 12-stage on the testing images. And I realized that if the
+stage is low, the computer will regconize many regions even not real
 vocal cords as the target object. But in another direction, the
-situation that there is no region is identified even with a vocal cords
-will happen if the stage is too high. Therefore, a proper stage is
-important to the detection. Moreover, the threshold should be chosen
-reasonably once the stage is set. A good threshold is able to bring us
-excellent accuracy and nice performance.
+situation that there is no region identified as the target even with the
+vocal cords will happen if the stage is set too high. Therefore, a
+proper stage is important to the detection. Moreover, the threshold
+should be chosen reasonably once the stage is set. A good threshold is
+able to bring us excellent accuracy and nice performance, as
+demenstrated in the ROC curve above.
 
 The advantage of the cascade training is that the trained file can be
-imported into some processor with low storage and computaional capacity.
-In this way, some devices without connecting to a powerful computer are
-also able to do the detection.
+imported into some other processors with low storage and computaional
+capacity. In this way, some devices without connecting to a powerful
+computer are also able to do the detection.
 
     \hypertarget{reference}{%
 \section{Reference}\label{reference}}
@@ -664,6 +692,8 @@ Viola, Paul, and Michael Jones. ``Rapid object detection using a boosted
 cascade of simple features.'' Computer Vision and Pattern Recognition,
 2001. CVPR 2001. Proceedings of the 2001 IEEE Computer Society
 Conference on. Vol. 1. IEEE, 2001.
+
+https://en.wikipedia.org/wiki/Receiver\_operating\_characteristic
 
 
     % Add a bibliography block to the postdoc

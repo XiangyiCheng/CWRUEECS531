@@ -1,8 +1,8 @@
 import numpy as np
 import cv2
 
-b=cv2.imread('ROC.JPG')
+b=cv2.imread('../Final_Project/haar.png')
 h,w,c=b.shape
 print 'h=',h,'w=',w
-#resize=cv2.resize(b,(600,418))
-#cv2.imwrite('tri2.png',resize)
+resize=cv2.resize(b,(400,250))
+cv2.imwrite('../Final_Project/haar2.png',resize)
